@@ -1,0 +1,79 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Inter;
+}
+
+* {
+  box-sizing: border-box;
+  line-height: normal;
+  font-family: inherit;
+  margin: unset;
+}
+
+:root {
+  /* Professional brand palette - deep indigo + emerald accents */
+  --color-border: #e5e7eb; /* slate-200 */
+  --color-input: #ffffff;
+  --color-ring: #1e40af; /* indigo-800 */
+  --color-background: #f7f8fb; /* subtle off-white */
+  --color-foreground: #0f172a; /* slate-900 */
+
+  --color-primary: #1e3a8a; /* indigo-900 */
+  --color-primary-foreground: #ffffff;
+
+  --color-secondary: #0ea5a6; /* teal-500 */
+  --color-secondary-foreground: #ffffff;
+
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #ffffff;
+
+  --color-muted: #eef2f7; /* light slate */
+  --color-muted-foreground: #6b7280; /* gray-500 */
+
+  --color-accent: #059669; /* emerald-600 */
+  --color-accent-foreground: #ffffff;
+
+  --color-popover: #ffffff;
+  --color-popover-foreground: #111827;
+
+  --color-card: #fbfcff; /* subtle card */
+  --color-card-foreground: #0f172a;
+
+  --color-success: #10b981;
+  --color-success-foreground: #ffffff;
+  --color-warning: #f59e0b;
+  --color-warning-foreground: #ffffff;
+  --color-error: #ef4444;
+  --color-error-foreground: #ffffff;
+
+  --color-trust-builder: #4338ca; /* indigo-600 */
+  --color-trust-builder-foreground: #ffffff;
+  --color-conversion-cta: #0ea5a6; /* teal-500 as CTA */
+  --color-conversion-cta-foreground: #ffffff;
+
+  --font-heading: 'Poppins';
+  --font-body: 'Inter';
+
+  --spacing-xs: 8px;
+  --spacing-sm: 16px;
+  --spacing-md: 24px;
+  --spacing-lg: 32px;
+  --spacing-xl: 48px;
+  --spacing-2xl: 64px;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius: 12px;
+
+  --shadow-soft: 0 4px 20px rgba(2, 6, 23, 0.06);
+  --shadow-medium: 0 8px 28px rgba(2, 6, 23, 0.09);
+  --shadow-large: 0 16px 48px rgba(2, 6, 23, 0.12);
+
+  --easing-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --timing-fast: 150ms;
+  --timing-normal: 250ms;
+  --timing-slow: 400ms;
+}

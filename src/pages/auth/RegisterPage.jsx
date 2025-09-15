@@ -1,0 +1,259 @@
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import Button from '../../components/ui/Button';
+import Input from '../../components/ui/Input';
+import Icon from '../../components/AppIcon';
+
+const RegisterPage = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+  const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { register } = useAuth();
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = 'Name must be at least 2 characters';
+    }
+
+    if (!formData.email) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Email is invalid';
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = 'Please confirm your password';
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) return;
+
+    setIsLoading(true);
+    
+    // Prepare data for API (exclude confirmPassword)
+    const { confirmPassword, ...userData } = formData;
+    
+    const result = await register(userData);
+    setIsLoading(false);
+
+    if (result.success) {
+      // Redirect to login page after successful registration
+      navigate('/login', { 
+        replace: true,
+        state: { 
+          message: 'Registration successful! Please login to continue.',
+          email: formData.email 
+        }
+      });
+    } else {
+      setErrors({ general: result.error });
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <div className="relative">
+              <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center shadow-brand-soft">
+                <Icon name="Compass" size={32} color="white" strokeWidth={2.5} />
+              </div>
+              <div className="absolute -top-1 -right-1 w-5 h-5 bg-accent rounded-full flex items-center justify-center">
+                <Icon name="Sparkles" size={12} color="white" strokeWidth={3} />
+              </div>
+            </div>
+          </div>
+          <h1 className="text-3xl font-heading font-bold text-foreground mb-2">
+            Join WanderWise
+          </h1>
+          <p className="text-muted-foreground">
+            Create your account and start exploring
+          </p>
+        </div>
+
+        {/* Register Form */}
+        <div className="bg-card/50 backdrop-blur-sm rounded-2xl shadow-brand-soft border border-border/50 p-8">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {errors.general && (
+              <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-brand-md text-sm">
+                {errors.general}
+              </div>
+            )}
+
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
+                  Full Name
+                </label>
+                <Input
+                  id="name"
+                  name="name"
+                  type="text"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Enter your full name"
+                  className={errors.name ? 'border-destructive' : ''}
+                  iconName="User"
+                  iconPosition="left"
+                />
+                {errors.name && (
+                  <p className="mt-1 text-sm text-destructive">{errors.name}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
+                  Email Address
+                </label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Enter your email"
+                  className={errors.email ? 'border-destructive' : ''}
+                  iconName="Mail"
+                  iconPosition="left"
+                />
+                {errors.email && (
+                  <p className="mt-1 text-sm text-destructive">{errors.email}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
+                  Password
+                </label>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Create a password"
+                  className={errors.password ? 'border-destructive' : ''}
+                  iconName="Lock"
+                  iconPosition="left"
+                />
+                {errors.password && (
+                  <p className="mt-1 text-sm text-destructive">{errors.password}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-foreground mb-2">
+                  Confirm Password
+                </label>
+                <Input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="Confirm your password"
+                  className={errors.confirmPassword ? 'border-destructive' : ''}
+                  iconName="Lock"
+                  iconPosition="left"
+                />
+                {errors.confirmPassword && (
+                  <p className="mt-1 text-sm text-destructive">{errors.confirmPassword}</p>
+                )}
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              variant="default"
+              size="lg"
+              fullWidth
+              disabled={isLoading}
+              className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white border-0 shadow-brand-soft"
+            >
+              {isLoading ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span>Creating Account...</span>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center space-x-2">
+                  <Icon name="UserPlus" size={18} />
+                  <span>Create Account</span>
+                </div>
+              )}
+            </Button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <p className="text-sm text-muted-foreground">
+              Already have an account?{' '}
+              <Link
+                to="/login"
+                className="text-primary hover:text-primary/80 font-medium transition-colors duration-brand-fast"
+              >
+                Sign in here
+              </Link>
+            </p>
+          </div>
+        </div>
+
+        {/* Back to Home */}
+        <div className="mt-6 text-center">
+          <Link
+            to="/homepage-premium-travel-discovery-hub"
+            className="inline-flex items-center space-x-2 text-sm text-muted-foreground hover:text-foreground transition-colors duration-brand-fast"
+          >
+            <Icon name="ArrowLeft" size={16} />
+            <span>Back to Home</span>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default RegisterPage;

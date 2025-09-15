@@ -1,0 +1,221 @@
+import React, { useState } from 'react';
+import Icon from '../../../components/AppIcon';
+import Button from '../../../components/ui/Button';
+
+const SearchBar = ({ onSearch, onSortChange, sortBy, totalResults }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
+
+  const sortOptions = [
+    { value: 'relevance', label: 'Most Relevant' },
+    { value: 'price-low', label: 'Price: Low to High' },
+    { value: 'price-high', label: 'Price: High to Low' },
+    { value: 'rating', label: 'Highest Rated' },
+    { value: 'duration-short', label: 'Duration: Short to Long' },
+    { value: 'duration-long', label: 'Duration: Long to Short' },
+    { value: 'newest', label: 'Newest First' },
+    { value: 'popular', label: 'Most Popular' }
+  ];
+
+  const handleSearch = (e) => {
+    e?.preventDefault();
+    onSearch(searchTerm);
+  };
+
+  const handleClearSearch = () => {
+    setSearchTerm('');
+    onSearch('');
+  };
+
+  return (
+    <div className="bg-card rounded-lg border border-border shadow-sm p-4">
+      {/* Main Search */}
+      <form onSubmit={handleSearch} className="flex gap-2 mb-4">
+        <div className="relative flex-1">
+          <Icon 
+            name="Search" 
+            size={20} 
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" 
+          />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e?.target?.value)}
+            placeholder="Search packages by destination, theme, or keywords..."
+            className="w-full pl-10 pr-10 py-2.5 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          />
+          {searchTerm && (
+            <button
+              type="button"
+              onClick={handleClearSearch}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-muted rounded-full transition-colors"
+            >
+              <Icon name="X" size={16} className="text-muted-foreground" />
+            </button>
+          )}
+        </div>
+        <Button
+          type="submit"
+          variant="default"
+          iconName="Search"
+          iconPosition="left"
+        >
+          Search
+        </Button>
+      </form>
+      {/* Results and Sort */}
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        {/* Results Count */}
+        <div className="text-sm text-muted-foreground">
+          {totalResults > 0 ? (
+            <>
+              Showing <span className="font-medium text-foreground">{totalResults}</span> packages
+              {searchTerm && (
+                <>
+                  {' '}for "<span className="font-medium text-foreground">{searchTerm}</span>"
+                </>
+              )}
+            </>
+          ) : (
+            'No packages found'
+          )}
+        </div>
+
+        {/* Sort and View Options */}
+        <div className="flex items-center gap-3">
+          {/* Sort Dropdown */}
+          <div className="flex items-center gap-2">
+            <Icon name="ArrowUpDown" size={16} className="text-muted-foreground" />
+            <select
+              value={sortBy}
+              onChange={(e) => onSortChange(e?.target?.value)}
+              className="text-sm border border-border rounded-md px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background"
+            >
+              {sortOptions?.map((option) => (
+                <option key={option?.value} value={option?.value}>
+                  {option?.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Advanced Search Toggle */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
+            iconName={isAdvancedOpen ? "ChevronUp" : "Settings"}
+            iconPosition="left"
+            className="text-muted-foreground hover:text-foreground"
+          >
+            Advanced
+          </Button>
+        </div>
+      </div>
+      {/* Advanced Search Options */}
+      {isAdvancedOpen && (
+        <div className="mt-4 pt-4 border-t border-border">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Quick Filters */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Quick Filters
+              </label>
+              <div className="space-y-2">
+                {[
+                  { label: 'Weekend Getaways', value: 'weekend' },
+                  { label: 'Honeymoon Specials', value: 'honeymoon' },
+                  { label: 'Adventure Tours', value: 'adventure' },
+                  { label: 'Family Packages', value: 'family' }
+                ]?.map((filter) => (
+                  <label key={filter?.value} className="flex items-center gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      className="rounded border-border text-primary focus:ring-primary"
+                    />
+                    <span className="text-muted-foreground">{filter?.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Price Range */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Price Range (₹)
+              </label>
+              <div className="space-y-2">
+                <input
+                  type="range"
+                  min="0"
+                  max="100000"
+                  className="w-full"
+                />
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>₹0</span>
+                  <span>₹1,00,000+</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Group Size */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Group Size
+              </label>
+              <select className="w-full text-sm border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                <option value="">Any Size</option>
+                <option value="solo">Solo Travel</option>
+                <option value="couple">Couple (2 people)</option>
+                <option value="small">Small Group (3-6)</option>
+                <option value="large">Large Group (7+)</option>
+              </select>
+            </div>
+
+            {/* Season */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Best Season
+              </label>
+              <select className="w-full text-sm border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                <option value="">Any Season</option>
+                <option value="summer">Summer (Mar-Jun)</option>
+                <option value="monsoon">Monsoon (Jul-Sep)</option>
+                <option value="winter">Winter (Oct-Feb)</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Advanced Actions */}
+          <div className="flex justify-end gap-2 mt-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsAdvancedOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              iconName="RotateCcw"
+              iconPosition="left"
+            >
+              Reset Filters
+            </Button>
+            <Button
+              variant="default"
+              size="sm"
+              iconName="Search"
+              iconPosition="left"
+            >
+              Apply Filters
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default SearchBar;

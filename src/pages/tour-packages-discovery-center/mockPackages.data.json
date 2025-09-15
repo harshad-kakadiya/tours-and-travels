@@ -1,0 +1,40 @@
+[
+  {
+    "id": 1,
+    "title": "Royal Rajasthan Heritage Tour",
+    "location": "Rajasthan",
+    "duration": 8,
+    "price": 45000,
+    "images": [
+      "https://images.unsplash.com/photo-1599661046827-dacde2a11954?w=1600&h=900&fit=crop"
+    ],
+    "highlights": ["Amber Fort", "Lake Pichola", "Mehrangarh Fort", "Cultural Show"],
+    "itinerary": [
+      {"day": 1, "title": "Arrival in Jaipur", "desc": "Check in and explore local markets"},
+      {"day": 2, "title": "Jaipur Sightseeing", "desc": "Amber Fort, City Palace, Hawa Mahal"},
+      {"day": 3, "title": "Drive to Udaipur", "desc": "Evening boat ride at Lake Pichola"},
+      {"day": 4, "title": "Udaipur Tour", "desc": "City Palace, Saheliyon ki Bari"}
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Kerala Backwaters & Hill Stations",
+    "location": "Kerala",
+    "duration": 6,
+    "price": 32000,
+    "images": [
+      "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=1600&h=900&fit=crop"
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Himalayan Adventure Trek",
+    "location": "Himachal Pradesh",
+    "duration": 10,
+    "price": 28000,
+    "images": [
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&h=900&fit=crop"
+    ]
+  }
+]
+
