@@ -1,7 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Header from '../../components/ui/Header';
-import Footer from '../homepage-premium-travel-discovery-hub/components/Footer';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
 import Image from '../../components/AppImage';
@@ -62,10 +60,9 @@ const TourDetails = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
 
       {/* Hero */}
-      <section className="pt-16">
+      <section className="pt-0">
         <div className="relative h-[42vh] sm:h-[56vh] w-full">
           <Image
             src={tour?.images?.[0] || tour?.image}
@@ -266,7 +263,6 @@ const TourDetails = () => {
         </div>
       </section>
 
-      <Footer />
     </div>
   );
 };

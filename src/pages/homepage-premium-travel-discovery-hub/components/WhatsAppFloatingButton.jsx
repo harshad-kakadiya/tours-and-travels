@@ -17,13 +17,13 @@ const WhatsAppFloatingButton = () => {
   }, []);
 
   useEffect(() => {
-    // Show tooltip after 3 seconds of component mount
+    // Show tooltip after 3 seconds of component mount (only on desktop)
+    const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+    if (!isDesktop) return;
     const timer = setTimeout(() => {
       setShowTooltip(true);
-      // Hide tooltip after 5 seconds
-      setTimeout(() => setShowTooltip(false), 5000);
-    }, 3000);
-
+      setTimeout(() => setShowTooltip(false), 4000);
+    }, 2000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -55,7 +55,7 @@ const WhatsAppFloatingButton = () => {
                 animate={{ opacity: 1, x: 0, scale: 1 }}
                 exit={{ opacity: 0, x: 20, scale: 0.8 }}
                 transition={{ duration: 0.3 }}
-                className="absolute bottom-full right-0 mb-3 bg-white rounded-lg shadow-brand-large p-3 max-w-xs"
+                className="absolute bottom-full right-0 mb-3 bg-white rounded-lg shadow-brand-large p-3 max-w-xs hidden lg:block"
               >
                 <div className="text-sm text-foreground font-medium mb-1">
                   Need help planning your trip?

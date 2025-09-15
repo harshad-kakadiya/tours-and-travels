@@ -22,7 +22,7 @@ const HotelDetails = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
-      <section className="pt-16">
+      <section className="pt-0">
         <div className="relative h-[40vh] sm:h-[54vh]">
           <Image src={hotel?.images?.[0]} alt={hotel?.name} className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-black/40" />

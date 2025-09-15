@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import Header from '../../components/ui/Header';
 import BlogHero from './components/BlogHero';
 import CategoryFilter from './components/CategoryFilter';
 import FeaturedArticle from './components/FeaturedArticle';
@@ -33,37 +32,17 @@ const TravelBlogHub = () => {
         <meta property="og:url" content="/travel-blog-hub-journey-intelligence" />
         <link rel="canonical" href="/travel-blog-hub-journey-intelligence" />
       </Helmet>
-      <Header />
-      <main className="pt-16">
-        <BlogHero />
-        <CategoryFilter 
-          onCategoryChange={handleCategoryChange}
-          activeCategory={activeCategory}
-        />
-        <FeaturedArticle />
-        <ArticleGrid activeCategory={activeCategory} />
-        <PopularDestinations />
-        <TravelTools />
-        <TravelTipsSection />
-        <NewsletterSubscription />
-      </main>
-      <footer className="bg-foreground text-background py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h3 className="text-2xl font-heading font-bold mb-4">
-              WanderWise Tours
-            </h3>
-            <p className="text-background/80 mb-6 max-w-2xl mx-auto">
-              Your trusted companion for discovering India's incredible destinations through authentic stories, expert insights, and comprehensive travel intelligence.
-            </p>
-            <div className="border-t border-background/20 pt-6">
-              <p className="text-background/60 text-sm">
-                © {new Date()?.getFullYear()} WanderWise Tours. All rights reserved. | Crafted with passion for travelers, by travelers.
-              </p>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <BlogHero />
+      <CategoryFilter 
+        onCategoryChange={handleCategoryChange}
+        activeCategory={activeCategory}
+      />
+      <FeaturedArticle />
+      <ArticleGrid activeCategory={activeCategory} />
+      <PopularDestinations />
+      <TravelTools />
+      <TravelTipsSection />
+      <NewsletterSubscription />
     </div>
   );
 };
