@@ -33,7 +33,6 @@ const NotFound = () => {
           >
             Go Back
           </Button>
-
           <Button
             variant="outline"
             icon={<Icon name="Home" />}
