@@ -3,7 +3,7 @@ import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
 
-const QuickBookingWidget = () => {
+const QuickBookingWidget = ({ onSearch }) => {
   const [bookingData, setBookingData] = useState({
     destination: '',
     checkIn: '',
@@ -27,19 +27,11 @@ const QuickBookingWidget = () => {
     if (hotelsSection) {
       hotelsSection?.scrollIntoView({ behavior: 'smooth' });
     }
-
-    // Show WhatsApp message for quick booking
-    const message = encodeURIComponent(`Quick Hotel Booking Request:
-
-Destination: ${bookingData?.destination}
-Check-in: ${bookingData?.checkIn}
-Check-out: ${bookingData?.checkOut}
-Guests: ${bookingData?.guests}
-Rooms: ${bookingData?.rooms}
-
-Please help me find available hotels with best rates.`);
     
-    window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+    // Apply filters/search in parent if provided instead of opening WhatsApp
+    if (typeof onSearch === 'function') {
+      onSearch({ ...bookingData });
+    }
   };
 
   const popularDestinations = [

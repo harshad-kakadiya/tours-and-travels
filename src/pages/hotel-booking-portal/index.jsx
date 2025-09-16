@@ -388,7 +388,14 @@ const HotelBookingPortal = () => {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Quick Booking Widget */}
-          <QuickBookingWidget />
+          <QuickBookingWidget 
+            onSearch={({ destination, checkIn, checkOut, guests, rooms }) => {
+              const newFilters = { ...filters };
+              newFilters.location = destination;
+              // Optionally we could incorporate date/guests/rooms into filtering logic later
+              setFilters(newFilters);
+            }}
+          />
 
           {/* Featured Hotels */}
           <FeaturedHotels 

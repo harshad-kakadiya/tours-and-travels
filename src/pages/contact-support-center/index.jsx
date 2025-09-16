@@ -17,9 +17,9 @@ const ContactSupportCenter = () => {
     <>
       <Helmet>
         <title>Contact & Support Center - WanderWise Tours | 24/7 Travel Assistance</title>
-        <meta 
-          name="description" 
-          content="Get instant support for your travel needs. Contact WanderWise Tours via WhatsApp, phone, or email. 24/7 emergency assistance, expert consultation, and personalized travel planning." 
+        <meta
+          name="description"
+          content="Get instant support for your travel needs. Contact WanderWise Tours via WhatsApp, phone, or email. 24/7 emergency assistance, expert consultation, and personalized travel planning."
         />
         <meta name="keywords" content="travel support, customer service, travel assistance, WanderWise contact, travel help, booking support" />
         <meta property="og:title" content="Contact & Support Center - WanderWise Tours" />
@@ -30,8 +30,8 @@ const ContactSupportCenter = () => {
 
       <div className="min-h-screen bg-background">
         <Header />
-        
-        <main className="pt-16">
+
+        <main>
           <ContactHero />
           <QuickContactCards />
           <ContactForm />
