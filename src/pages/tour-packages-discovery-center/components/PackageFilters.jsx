@@ -1,24 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
 import Select from '../../../components/ui/Select';
 
 const PackageFilters = ({ filters, onFiltersChange, onClearFilters }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [stateOptions, setStateOptions] = useState([
+    { value: '', label: 'All States' }
+  ]);
 
-  const stateOptions = [
-    { value: '', label: 'All States' },
-    { value: 'rajasthan', label: 'Rajasthan' },
-    { value: 'kerala', label: 'Kerala' },
-    { value: 'himachal', label: 'Himachal Pradesh' },
-    { value: 'goa', label: 'Goa' },
-    { value: 'uttarakhand', label: 'Uttarakhand' },
-    { value: 'kashmir', label: 'Jammu & Kashmir' },
-    { value: 'karnataka', label: 'Karnataka' },
-    { value: 'maharashtra', label: 'Maharashtra' },
-    { value: 'tamil-nadu', label: 'Tamil Nadu' },
-    { value: 'west-bengal', label: 'West Bengal' }
-  ];
+  useEffect(() => {
+    const fetchStates = async () => {
+      try {
+        const response = await fetch('https://tour-travels-be.onrender.com/api/state');
+        const data = await response.json();
+        
+        if (Array.isArray(data) && data.length > 0) {
+          const states = data.map(state => ({
+            value: state.name.toLowerCase(),
+            label: state.name.charAt(0).toUpperCase() + state.name.slice(1)
+          }));
+          
+          setStateOptions([
+            { value: '', label: 'All States' },
+            ...states
+          ]);
+        }
+      } catch (error) {
+        console.error('Error fetching states:', error);
+      }
+    };
+
+    fetchStates();
+  }, []);
 
   const durationOptions = [
     { value: '', label: 'Any Duration' },
