@@ -6,8 +6,9 @@ import Button from '../../components/ui/Button';
 import HotelCard from './components/HotelCard';
 import SearchFilters from './components/SearchFilters';
 import HotelDetailsModal from './components/HotelDetailsModal';
-import FeaturedHotels from './components/FeaturedHotels';
-import QuickBookingWidget from './components/QuickBookingWidget';
+// Removed FeaturedHotels per requirements
+// Removed QuickBookingWidget per requirement
+import { hotelAPI } from '../../utils/api';
 
 const HotelBookingPortal = () => {
   const [selectedHotel, setSelectedHotel] = useState(null);
@@ -16,233 +17,56 @@ const HotelBookingPortal = () => {
     location: '',
     priceRange: null,
     starRatings: [],
-    amenities: []
+    amenities: [],
+    countries: [],
+    propertyTypes: [],
+    cities: []
   });
+  const [allHotels, setAllHotels] = useState([]);
   const [filteredHotels, setFilteredHotels] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const hotelsPerPage = 6;
+  // Fetch hotels from API
+  useEffect(() => {
+    const fetchHotels = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const list = await hotelAPI.list();
+        // Map API shape to UI shape expected by components
+        const mapped = list?.map((item) => ({
+          id: item?._id,
+          name: item?.title,
+          location: item?.location,
+          starRating: item?.starRating || 4,
+          rating: item?.rating || 4.5,
+          reviewCount: item?.reviewCount || 0,
+          pricePerNight: item?.discountPrice ?? item?.price,
+          originalPrice: item?.price,
+          discount: item?.discount,
+          isVerified: true,
+          images: [item?.image].filter(Boolean),
+          amenities: (item?.amenities || []).map(a => ({ name: a })),
+          description: item?.overview || '',
+          propertyType: item?.propertyType || 'Hotel',
+        })) || [];
+        setAllHotels(mapped);
+        setFilteredHotels(mapped);
+      } catch (e) {
+        setError(e?.response?.data?.message || 'Failed to load hotels');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchHotels();
+  }, []);
 
-  // Mock hotel data
-  const mockHotels = [
-    {
-      id: 1,
-      name: "The Grand Palace Resort",
-      location: "Goa, India",
-      starRating: 5,
-      rating: 4.8,
-      reviewCount: 342,
-      pricePerNight: 8500,
-      originalPrice: 12000,
-      discount: 30,
-      isVerified: true,
-      images: [
-        "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800",
-        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800",
-        "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800"
-      ],
-      amenities: [
-        { name: "Free WiFi", icon: "Wifi" },
-        { name: "Swimming Pool", icon: "Waves" },
-        { name: "Spa & Wellness", icon: "Flower2" },
-        { name: "Restaurant", icon: "UtensilsCrossed" },
-        { name: "Free Parking", icon: "Car" },
-        { name: "Air Conditioning", icon: "Snowflake" },
-        { name: "Fitness Center", icon: "Dumbbell" },
-        { name: "Room Service", icon: "Bell" }
-      ],
-      description: `Experience luxury at its finest at The Grand Palace Resort, where traditional Goan hospitality meets modern elegance. Nestled along the pristine beaches of North Goa, this 5-star resort offers breathtaking ocean views, world-class amenities, and exceptional service that creates unforgettable memories.`,
-      coordinates: { lat: 15.2993, lng: 74.1240 },
-      specialOffer: "Complimentary breakfast & airport transfer",
-      recentReviews: [
-        {
-          guestName: "Priya Sharma",
-          rating: 5,
-          date: "2 days ago",
-          comment: "Absolutely stunning resort! The staff was incredibly helpful and the beachfront location is perfect. The spa treatments were divine."
-        },
-        {
-          guestName: "Rajesh Kumar",
-          rating: 5,
-          date: "1 week ago",
-          comment: "Best vacation ever! The rooms are spacious, food is excellent, and the infinity pool overlooking the ocean is breathtaking."
-        }
-      ]
-    },
-    {
-      id: 2,
-      name: "Himalayan Retreat Lodge",
-      location: "Manali, Himachal Pradesh",
-      starRating: 4,
-      rating: 4.6,
-      reviewCount: 198,
-      pricePerNight: 4500,
-      originalPrice: 6000,
-      discount: 25,
-      isVerified: true,
-      images: [
-        "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800",
-        "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800",
-        "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800"
-      ],
-      amenities: [
-        { name: "Free WiFi", icon: "Wifi" },
-        { name: "Mountain View", icon: "Mountain" },
-        { name: "Restaurant", icon: "UtensilsCrossed" },
-        { name: "Free Parking", icon: "Car" },
-        { name: "Fireplace", icon: "Flame" },
-        { name: "Garden", icon: "Trees" }
-      ],
-      description: `Escape to the serene mountains at Himalayan Retreat Lodge, where cozy comfort meets stunning natural beauty. Located in the heart of Manali, this charming lodge offers panoramic mountain views, warm hospitality, and easy access to adventure activities.`,
-      coordinates: { lat: 32.2432, lng: 77.1892 },
-      specialOffer: "Free bonfire & local sightseeing",
-      recentReviews: [
-        {
-          guestName: "Anita Verma",
-          rating: 5,
-          date: "3 days ago",
-          comment: "Perfect mountain getaway! The views are spectacular and the staff arranged amazing local tours. Highly recommended for nature lovers."
-        }
-      ]
-    },
-    {
-      id: 3,
-      name: "Royal Heritage Palace",
-      location: "Udaipur, Rajasthan",
-      starRating: 5,
-      rating: 4.9,
-      reviewCount: 456,
-      pricePerNight: 12000,
-      isVerified: true,
-      images: [
-        "https://images.unsplash.com/photo-1596436889106-be35e843f974?w=800",
-        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800",
-        "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800"
-      ],
-      amenities: [
-        { name: "Free WiFi", icon: "Wifi" },
-        { name: "Swimming Pool", icon: "Waves" },
-        { name: "Spa & Wellness", icon: "Flower2" },
-        { name: "Restaurant", icon: "UtensilsCrossed" },
-        { name: "Valet Parking", icon: "Car" },
-        { name: "Butler Service", icon: "Bell" },
-        { name: "Lake View", icon: "Waves" },
-        { name: "Cultural Shows", icon: "Music" }
-      ],
-      description: `Step into royalty at the Royal Heritage Palace, a magnificent lakeside palace hotel that epitomizes the grandeur of Rajasthan. With its intricate architecture, luxurious suites, and impeccable service, experience the lifestyle of maharajas.`,
-      coordinates: { lat: 24.5854, lng: 73.7125 },
-      recentReviews: [
-        {
-          guestName: "Vikram Singh",
-          rating: 5,
-          date: "1 day ago",
-          comment: "Living like royalty! The palace is breathtaking, service is impeccable, and the sunset views from the terrace are unforgettable."
-        }
-      ]
-    },
-    {
-      id: 4,
-      name: "Backwater Bliss Resort",
-      location: "Alleppey, Kerala",
-      starRating: 4,
-      rating: 4.7,
-      reviewCount: 289,
-      pricePerNight: 6500,
-      isVerified: true,
-      images: [
-        "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800",
-        "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800",
-        "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800"
-      ],
-      amenities: [
-        { name: "Free WiFi", icon: "Wifi" },
-        { name: "Backwater View", icon: "Waves" },
-        { name: "Ayurvedic Spa", icon: "Flower2" },
-        { name: "Restaurant", icon: "UtensilsCrossed" },
-        { name: "Boat Rides", icon: "Ship" },
-        { name: "Yoga Classes", icon: "Heart" }
-      ],
-      description: `Immerse yourself in Kerala's natural beauty at Backwater Bliss Resort, where tranquil backwaters meet traditional hospitality. Experience authentic Kerala culture, Ayurvedic treatments, and serene boat rides through coconut groves.`,
-      coordinates: { lat: 9.4981, lng: 76.3388 },
-      recentReviews: [
-        {
-          guestName: "Meera Nair",
-          rating: 5,
-          date: "4 days ago",
-          comment: "Absolutely peaceful and rejuvenating! The backwater views are stunning and the Ayurvedic spa treatments were incredible."
-        }
-      ]
-    },
-    {
-      id: 5,
-      name: "Urban Luxury Suites",
-      location: "Mumbai, Maharashtra",
-      starRating: 5,
-      rating: 4.5,
-      reviewCount: 567,
-      pricePerNight: 9500,
-      isVerified: true,
-      images: [
-        "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800",
-        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800",
-        "https://images.unsplash.com/photo-1596436889106-be35e843f974?w=800"
-      ],
-      amenities: [
-        { name: "Free WiFi", icon: "Wifi" },
-        { name: "City View", icon: "Building2" },
-        { name: "Fitness Center", icon: "Dumbbell" },
-        { name: "Restaurant", icon: "UtensilsCrossed" },
-        { name: "Business Center", icon: "Briefcase" },
-        { name: "Concierge", icon: "Bell" }
-      ],
-      description: `Experience Mumbai's vibrant energy from the comfort of Urban Luxury Suites, where contemporary elegance meets metropolitan convenience. Located in the heart of the financial capital, perfect for business and leisure travelers.`,
-      coordinates: { lat: 19.0760, lng: 72.8777 },
-      recentReviews: [
-        {
-          guestName: "Arjun Patel",
-          rating: 4,
-          date: "2 days ago",
-          comment: "Great location in the heart of Mumbai. Modern amenities and excellent service. Perfect for business trips."
-        }
-      ]
-    },
-    {
-      id: 6,
-      name: "Garden Paradise Resort",
-      location: "Ooty, Tamil Nadu",
-      starRating: 3,
-      rating: 4.3,
-      reviewCount: 156,
-      pricePerNight: 3500,
-      isVerified: true,
-      images: [
-        "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800",
-        "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800",
-        "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800"
-      ],
-      amenities: [
-        { name: "Free WiFi", icon: "Wifi" },
-        { name: "Garden View", icon: "Trees" },
-        { name: "Restaurant", icon: "UtensilsCrossed" },
-        { name: "Free Parking", icon: "Car" },
-        { name: "Children's Play Area", icon: "Baby" }
-      ],
-      description: `Nestled in the Nilgiri Hills, Garden Paradise Resort offers a perfect family retreat surrounded by lush gardens and cool mountain air. Enjoy the charm of Ooty with comfortable accommodations and warm hospitality.`,
-      coordinates: { lat: 11.4064, lng: 76.6932 },
-      recentReviews: [
-        {
-          guestName: "Sunita Reddy",
-          rating: 4,
-          date: "1 week ago",
-          comment: "Lovely family-friendly resort with beautiful gardens. Kids enjoyed the play area and the weather was perfect."
-        }
-      ]
-    }
-  ];
-
-  const featuredHotels = mockHotels?.filter(hotel => hotel?.discount)?.slice(0, 2);
+  // Removed featured hotels section
 
   useEffect(() => {
-    let filtered = [...mockHotels];
+    let filtered = [...allHotels];
 
     // Filter by location
     if (filters?.location) {
@@ -286,9 +110,30 @@ const HotelBookingPortal = () => {
       );
     }
 
+    // Filter by countries (derived from location string)
+    if (filters?.countries?.length > 0) {
+      filtered = filtered?.filter(hotel =>
+        filters?.countries?.some(country => hotel?.location?.toLowerCase()?.includes(country?.toLowerCase()))
+      );
+    }
+
+    // Filter by cities (derived from location string)
+    if (filters?.cities?.length > 0) {
+      filtered = filtered?.filter(hotel =>
+        filters?.cities?.some(city => hotel?.location?.toLowerCase()?.includes(city?.toLowerCase()))
+      );
+    }
+
+    // Filter by property types (default mapped to 'Hotel')
+    if (filters?.propertyTypes?.length > 0) {
+      filtered = filtered?.filter(hotel =>
+        filters?.propertyTypes?.includes(hotel?.propertyType)
+      );
+    }
+
     setFilteredHotels(filtered);
     setCurrentPage(1);
-  }, [filters]);
+  }, [filters, allHotels]);
 
   const handleViewDetails = (hotel) => {
     window.location.href = `/hotel/${hotel?.id}`;
@@ -386,39 +231,30 @@ const HotelBookingPortal = () => {
           </div>
         </section>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Quick Booking Widget */}
-          <QuickBookingWidget 
-            onSearch={({ destination, checkIn, checkOut, guests, rooms }) => {
-              const newFilters = { ...filters };
-              newFilters.location = destination;
-              // Optionally we could incorporate date/guests/rooms into filtering logic later
-              setFilters(newFilters);
-            }}
-          />
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
+          {/* Quick Booking Widget removed */}
 
-          {/* Featured Hotels */}
-          <FeaturedHotels 
-            hotels={featuredHotels}
-            onViewDetails={handleViewDetails}
-          />
+          {/* Featured Hotels removed */}
 
-          {/* Search Filters */}
-          <SearchFilters
-            filters={filters}
-            onFiltersChange={handleFiltersChange}
-            onClearFilters={handleClearFilters}
-          />
-
-          {/* Hotels Section */}
-          <section id="hotels-section">
+          {/* Filters + Hotels Layout */}
+          <section id="hotels-section" className="grid grid-cols-1 lg:grid-cols-[20rem,1fr] gap-6">
+            {/* Sidebar Filters */}
+            <div>
+              <SearchFilters
+                filters={filters}
+                onFiltersChange={handleFiltersChange}
+                onClearFilters={handleClearFilters}
+              />
+            </div>
+            {/* List */}
+            <div>
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-2xl font-heading font-bold text-foreground mb-2">
                   Available Hotels
                 </h2>
                 <p className="text-muted-foreground">
-                  {filteredHotels?.length} properties found
+                  {loading ? 'Loading...' : `${filteredHotels?.length} properties found`}
                 </p>
               </div>
               
@@ -436,7 +272,16 @@ const HotelBookingPortal = () => {
             </div>
 
             {/* Hotels Grid */}
-            {currentHotels?.length > 0 ? (
+            {error ? (
+              <div className="text-center py-12">
+                <Icon name="AlertTriangle" size={48} className="text-red-500 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-foreground mb-2">Failed to load hotels</h3>
+                <p className="text-muted-foreground mb-4">{error}</p>
+                <Button variant="outline" onClick={() => window.location.reload()} iconName="RotateCcw" iconPosition="left" iconSize={16}>
+                  Retry
+                </Button>
+              </div>
+            ) : currentHotels?.length > 0 ? (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
                   {currentHotels?.map((hotel) => (
@@ -513,6 +358,7 @@ const HotelBookingPortal = () => {
                 </Button>
               </div>
             )}
+            </div>
           </section>
 
           {/* Why Choose Us */}
