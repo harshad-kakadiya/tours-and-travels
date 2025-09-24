@@ -25,8 +25,8 @@ const FeaturedHotels = ({ hotels, onViewDetails }) => {
         {hotels?.map((hotel) => (
           <div key={hotel?.id} className="bg-card rounded-xl shadow-brand-soft hover:shadow-brand-medium transition-all duration-brand-normal hover-lift overflow-hidden">
             <div className="flex flex-col sm:flex-row">
-              {/* Image */}
-              <div className="relative w-full sm:w-48 h-48 sm:h-auto overflow-hidden">
+              {/* Image - keep compact height on larger screens */}
+              <div className="relative w-full sm:w-56 h-48 sm:h-40 md:h-44 lg:h-48 overflow-hidden">
                 <Image
                   src={hotel?.images?.[0]}
                   alt={hotel?.name}
@@ -111,26 +111,15 @@ const FeaturedHotels = ({ hotels, onViewDetails }) => {
                   ))}
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex space-x-2">
+                {/* Action: Only View Details (removed booking) */}
+                <div className="flex">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => onViewDetails(hotel)}
-                    className="flex-1"
+                    className="w-full"
                   >
                     View Details
-                  </Button>
-                  <Button
-                    variant="default"
-                    size="sm"
-                    onClick={() => handleWhatsAppInquiry(hotel)}
-                    iconName="MessageCircle"
-                    iconPosition="left"
-                    iconSize={14}
-                    className="flex-1 bg-[#25D366] hover:bg-[#128C7E] text-white border-0"
-                  >
-                    Book Now
                   </Button>
                 </div>
               </div>

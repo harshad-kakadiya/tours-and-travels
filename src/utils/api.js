@@ -55,4 +55,28 @@ export const authAPI = {
   }
 };
 
+// Hotel Room API functions
+export const hotelAPI = {
+  // Fetch list of hotel rooms (array)
+  list: async (params = {}) => {
+    const response = await api.get('/hotelRoom', { params });
+    // Expect API may return either { data: [...] } or array directly
+    const payload = response.data;
+    if (Array.isArray(payload)) return payload;
+    if (Array.isArray(payload?.data)) return payload.data;
+    // Some backends wrap on { message, data: { items: [] } }
+    if (Array.isArray(payload?.data?.items)) return payload.data.items;
+    return [];
+  },
+
+  // Fetch single hotel room by id
+  getById: async (id) => {
+    const response = await api.get(`/hotelRoom/${id}`);
+    const payload = response.data;
+    // Provided example returns { message, data: { ...object } }
+    if (payload?.data) return payload.data;
+    return payload;
+  }
+};
+
 export default api;
