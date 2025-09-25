@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { BrowserRouter, Routes as RouterRoutes, Route, Navigate } from "react-router-dom";
 import ScrollToTop from "components/ScrollToTop";
 import ErrorBoundary from "components/ErrorBoundary";
@@ -17,6 +17,7 @@ import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import UserDashboard from './pages/UserDashboard';
 import TourDetails from './pages/tour-packages-discovery-center/TourDetails.jsx';
+import AboutUs from './pages/about-us';
 
 // Component to redirect authenticated users away from auth pages
 const AuthRedirect = ({ children }) => {
@@ -52,6 +53,7 @@ const Routes = () => {
               <Route path="/" element={<HomepagePremiumTravelDiscoveryHub />} />
               <Route path="/homepage-premium-travel-discovery-hub" element={<HomepagePremiumTravelDiscoveryHub />} />
               <Route path="/contact-support-center" element={<ContactSupportCenter />} />
+              <Route path="/about-us" element={<AboutUs />} />
               <Route path="/travel-blog-hub-journey-intelligence" element={<TravelBlogHub />} />
 
               {/* Auth Routes - Redirect if already authenticated */}

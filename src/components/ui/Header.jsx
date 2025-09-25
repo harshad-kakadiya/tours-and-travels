@@ -16,6 +16,7 @@ const Header = () => {
     { name: 'Hotels', path: '/hotel-booking-portal', icon: 'Building2' },
     { name: 'Taxi', path: '/taxi-booking-system', icon: 'Car' },
     { name: 'Travel Blog', path: '/travel-blog-hub-journey-intelligence', icon: 'BookOpen' },
+    { name: 'About Us', path: '/about-us', icon: 'Info' },
   ];
 
   const secondaryItems = [
