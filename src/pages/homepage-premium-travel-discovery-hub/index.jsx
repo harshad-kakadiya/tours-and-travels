@@ -81,7 +81,7 @@ const HomepagePremiumTravelDiscoveryHub = () => {
           {/* Hero Section with Carousel */}
           <section id="hero" className="relative">
             <HeroCarousel />
-            <SmartSearchWidget />
+            {/*<SmartSearchWidget />*/}
           </section>
 
           {/* Upcoming Tours Slider Section */}
@@ -105,14 +105,14 @@ const HomepagePremiumTravelDiscoveryHub = () => {
           </section>
 
           {/* Flexible Transportation Section */}
-          <section id="flexible-transportation" className="relative">
-            <FlexibleTransportation />
-          </section>
+          {/*<section id="flexible-transportation" className="relative">*/}
+          {/*  <FlexibleTransportation />*/}
+          {/*</section>*/}
 
-          {/* Social Proof Section */}
-          <section id="social-proof" className="relative">
-            <SocialProofSection />
-          </section>
+          {/*/!* Social Proof Section *!/*/}
+          {/*<section id="social-proof" className="relative">*/}
+          {/*  <SocialProofSection />*/}
+          {/*</section>*/}
         </main>
 
         {/* WhatsApp Floating Button */}

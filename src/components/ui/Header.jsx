@@ -68,7 +68,7 @@ const Header = () => {
                 <Icon name="Sparkles" size={10} color="white" strokeWidth={3} />
               </div>
             </div>
-            <div className="hidden sm:block">
+            <div >
               <h1 className="text-xl font-heading font-bold text-foreground">
                 WanderWise
               </h1>
@@ -77,7 +77,7 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-1">
+          <nav className="hidden xl:flex items-center space-x-1">
             {navigationItems?.map((item) => (
               <Link
                 key={item?.path}
@@ -94,7 +94,7 @@ const Header = () => {
           </nav>
 
           {/* Desktop Actions */}
-          <div className="hidden lg:flex items-center space-x-3">
+          <div className="hidden xl:flex items-center space-x-3">
             <Link
               to="/contact-support-center"
               className={`flex items-center space-x-2 px-3 py-2 rounded-brand-md text-sm font-medium transition-all duration-brand-fast hover:bg-muted/50 ${
@@ -158,7 +158,7 @@ const Header = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={toggleMobileMenu}
-            className="lg:hidden p-2 rounded-brand-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-brand-fast thumb-friendly"
+            className="xl:hidden p-2 rounded-brand-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-brand-fast thumb-friendly"
             aria-label="Toggle mobile menu"
           >
             <Icon 
@@ -171,7 +171,7 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         <div 
-          className={`lg:hidden transition-all duration-brand-normal overflow-hidden ${
+          className={`xl:hidden transition-all duration-brand-normal overflow-hidden ${
             isMobileMenuOpen 
               ? 'max-h-screen opacity-100' :'max-h-0 opacity-0'
           }`}

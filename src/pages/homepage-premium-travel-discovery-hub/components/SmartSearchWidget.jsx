@@ -65,7 +65,7 @@ const SmartSearchWidget = () => {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-brand-large p-6 sm:p-8 mx-4 sm:mx-6 lg:mx-8 -mt-20 relative z-20">
+    <div className="bg-white rounded-2xl p-6 sm:p-8 mx-4 sm:mx-6 lg:mx-8  z-20">
       <div className="text-center mb-8">
         <h2 className="text-2xl sm:text-3xl font-heading font-bold text-foreground mb-2">
           Find Your Perfect Journey
@@ -75,7 +75,7 @@ const SmartSearchWidget = () => {
         </p>
       </div>
       {/* Search Form */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="flex flex-col gap-4 mb-6">
         {/* Destination */}
         <div className="relative">
           <label className="block text-sm font-medium text-foreground mb-2">
@@ -171,23 +171,6 @@ const SmartSearchWidget = () => {
         >
           Search Packages
         </Button>
-      </div>
-      {/* Quick Search Destinations */}
-      <div>
-        <h3 className="text-lg font-semibold text-foreground mb-4 text-center">
-          Popular Destinations
-        </h3>
-        <div className="flex flex-wrap justify-center gap-3">
-          {destinations?.slice(0, 6)?.map((destination) => (
-            <button
-              key={destination}
-              onClick={() => handleQuickSearch(destination)}
-              className="px-4 py-2 bg-muted hover:bg-primary hover:text-white rounded-full text-sm font-medium transition-all duration-200 border border-border hover:border-primary"
-            >
-              {destination}
-            </button>
-          ))}
-        </div>
       </div>
     </div>
   );

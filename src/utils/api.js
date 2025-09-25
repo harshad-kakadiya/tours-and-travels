@@ -59,7 +59,7 @@ export const authAPI = {
 export const hotelAPI = {
   // Fetch list of hotel rooms (array)
   list: async (params = {}) => {
-    const response = await api.get('/hotelRoom', { params });
+    const response = await api.get('/hotel-room', { params });
     // Expect API may return either { data: [...] } or array directly
     const payload = response.data;
     if (Array.isArray(payload)) return payload;
@@ -71,7 +71,7 @@ export const hotelAPI = {
 
   // Fetch single hotel room by id
   getById: async (id) => {
-    const response = await api.get(`/hotelRoom/${id}`);
+    const response = await api.get(`/hotel-room/${id}`);
     const payload = response.data;
     // Provided example returns { message, data: { ...object } }
     if (payload?.data) return payload.data;

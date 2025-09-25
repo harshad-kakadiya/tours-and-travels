@@ -75,17 +75,17 @@ const UpcomingToursSlider = () => {
                 Discover our upcoming tour packages with exclusive early bird offers
               </p>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="hidden md:flex items-center space-x-4">
               <Link to="/tour-packages-discovery-center">
-                <Button
-                    variant="outline"
-                    size="lg"
-                    iconName="ArrowRight"
-                    iconPosition="right"
-                    className="px-6 py-3 text-base font-semibold border-2 hover:bg-primary hover:text-white hover:border-primary"
-                >
-                  View All
-                </Button>
+                  <Button
+                      variant="outline"
+                      size="lg"
+                      iconName="ArrowRight"
+                      iconPosition="right"
+                      className="px-6 py-3 text-base font-semibold border-2 bg-[#0F172A] text-white border-[#0F172A] transition-colors duration-300 ease-in-out hover:bg-primary hover:text-white hover:border-primary"
+                  >
+                      View All
+                  </Button>
               </Link>
               <div className="hidden md:flex items-center space-x-2">
                 <button
@@ -146,17 +146,18 @@ const UpcomingToursSlider = () => {
                       </p>
                     </div>
 
-                    {/* Pricing - Bottom Left */}
-                    <div className="absolute bottom-6 left-6">
-                      <div className="flex items-center space-x-2">
-                    <span className="text-3xl font-bold text-white">
-                      {tour.price}
-                    </span>
-                        <span className="text-lg text-white/70 line-through">
-                      {tour.originalPrice}
-                    </span>
+                      <div className="absolute bottom-3 left-4">
+                          {tour.originalPrice && (
+                              <span className="text-sm sm:text-base text-white/70 line-through">
+        {tour.originalPrice}
+      </span>
+                          )}
+                          <div className="flex flex-col items-start space-y-1">
+    <span className="text-xl xs:text-2xl sm:text-2xl lg:text-3xl font-bold text-white">
+      {tour.price}
+    </span>
+                          </div>
                       </div>
-                    </div>
 
                     {/* View Details Button - Bottom Right */}
                     <div className="absolute bottom-6 right-6">
@@ -182,6 +183,19 @@ const UpcomingToursSlider = () => {
                 />
             ))}
           </div>
+            <div className="md:hidden flex justify-center mt-8">
+                <Link to="/tour-packages-discovery-center">
+                    <Button
+                        variant="outline"
+                        size="lg"
+                        iconName="ArrowRight"
+                        iconPosition="right"
+                        className="px-6 py-3 text-base font-semibold border-2 hover:bg-primary hover:text-white hover:border-primary bg-[#0F172A] text-white"
+                    >
+                        View All Tours
+                    </Button>
+                </Link>
+            </div>
 
         </div>
       </section>

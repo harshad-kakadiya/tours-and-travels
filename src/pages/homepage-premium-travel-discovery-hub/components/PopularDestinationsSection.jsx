@@ -49,11 +49,18 @@ const PopularDestinationsSection = () => {
                         </h2>
                         <p className="text-lg text-muted-foreground">Explore tours by state</p>
                     </div>
-                    <div className="flex items-center space-x-4">
+                    <div className="hidden sm:flex items-center space-x-4">
                         <Link to="/tour-packages-discovery-center">
-                            <Button variant="outline" size="lg" iconName="ArrowRight" iconPosition="right" className="px-6 py-3 text-base font-semibold border-2 hover:bg-primary hover:text-white hover:border-primary">
+                            <Button
+                                variant="outline"
+                                size="lg"
+                                iconName="ArrowRight"
+                                iconPosition="right"
+                                className="px-6 py-3 text-base font-semibold border-2 bg-[#0F172A] text-white border-[#0F172A] transition-colors duration-300 ease-in-out hover:bg-primary hover:text-white hover:border-primary"
+                            >
                                 View All Tours
                             </Button>
+
                         </Link>
                     </div>
                 </div>
@@ -82,6 +89,20 @@ const PopularDestinationsSection = () => {
                             </div>
                         </motion.button>
                     ))}
+                </div>
+                <div className="sm:hidden flex justify-center mt-6  items-center space-x-4">
+                    <Link to="/tour-packages-discovery-center">
+                        <Button
+                            variant="outline"
+                            size="lg"
+                            iconName="ArrowRight"
+                            iconPosition="right"
+                            className="px-6 py-3 text-base font-semibold border-2 bg-[#0F172A] text-white border-[#0F172A] transition-colors duration-300 ease-in-out hover:bg-primary hover:text-white hover:border-primary"
+                        >
+                            View All Tours
+                        </Button>
+
+                    </Link>
                 </div>
             </div>
         </section>
