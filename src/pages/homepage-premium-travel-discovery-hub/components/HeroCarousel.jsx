@@ -333,14 +333,14 @@ const HeroCarousel = () => {
             </div>
 
             {/* Slide Controls */}
-            <button onClick={prevSlide}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/20 rounded-full hidden xl:flex items-center justify-center text-white z-10 hover:bg-white/30">
-                <Icon name="ChevronLeft" size={24}/>
-            </button>
-            <button onClick={nextSlide}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/20 rounded-full hidden xl:flex items-center justify-center text-white z-10 hover:bg-white/30">
-                <Icon name="ChevronRight" size={24}/>
-            </button>
+            {/*<button onClick={prevSlide}*/}
+            {/*        className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/20 rounded-full hidden xxl:flex items-center justify-center text-white z-10 hover:bg-white/30">*/}
+            {/*    <Icon name="ChevronLeft" size={24}/>*/}
+            {/*</button>*/}
+            {/*<button onClick={nextSlide}*/}
+            {/*        className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/20 rounded-full hidden xxl:flex items-center justify-center text-white z-10 hover:bg-white/30">*/}
+            {/*    <Icon name="ChevronRight" size={24}/>*/}
+            {/*</button>*/}
 
             {/* Dots */}
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3 z-10">

@@ -12,11 +12,11 @@ const Header = () => {
 
   const navigationItems = [
     { name: 'Home', path: '/homepage-premium-travel-discovery-hub', icon: 'Home' },
+    { name: 'About Us', path: '/about-us', icon: 'Info' },
     { name: 'Tour Packages', path: '/tour-packages-discovery-center', icon: 'MapPin' },
     { name: 'Hotels', path: '/hotel-booking-portal', icon: 'Building2' },
     { name: 'Taxi', path: '/taxi-booking-system', icon: 'Car' },
     { name: 'Travel Blog', path: '/travel-blog-hub-journey-intelligence', icon: 'BookOpen' },
-    { name: 'About Us', path: '/about-us', icon: 'Info' },
   ];
 
   const secondaryItems = [
@@ -88,7 +88,7 @@ const Header = () => {
                     ? 'text-primary bg-primary/5 border border-primary/20' :'text-muted-foreground hover:text-foreground'
                 }`}
               >
-                <Icon name={item?.icon} size={16} />
+                {/*<Icon name={item?.icon} size={16} />*/}
                 <span>{item?.name}</span>
               </Link>
             ))}
@@ -103,7 +103,7 @@ const Header = () => {
                   ? 'text-primary bg-primary/5' :'text-muted-foreground hover:text-foreground'
               }`}
             >
-              <Icon name="Phone" size={16} />
+              {/*<Icon name="Phone" size={16} />*/}
               <span>Contact</span>
             </Link>
             
@@ -113,7 +113,7 @@ const Header = () => {
                   to="/dashboard"
                   className="flex items-center space-x-2 px-3 py-2 rounded-brand-md text-sm font-medium text-foreground hover:bg-muted/50 transition-all duration-brand-fast"
                 >
-                  <Icon name="User" size={16} />
+                  {/*<Icon name="User" size={16} />*/}
                   <span>Welcome, {user?.name}</span>
                 </Link>
                 <Button
