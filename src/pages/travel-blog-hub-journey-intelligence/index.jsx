@@ -39,7 +39,7 @@ const TravelBlogHub = () => {
       />
       <FeaturedArticle />
       <ArticleGrid activeCategory={activeCategory} />
-      <PopularDestinations />
+      {/*<PopularDestinations />*/}
       <TravelTools />
       <TravelTipsSection />
       <NewsletterSubscription />

@@ -8,6 +8,7 @@ import GlobalLayout from "components/GlobalLayout";
 import NotFound from "pages/NotFound";
 import TaxiBookingSystem from './pages/taxi-booking-system';
 import TravelBlogHub from './pages/travel-blog-hub-journey-intelligence';
+import SingleBlog from './pages/travel-blog-hub-journey-intelligence/SingleBlog';
 import ContactSupportCenter from './pages/contact-support-center';
 import TourPackagesDiscoveryCenter from './pages/tour-packages-discovery-center';
 import HomepagePremiumTravelDiscoveryHub from './pages/homepage-premium-travel-discovery-hub';
@@ -55,6 +56,7 @@ const Routes = () => {
               <Route path="/contact-support-center" element={<ContactSupportCenter />} />
               <Route path="/about-us" element={<AboutUs />} />
               <Route path="/travel-blog-hub-journey-intelligence" element={<TravelBlogHub />} />
+              <Route path="/blog/:id" element={<SingleBlog />} />
 
               {/* Auth Routes - Redirect if already authenticated */}
               <Route path="/login" element={

@@ -6,31 +6,13 @@ import Button from '../../components/ui/Button';
 import ServiceTypeSelector from './components/ServiceTypeSelector';
 import FixedRoutePackages from './components/FixedRoutePackages';
 import PerKmCalculator from './components/PerKmCalculator';
-import AvailableDrivers from './components/AvailableDrivers';
-import BookingModal from './components/BookingModal';
 import SafetyFeatures from './components/SafetyFeatures';
 
 const TaxiBookingSystem = () => {
   const [selectedService, setSelectedService] = useState('fixed-route');
-  const [showDrivers, setShowDrivers] = useState(false);
-  const [selectedDriver, setSelectedDriver] = useState(null);
-  const [bookingData, setBookingData] = useState(null);
-  const [showBookingModal, setShowBookingModal] = useState(false);
 
   const handleServiceChange = (serviceType) => {
     setSelectedService(serviceType);
-    setShowDrivers(false);
-    setSelectedDriver(null);
-  };
-
-  const handleBookingClick = (type, data) => {
-    setBookingData({ type, data });
-    setShowDrivers(true);
-  };
-
-  const handleDriverSelect = (driver) => {
-    setSelectedDriver(driver);
-    setShowBookingModal(true);
   };
 
   const handleWhatsAppSupport = () => {
@@ -125,7 +107,7 @@ const TaxiBookingSystem = () => {
                     Pre-planned routes with all-inclusive pricing and curated experiences
                   </p>
                 </div>
-                <FixedRoutePackages onBookingClick={handleBookingClick} />
+                <FixedRoutePackages />
               </div>
             ) : (
               <div>
@@ -135,23 +117,11 @@ const TaxiBookingSystem = () => {
                     Flexible booking with transparent per-km rates and custom routes
                   </p>
                 </div>
-                <PerKmCalculator onBookingClick={handleBookingClick} />
+                <PerKmCalculator />
               </div>
             )}
           </div>
         </section>
-
-        {/* Available Drivers */}
-        {showDrivers && (
-          <section className="py-12 bg-card/30">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-              <AvailableDrivers
-                selectedService={selectedService}
-                onDriverSelect={handleDriverSelect}
-              />
-            </div>
-          </section>
-        )}
 
         {/* Safety Features */}
         <section className="py-16 bg-muted/20">
@@ -218,13 +188,6 @@ const TaxiBookingSystem = () => {
           </div>
         </section>
 
-        {/* Booking Modal */}
-        <BookingModal
-          isOpen={showBookingModal}
-          onClose={() => setShowBookingModal(false)}
-          bookingData={bookingData}
-          selectedDriver={selectedDriver}
-        />
       </div>
     </>
   );
