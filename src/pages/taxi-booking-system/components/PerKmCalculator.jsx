@@ -24,7 +24,7 @@ const PerKmCalculator = ({ onBookingClick }) => {
     try {
       setLoading(true);
       setError(null);
-      const response = await api.get('/taxi-tour');
+      const response = await api.get('https://tour-travels-be-h58q.onrender.com/api/taxi-tour');
       const data = response.data;
       
       // Filter packages with serviceType 'per_km'
@@ -115,58 +115,47 @@ const PerKmCalculator = ({ onBookingClick }) => {
           <p className="text-muted-foreground">No per-km packages are currently available.</p>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-4 gap-6">
           {packages?.map((pkg) => (
-            <div key={pkg?._id} className="relative rounded-2xl overflow-hidden group cursor-pointer transition-all duration-300">
-              {/* Background Image */}
-              <div className="relative h-80">
+            <div key={pkg?._id} className="rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 bg-white">
+              {/* Car Name Header */}
+              <div className="bg-primary text-white p-4 text-center">
+                <h3 className="text-lg font-medium">{pkg?.name}</h3>
+              </div>
+              
+              {/* Car Image */}
+              <div className="h-48 overflow-hidden">
                 <Image
                   src={pkg?.image}
                   alt={pkg?.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                
-                {/* Per KM Rate - Top Left */}
-                <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm font-medium">
-                  ₹{pkg?.perKmPrice}/km
-                </div>
-
-                {/* Package Title - Large White Text */}
-                <div className="absolute bottom-20 left-6 right-6">
-                  <h3 className="text-2xl font-bold text-white mb-2">
-                    {pkg?.name}
-                  </h3>
-                  <p className="text-white/90 text-sm">
-                    Per-Kilometer Service
-                  </p>
-                </div>
-
-                {/* Features - Bottom Left */}
-                <div className="absolute bottom-6 left-6">
-                  <div className="flex flex-wrap gap-1">
-                    {pkg?.feactures?.slice(0, 2)?.map((feature, index) => (
-                      <span key={index} className="text-xs bg-white/20 backdrop-blur-sm text-white px-2 py-1 rounded">
-                        {feature}
-                      </span>
-                    ))}
-                    {pkg?.feactures?.length > 2 && (
-                      <span className="text-xs bg-white/20 backdrop-blur-sm text-white px-2 py-1 rounded">
-                        +{pkg.feactures.length - 2} more
-                      </span>
-                    )}
+              </div>
+              
+              {/* Per KM Price */}
+              <div className="p-4 text-center border-b">
+                <p className="text-2xl font-bold text-gray-800">From ₹ {pkg?.perKmPrice} / KM</p>
+              </div>
+              
+              {/* Features */}
+              <div className="p-4 space-y-2">
+                {pkg?.feactures?.map((feature, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <Icon name="Check" size={16} className="text-green-500" />
+                    <span className="text-gray-700">{feature}</span>
                   </div>
-                </div>
-
-                {/* Book Now Button - Bottom Right */}
-                <div className="absolute bottom-6 right-6">
-                  <button 
-                    onClick={() => handleWhatsAppBooking(pkg)}
-                    className="bg-white text-black px-6 py-2 rounded-lg font-semibold hover:bg-white/90 transition-colors"
-                  >
-                    Book Now
-                  </button>
-                </div>
+                ))}
+              </div>
+              
+              {/* Book Now Button */}
+              <div className="p-4 text-center">
+                <button 
+                  onClick={() => handleWhatsAppBooking(pkg)}
+                  className="w-full bg-primary text-white py-3 rounded-md font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
+                >
+                  <Icon name="MessageCircle" size={16} />
+                  Book on WhatsApp
+                </button>
               </div>
             </div>
           ))}

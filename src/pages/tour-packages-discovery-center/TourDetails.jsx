@@ -196,9 +196,21 @@ const TourDetails = () => {
     }, [tour, basePrice]);
 
     const handleBook = () => {
+        // Get all selected fields for the WhatsApp message
+        const selectedPackageInfo = selectedPackage ? `${selectedPackage.from} (₹${Number(selectedPackage.discountedPrice || selectedPackage.price || 0).toLocaleString()})` : 'Not selected';
+        
+        // Build a comprehensive message with all selected fields
         const message = encodeURIComponent(
-            `Hi! I'm interested in the ${tour?.title} on ${selectedDate || 'my preferred date'} for ${sharing} sharing.`
+            `*Tour Inquiry*\n\n` +
+            `*Tour:* ${tour?.title}\n` +
+            `*Location:* ${tour?.location || 'Not specified'}\n` +
+            `*Package:* ${selectedPackageInfo}\n` +
+            `*Date:* ${selectedDate || 'Not selected'}\n` +
+            `*Sharing Type:* ${sharing} sharing\n` +
+            `*Group Size:* ${tour?.groupSize || 'Not specified'}\n\n` +
+            `I would like to book/inquire about this tour. Please provide more information.`
         );
+        
         window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
     };
 
