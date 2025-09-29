@@ -12,10 +12,10 @@ import Button from '../../../components/ui/Button';
 
 const UpcomingToursSlider = () => {
     const [upcomingTours, setUpcomingTours] = useState([]);
+    const [isLoading, setIsLoading] = useState(true); // NEW: Loading state
     const prevRef = useRef(null);
     const nextRef = useRef(null);
 
-    // State to track if current screen is mobile (<768px)
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
     useEffect(() => {
@@ -34,6 +34,7 @@ const UpcomingToursSlider = () => {
             try {
                 const res = await fetch('https://tour-travels-be.onrender.com/api/tour');
                 const data = await res.json();
+
                 const list = Array.isArray(data)
                     ? data
                     : Array.isArray(data?.data)
@@ -43,8 +44,7 @@ const UpcomingToursSlider = () => {
                 const mapped = list
                     ?.slice(0, 9)
                     ?.map((t) => {
-                        const durationStr =
-                            typeof t?.duration === 'string' ? t?.duration : String(t?.duration || '');
+                        const durationStr = typeof t?.duration === 'string' ? t?.duration : String(t?.duration || '');
                         const image =
                             Array.isArray(t?.images) && t?.images?.[0]
                                 ? t?.images?.[0]
@@ -63,9 +63,15 @@ const UpcomingToursSlider = () => {
                         };
                     }) || [];
 
-                if (isMounted) setUpcomingTours(mapped);
+                if (isMounted) {
+                    setUpcomingTours(mapped);
+                    setIsLoading(false); // Done loading
+                }
             } catch (e) {
-                if (isMounted) setUpcomingTours([]);
+                if (isMounted) {
+                    setUpcomingTours([]);
+                    setIsLoading(false); // Even if error, stop loading
+                }
             }
         };
 
@@ -78,7 +84,6 @@ const UpcomingToursSlider = () => {
     return (
         <section className="py-16 bg-background relative">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                {/* Section Header */}
                 <div className="flex items-center justify-between mb-12">
                     <div>
                         <div className="inline-flex items-center space-x-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-4">
@@ -93,7 +98,6 @@ const UpcomingToursSlider = () => {
                         </p>
                     </div>
 
-                    {/* Show arrows only on md and larger screens */}
                     {!isMobile && (
                         <div className="flex items-center space-x-4">
                             <Link to="/tour-packages-discovery-center">
@@ -126,115 +130,115 @@ const UpcomingToursSlider = () => {
                     )}
                 </div>
 
-                {/* Swiper Slider */}
-                <div className="relative">
-                    <Swiper
-                        modules={[Navigation, Pagination]}
-                        slidesPerView={1}
-                        spaceBetween={24}
-                        breakpoints={{
-                            768: { slidesPerView: 2 },
-                            1024: { slidesPerView: 3 },
-                        }}
-                        navigation={
-                            !isMobile
-                                ? {
-                                    prevEl: prevRef.current,
-                                    nextEl: nextRef.current,
+                {/* Show loader while loading */}
+                {isLoading ? (
+                    <div className="flex justify-center items-center h-64">
+                        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-primary border-solid"></div>
+                    </div>
+                ) : (
+                    <>
+                        {/* Swiper Slider */}
+                        <div className="relative">
+                            <Swiper
+                                modules={[Navigation, Pagination]}
+                                slidesPerView={1}
+                                spaceBetween={24}
+                                breakpoints={{
+                                    768: { slidesPerView: 2 },
+                                    1024: { slidesPerView: 3 },
+                                }}
+                                navigation={
+                                    !isMobile
+                                        ? {
+                                            prevEl: prevRef.current,
+                                            nextEl: nextRef.current,
+                                        }
+                                        : false
                                 }
-                                : false
-                        }
-                        pagination={
-                            isMobile
-                                ? {
-                                    clickable: true,
-                                    el: '.swiper-pagination',
+                                pagination={
+                                    isMobile
+                                        ? {
+                                            clickable: true,
+                                            el: '.swiper-pagination',
+                                        }
+                                        : false
                                 }
-                                : false
-                        }
-                        onInit={(swiper) => {
-                            if (!isMobile) {
-                                swiper.params.navigation.prevEl = prevRef.current;
-                                swiper.params.navigation.nextEl = nextRef.current;
-                                swiper.navigation.init();
-                                swiper.navigation.update();
-                            }
-                            if (isMobile) {
-                                swiper.params.pagination.el = '.swiper-pagination';
-                                swiper.pagination.init();
-                                swiper.pagination.update();
-                            }
-                        }}
-                        className="group"
-                    >
-                        {upcomingTours.map((tour) => (
-                            <SwiperSlide key={tour.id}>
-                                <div className="relative rounded-2xl overflow-hidden group cursor-pointer h-80">
-                                    <Image
-                                        src={tour.image}
-                                        alt={tour.title}
-                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                                onInit={(swiper) => {
+                                    if (!isMobile) {
+                                        swiper.params.navigation.prevEl = prevRef.current;
+                                        swiper.params.navigation.nextEl = nextRef.current;
+                                        swiper.navigation.init();
+                                        swiper.navigation.update();
+                                    }
+                                    if (isMobile) {
+                                        swiper.params.pagination.el = '.swiper-pagination';
+                                        swiper.pagination.init();
+                                        swiper.pagination.update();
+                                    }
+                                }}
+                                className="group"
+                            >
+                                {upcomingTours.map((tour) => (
+                                    <SwiperSlide key={tour.id}>
+                                        <div className="relative rounded-2xl overflow-hidden group cursor-pointer h-80">
+                                            <Image
+                                                src={tour.image}
+                                                alt={tour.title}
+                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-                                    {/* Duration */}
-                                    <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm font-medium">
-                                        {tour.duration}
-                                    </div>
+                                            <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm font-medium">
+                                                {tour.duration}
+                                            </div>
 
-                                    {/* Badge */}
-                                    <div
-                                        className={`absolute top-4 right-4 ${tour.badgeColor} text-white px-3 py-1 rounded-full text-sm font-medium`}
-                                    >
-                                        {tour.badge}
-                                    </div>
+                                            <div className={`absolute top-4 right-4 ${tour.badgeColor} text-white px-3 py-1 rounded-full text-sm font-medium`}>
+                                                {tour.badge}
+                                            </div>
 
-                                    {/* Title and Location */}
-                                    <div className="absolute bottom-20 left-6 right-6">
-                                        <h3 className="text-2xl font-bold text-white mb-1">{tour.title}</h3>
-                                        <p className="text-white/90 text-sm">{tour.location}</p>
-                                    </div>
+                                            <div className="absolute bottom-20 left-6 right-6">
+                                                <h3 className="text-2xl font-bold text-white mb-1">{tour.title}</h3>
+                                                <p className="text-white/90 text-sm">{tour.location}</p>
+                                            </div>
 
-                                    {/* Price */}
-                                    <div className="absolute bottom-4 left-6">
-                                        {tour.originalPrice && (
-                                            <span className="text-sm text-white/70 line-through block">{tour.originalPrice}</span>
-                                        )}
-                                        <span className="text-2xl font-bold text-white">{tour.price}</span>
-                                    </div>
+                                            <div className="absolute bottom-4 left-6">
+                                                {tour.originalPrice && (
+                                                    <span className="text-sm text-white/70 line-through block">{tour.originalPrice}</span>
+                                                )}
+                                                <span className="text-2xl font-bold text-white">{tour.price}</span>
+                                            </div>
 
-                                    {/* Button */}
-                                    <div className="absolute bottom-4 right-6">
-                                        <Link
-                                            to={`/tour/${tour.id}`}
-                                            className="bg-white text-black px-6 py-2 rounded-lg font-semibold hover:bg-white/90 transition-colors"
-                                        >
-                                            View Details
-                                        </Link>
-                                    </div>
-                                </div>
-                            </SwiperSlide>
-                        ))}
-                    </Swiper>
+                                            <div className="absolute bottom-4 right-6">
+                                                <Link
+                                                    to={`/tour/${tour.id}`}
+                                                    className="bg-white text-black px-6 py-2 rounded-lg font-semibold hover:bg-white/90 transition-colors"
+                                                >
+                                                    View Details
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </SwiperSlide>
+                                ))}
+                            </Swiper>
 
-                    {/* Pagination Dots - only show on mobile */}
-                    {isMobile && <div className="swiper-pagination mt-6 !relative !bottom-0 text-center" />}
-                </div>
+                            {isMobile && <div className="swiper-pagination mt-6 !relative !bottom-0 text-center" />}
+                        </div>
 
-                {/* Mobile CTA */}
-                <div className="md:hidden flex justify-center mt-8">
-                    <Link to="/tour-packages-discovery-center">
-                        <Button
-                            variant="outline"
-                            size="lg"
-                            iconName="ArrowRight"
-                            iconPosition="right"
-                            className="px-6 py-3 text-base font-semibold border-2 hover:bg-primary hover:text-white hover:border-primary bg-[#0F172A] text-white"
-                        >
-                            View All Tours
-                        </Button>
-                    </Link>
-                </div>
+                        <div className="md:hidden flex justify-center mt-8">
+                            <Link to="/tour-packages-discovery-center">
+                                <Button
+                                    variant="outline"
+                                    size="lg"
+                                    iconName="ArrowRight"
+                                    iconPosition="right"
+                                    className="px-6 py-3 text-base font-semibold border-2 hover:bg-primary hover:text-white hover:border-primary bg-[#0F172A] text-white"
+                                >
+                                    View All Tours
+                                </Button>
+                            </Link>
+                        </div>
+                    </>
+                )}
             </div>
         </section>
     );

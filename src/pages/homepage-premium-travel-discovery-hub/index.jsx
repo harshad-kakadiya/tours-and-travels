@@ -1,25 +1,33 @@
-import React, {useEffect} from 'react';
-import {Helmet} from 'react-helmet';
+import React, { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import HeroCarousel from './components/HeroCarousel';
-import SmartSearchWidget from './components/SmartSearchWidget';
 import UpcomingToursSlider from './components/UpcomingToursSlider';
 import PopularToursSection from './components/PopularToursSection';
 import PopularDestinationsSection from './components/PopularDestinationsSection';
 import BestServicesSection from './components/BestServicesSection';
-import FlexibleTransportation from './components/FlexibleTransportation';
-import SocialProofSection from './components/SocialProofSection';
-import WhatsAppFloatingButton from './components/WhatsAppFloatingButton';
 import Blog from "./components/Blog";
+import WhatsAppFloatingButton from './components/WhatsAppFloatingButton';
+// import SmartSearchWidget from './components/SmartSearchWidget';
+// import FlexibleTransportation from './components/FlexibleTransportation';
+// import SocialProofSection from './components/SocialProofSection';
 
 const HomepagePremiumTravelDiscoveryHub = () => {
+    const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
-        // Smooth scroll to top on component mount
-        window.scrollTo({top: 0, behavior: 'smooth'});
+        // Smooth scroll to top on mount
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Simulate loading (e.g., wait for child components to mount/fetch)
+        const timeout = setTimeout(() => {
+            setIsLoading(false);
+        }, 1500); // 1.5 seconds
+
+        return () => clearTimeout(timeout);
     }, []);
 
     return (
         <div className="min-h-screen bg-background">
-            {/* SEO Meta Tags */}
             <Helmet>
                 <title>WanderWise Tours - Premium Travel Discovery Hub | Authentic Indian Experiences</title>
                 <meta
@@ -30,24 +38,24 @@ const HomepagePremiumTravelDiscoveryHub = () => {
                     name="keywords"
                     content="India travel, tour packages, hotel booking, taxi services, Kerala backwaters, Rajasthan heritage, Himalayan treks, Goa beaches, travel blog, authentic experiences"
                 />
-                <meta name="author" content="WanderWise Tours"/>
-                <meta property="og:title" content="WanderWise Tours - Premium Travel Discovery Hub"/>
+                <meta name="author" content="WanderWise Tours" />
+                <meta property="og:title" content="WanderWise Tours - Premium Travel Discovery Hub" />
                 <meta
                     property="og:description"
                     content="Your trusted travel companion for authentic experiences across India. We create memories that last a lifetime through carefully curated journeys."
                 />
-                <meta property="og:type" content="website"/>
-                <meta property="og:url" content="https://wanderwisetours.com/homepage-premium-travel-discovery-hub"/>
-                <meta property="og:image" content="https://wanderwisetours.com/assets/images/og-homepage.jpg"/>
-                <meta name="twitter:card" content="summary_large_image"/>
-                <meta name="twitter:title" content="WanderWise Tours - Premium Travel Discovery Hub"/>
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content="https://wanderwisetours.com/homepage-premium-travel-discovery-hub" />
+                <meta property="og:image" content="https://wanderwisetours.com/assets/images/og-homepage.jpg" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="WanderWise Tours - Premium Travel Discovery Hub" />
                 <meta
                     name="twitter:description"
                     content="Discover authentic Indian travel experiences with curated packages, handpicked hotels, and expert guidance."
                 />
-                <link rel="canonical" href="https://wanderwisetours.com/homepage-premium-travel-discovery-hub"/>
+                <link rel="canonical" href="https://wanderwisetours.com/homepage-premium-travel-discovery-hub" />
 
-                {/* Structured Data for SEO */}
+                {/* Structured Data */}
                 <script type="application/ld+json">
                     {JSON.stringify({
                         "@context": "https://schema.org",
@@ -77,50 +85,59 @@ const HomepagePremiumTravelDiscoveryHub = () => {
                 </script>
             </Helmet>
 
-            {/* Main Content */}
-            <main>
-                {/* Hero Section with Carousel */}
-                <section id="hero" className="relative">
-                    <HeroCarousel/>
-                    {/*<SmartSearchWidget />*/}
-                </section>
+            {/* Loader */}
+            {isLoading ? (
+                <div className="flex items-center justify-center min-h-screen">
+                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-primary border-solid"></div>
+                </div>
+            ) : (
+                <main>
+                    {/* Hero Section */}
+                    <section id="hero" className="relative">
+                        <HeroCarousel />
+                        {/* <SmartSearchWidget /> */}
+                    </section>
 
-                {/* Upcoming Tours Slider Section */}
-                <section id="upcoming-tours" className="relative">
-                    <UpcomingToursSlider/>
-                </section>
+                    {/* Upcoming Tours Slider */}
+                    <section id="upcoming-tours" className="relative">
+                        <UpcomingToursSlider />
+                    </section>
 
-                {/* Popular Tours Section */}
-                <section id="popular-tours" className="relative">
-                    <PopularToursSection/>
-                </section>
+                    {/* Popular Tours */}
+                    <section id="popular-tours" className="relative">
+                        <PopularToursSection />
+                    </section>
 
-                {/* Popular Destinations Section */}
-                <section id="popular-destinations" className="relative">
-                    <PopularDestinationsSection/>
-                </section>
+                    {/* Popular Destinations */}
+                    <section id="popular-destinations" className="relative">
+                        <PopularDestinationsSection />
+                    </section>
 
-                {/* Best Services Section */}
-                <section id="best-services" className="relative">
-                    <BestServicesSection/>
-                </section>
-                <section id="blog" className="relative">
-                    <Blog/>
-                </section>
+                    {/* Best Services */}
+                    <section id="best-services" className="relative">
+                        <BestServicesSection />
+                    </section>
 
-                {/* Flexible Transportation Section */}
-                {/*<section id="flexible-transportation" className="relative">*/}
-                {/*  <FlexibleTransportation />*/}
-                {/*</section>*/}
+                    {/* Blog */}
+                    <section id="blog" className="relative">
+                        <Blog />
+                    </section>
 
-                {/*/!* Social Proof Section *!/*/}
-                {/*<section id="social-proof" className="relative">*/}
-                {/*  <SocialProofSection />*/}
-                {/*</section>*/}
-            </main>
+                    {/* Optional Sections */}
+                    {/*
+                    <section id="flexible-transportation" className="relative">
+                        <FlexibleTransportation />
+                    </section>
+
+                    <section id="social-proof" className="relative">
+                        <SocialProofSection />
+                    </section>
+                    */}
+                </main>
+            )}
 
             {/* WhatsApp Floating Button */}
-            <WhatsAppFloatingButton/>
+            <WhatsAppFloatingButton />
         </div>
     );
 };
