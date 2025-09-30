@@ -3,6 +3,7 @@ import {Link, useLocation} from 'react-router-dom';
 import Icon from '../AppIcon';
 import Button from './Button';
 import {useAuth} from '../../contexts/AuthContext';
+import logo from '../../../public/assets/images/22d66695-43aa-43a2-9cb6-2d1d7a62872c .png'
 
 const Header = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -62,23 +63,13 @@ const Header = () => {
                         className="flex items-center space-x-3 hover:opacity-80 transition-opacity duration-brand-fast"
                         onClick={closeMobileMenu}
                     >
-                        <div className="relative">
-                            <div
-                                className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center shadow-brand-soft">
-                                <Icon name="Compass" size={24} color="white" strokeWidth={2.5}/>
-                            </div>
-                            <div
-                                className="absolute -top-1 -right-1 w-4 h-4 bg-accent rounded-full flex items-center justify-center">
-                                <Icon name="Sparkles" size={10} color="white" strokeWidth={3}/>
-                            </div>
-                        </div>
-                        <div>
-                            <h1 className="text-xl font-heading font-bold text-foreground">
-                                WanderWise
-                            </h1>
-                            <p className="text-xs text-muted-foreground -mt-1">Tours</p>
-                        </div>
+                        <img
+                            src={logo}
+                            alt="Travel Discovery Hub"
+                            className="h-[100px] w-[200px] object-contain"
+                        />
                     </Link>
+
 
                     {/* Desktop Navigation */}
                     <nav className="hidden xl:flex items-center space-x-1">

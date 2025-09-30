@@ -53,18 +53,18 @@ const QuickContactCards = () => {
       details: "support@wanderwise.com • Response within 4 hours",
       onClick: () => handleEmailClick("support@wanderwise.com")
     },
-    {
-      id: 4,
-      title: "Emergency Helpline",
-      description: "24/7 assistance for urgent travel issues",
-      icon: "AlertCircle",
-      action: "Emergency Call",
-      color: "bg-red-600",
-      hoverColor: "hover:bg-red-700",
-      textColor: "text-white",
-      details: "+91 98765 43211 • Available 24/7",
-      onClick: () => handleCallClick("+919876543211")
-    }
+    // {
+    //   id: 4,
+    //   title: "Emergency Helpline",
+    //   description: "24/7 assistance for urgent travel issues",
+    //   icon: "AlertCircle",
+    //   action: "Emergency Call",
+    //   color: "bg-red-600",
+    //   hoverColor: "hover:bg-red-700",
+    //   textColor: "text-white",
+    //   details: "+91 98765 43211 • Available 24/7",
+    //   onClick: () => handleCallClick("+919876543211")
+    // }
   ];
 
   return (
@@ -79,7 +79,7 @@ const QuickContactCards = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {contactMethods?.map((method) => (
             <div
               key={method?.id}

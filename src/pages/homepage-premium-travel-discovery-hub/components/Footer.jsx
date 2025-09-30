@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../../../components/AppIcon';
+import logo from "../../../../public/assets/images/22d66695-43aa-43a2-9cb6-2d1d7a62872c .jpg";
 
 const Footer = () => {
     const currentYear = new Date()?.getFullYear();
@@ -51,19 +52,15 @@ const Footer = () => {
                 <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
                     {/* Company Info */}
                     <div>
-                        <Link to="/homepage-premium-travel-discovery-hub" className="flex items-center space-x-3 mb-6">
-                            <div className="relative">
-                                <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center shadow-brand-soft">
-                                    <Icon name="Compass" size={28} color="white" strokeWidth={2.5} />
-                                </div>
-                                <div className="absolute -top-1 -right-1 w-5 h-5 bg-accent rounded-full flex items-center justify-center">
-                                    <Icon name="Sparkles" size={12} color="white" strokeWidth={3} />
-                                </div>
-                            </div>
-                            <div>
-                                <h1 className="text-2xl font-heading font-bold">WanderWise</h1>
-                                <p className="text-sm text-gray-300 -mt-1">Tours</p>
-                            </div>
+                        <Link
+                            to="/homepage-premium-travel-discovery-hub"
+                            className="flex items-center space-x-3 hover:opacity-80 transition-opacity duration-brand-fast"
+                        >
+                            <img
+                                src={logo}
+                                alt="Travel Discovery Hub"
+                                className="h-[140px] w-[100px] object-contain"
+                            />
                         </Link>
 
                         <p className="text-gray-300 mb-6 leading-relaxed">
