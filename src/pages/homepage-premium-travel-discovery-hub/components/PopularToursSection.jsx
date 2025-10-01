@@ -84,7 +84,7 @@ const PopularToursSection = () => {
                                 size="lg"
                                 iconName="ArrowRight"
                                 iconPosition="right"
-                                className="px-6 py-3 text-base font-semibold border-2 hover:bg-primary hover:text-white bg-[#0F172A] text-white hover:border-primary"
+                                className="px-6 py-3 text-base font-semibold border-2 bg-[#4891C9] text-white border-[#4891C9] "
                             >
                                 View All Tours
                             </Button>
@@ -169,7 +169,7 @@ const PopularToursSection = () => {
                                     size="lg"
                                     iconName="ArrowRight"
                                     iconPosition="right"
-                                    className="px-6 py-3 text-base font-semibold border-2 hover:bg-primary hover:text-white hover:border-primary bg-[#0F172A] text-white"
+                                    className="px-6 py-3 text-base font-semibold border-2 bg-[#4891C9] text-white border-[#4891C9] "
                                 >
                                     View All Tours
                                 </Button>

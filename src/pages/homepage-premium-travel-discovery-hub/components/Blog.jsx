@@ -152,7 +152,7 @@ const Blog = () => {
                                 size="lg"
                                 iconName="ArrowRight"
                                 iconPosition="right"
-                                className="px-6 py-3 text-base font-semibold border-2 bg-[#0F172A] text-white border-[#0F172A] hover:bg-primary hover:text-white hover:border-primary"
+                                className="px-6 py-3 text-base font-semibold border-2 bg-[#4891C9] text-white border-[#4891C9] "
                             >
                                 View All Blogs
                             </Button>

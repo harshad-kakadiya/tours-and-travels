@@ -46,7 +46,7 @@ const Footer = () => {
     };
 
     return (
-        <footer className="bg-foreground text-white text-sm">
+        <footer className="bg-[#256ba2] text-white text-sm">
             {/* Main Footer Content */}
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
@@ -154,7 +154,7 @@ const Footer = () => {
                                     placeholder="Your email"
                                     className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                                 />
-                                <button className="w-auto px-4 py-2 bg-primary hover:bg-primary/90 rounded-md transition-colors flex items-center justify-center">
+                                <button className="w-auto px-4 py-2 bg-[#4891C9] rounded-md transition-colors flex items-center justify-center">
                                     <Icon name="Send" size={16} />
                                 </button>
                             </div>
@@ -202,7 +202,7 @@ const Footer = () => {
             </div>
 
             {/* Emergency Contact Strip */}
-            <div className="bg-secondary">
+            <div className="bg-[#0F172A]">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3">
                     <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between space-y-3 sm:space-y-0 text-white text-sm">
                         <div className="flex items-center space-x-2">
