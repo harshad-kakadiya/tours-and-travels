@@ -7,7 +7,7 @@
 @layer base {
   :root {
     /* Core Brand Colors */
-    --color-primary: #1E3A8A; /* blue-800 - Deep ocean trust */
+    --color-primary: #4891c9; /* blue-800 - Deep ocean trust */
     --color-primary-foreground: #FFFFFF; /* white */
     --color-secondary: #F97316; /* orange-500 - Sunset adventure energy */
     --color-secondary-foreground: #FFFFFF; /* white */
@@ -29,7 +29,7 @@
     /* Interactive Elements */
     --color-border: #E5E7EB; /* gray-200 */
     --color-input: #FFFFFF; /* white */
-    --color-ring: #1E3A8A; /* blue-800 */
+    --color-ring: #4891c9; /* blue-800 */
     
     /* Status Colors */
     --color-success: #10B981; /* emerald-500 - Positive booking confirmation */

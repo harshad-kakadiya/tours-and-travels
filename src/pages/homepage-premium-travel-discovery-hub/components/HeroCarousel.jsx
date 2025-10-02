@@ -323,7 +323,7 @@ const HeroCarousel = () => {
                                 onClick={handleSearch}
                                 iconName="Search"
                                 iconPosition="left"
-                                className="bg-[#0F172A] border-[#0F172A] text-white transition-colors duration-300 ease-in-out hover:bg-primary hover:text-white hover:border-primary px-8 py-4 text-lg font-semibold w-full"
+                                className="bg-[#4891c9] border-[#0F172A] text-white transition-colors duration-300 ease-in-out hover:bg-primary hover:text-white hover:border-primary px-8 py-4 text-lg font-semibold w-full"
                             >
                                 Search Packages
                             </Button>
