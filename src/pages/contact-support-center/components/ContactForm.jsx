@@ -12,11 +12,8 @@ const ContactForm = () => {
         email: '',
         phoneNumber: '',
         inquiryType: '',
-        preferredDestination: '',
-        travelDates: {
-            from: '',
-            to: ''
-        },
+        destination: '',
+        travelDates: '',
         groupSize: '',
         budgetRange: {
             min: 0,

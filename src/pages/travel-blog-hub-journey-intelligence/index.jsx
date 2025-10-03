@@ -49,9 +49,9 @@ const TravelBlogHub = () => {
       <FeaturedArticle />
       <ArticleGrid activeCategory={activeCategory} searchQuery={searchQuery} />
       {/*<PopularDestinations />*/}
-      <TravelTools />
+      {/*<TravelTools />*/}
       <TravelTipsSection />
-      <NewsletterSubscription />
+      {/*<NewsletterSubscription />*/}
     </div>
   );
 };

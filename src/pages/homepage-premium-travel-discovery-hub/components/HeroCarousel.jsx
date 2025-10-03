@@ -8,6 +8,9 @@ import Button from '../../../components/ui/Button';
 const HeroCarousel = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+    const [destinations, setDestinations] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
 
     const [searchData, setSearchData] = useState({
@@ -16,8 +19,6 @@ const HeroCarousel = () => {
         duration: '',
         travelStyle: ''
     });
-
-    const destinations = ["Kerala", "Rajasthan", "Goa", "Himachal Pradesh", "Uttarakhand", "Karnataka", "Tamil Nadu", "Maharashtra", "Gujarat", "Andhra Pradesh"];
 
     const budgetRanges = [
         {label: "₹15,000 - ₹30,000", value: "15000-30000"},
@@ -28,7 +29,7 @@ const HeroCarousel = () => {
     ];
 
     const durations = [
-        {label: "2-3 Days", value: "2-3"},
+        {label: "2-4 Days", value: "2-4"},
         {label: "4-5 Days", value: "4-5"},
         {label: "6-7 Days", value: "6-7"},
         {label: "8-10 Days", value: "8-10"},
@@ -44,6 +45,39 @@ const HeroCarousel = () => {
         {label: "Solo", value: "solo"}
     ];
 
+    // Fetch destinations from API
+    useEffect(() => {
+        const fetchDestinations = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch('https://tour-travels-be-h58q.onrender.com/api/state');
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                // Assuming the API returns an array of state objects with name property
+                if (data && Array.isArray(data)) {
+                    const stateNames = data.map(state => state.name).filter(name => name);
+                    setDestinations(stateNames);
+                } else {
+                    throw new Error('Invalid data format from API');
+                }
+            } catch (err) {
+                console.error('Error fetching destinations:', err);
+                setError(err.message);
+                // Fallback to static data if API fails
+                setDestinations(["Kerala", "Rajasthan", "Goa", "Himachal Pradesh", "Uttarakhand", "Karnataka", "Tamil Nadu", "Maharashtra", "Gujarat", "Andhra Pradesh"]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchDestinations();
+    }, []);
+
     const handleInputChange = (field, value) => {
         setSearchData(prev => ({
             ...prev,
@@ -56,7 +90,14 @@ const HeroCarousel = () => {
         Object.entries(searchData).forEach(([key, value]) => {
             if (value) searchParams.append(key, value);
         });
-        navigate(`/tour-packages-discovery-center?${searchParams.toString()}`);
+        
+        // Check if we have any filter parameters before navigating
+        if (searchParams.toString()) {
+            navigate(`/tour-packages-discovery-center?${searchParams.toString()}`);
+        } else {
+            // If no filters are selected, still navigate but show all packages
+            navigate('/tour-packages-discovery-center');
+        }
     };
 
     const heroSlides = [
@@ -86,7 +127,7 @@ const HeroCarousel = () => {
         },
         {
             id: 3,
-            image: "https://images.pixabay.com/photo/2017/02/17/11/13/himalayas-2074000_1280.jpg?w=1920&h=1080&fit=crop",
+            image: "https://images.pixabay.com/photo-2017/02/17/11/13/himalayas-2074000_1280.jpg?w=1920&h=1080&fit=crop",
             title: "Himalayan Adventure",
             subtitle: "Mountain Trekking & Spirituality",
             description: "Discover inner peace amidst snow-capped peaks and ancient monasteries",
@@ -254,15 +295,22 @@ const HeroCarousel = () => {
                                 </label>
                                 <input
                                     type="text"
-                                    placeholder="Where to?"
+                                    name="destination"
+                                    placeholder={loading ? "Loading destinations..." : "Where to?"}
                                     value={searchData.destination}
                                     onChange={(e) => handleInputChange('destination', e.target.value)}
                                     className="w-full px-4 py-3 border border-border rounded-lg"
                                     list="destinations"
+                                    disabled={loading}
                                 />
                                 <datalist id="destinations">
-                                    {destinations.map((dest) => <option key={dest} value={dest}/>)}
+                                    {destinations.map((dest) => (
+                                        <option key={dest} value={dest}/>
+                                    ))}
                                 </datalist>
+                                {error && (
+                                    <p className="text-red-500 text-xs mt-1">Failed to load destinations. Using fallback data.</p>
+                                )}
                             </div>
                             {/* Budget */}
                             <div>
@@ -271,6 +319,7 @@ const HeroCarousel = () => {
                                     Budget Range
                                 </label>
                                 <select
+                                    name="budget"
                                     value={searchData.budget}
                                     onChange={(e) => handleInputChange('budget', e.target.value)}
                                     className="w-full px-4 py-3 border border-border rounded-lg"
@@ -288,6 +337,7 @@ const HeroCarousel = () => {
                                     Duration
                                 </label>
                                 <select
+                                    name="duration"
                                     value={searchData.duration}
                                     onChange={(e) => handleInputChange('duration', e.target.value)}
                                     className="w-full px-4 py-3 border border-border rounded-lg"
@@ -299,22 +349,23 @@ const HeroCarousel = () => {
                                 </select>
                             </div>
                             {/* Travel Style */}
-                            <div>
-                                <label className="block text-sm font-medium mb-2">
-                                    <Icon name="Heart" size={16} className="inline mr-2"/>
-                                    Travel Style
-                                </label>
-                                <select
-                                    value={searchData.travelStyle}
-                                    onChange={(e) => handleInputChange('travelStyle', e.target.value)}
-                                    className="w-full px-4 py-3 border border-border rounded-lg"
-                                >
-                                    <option value="">Select style</option>
-                                    {travelStyles.map((style) => (
-                                        <option key={style.value} value={style.value}>{style.label}</option>
-                                    ))}
-                                </select>
-                            </div>
+                            {/*<div>*/}
+                            {/*    <label className="block text-sm font-medium mb-2">*/}
+                            {/*        <Icon name="Heart" size={16} className="inline mr-2"/>*/}
+                            {/*        Travel Style*/}
+                            {/*    </label>*/}
+                            {/*    <select*/}
+                            {/*        name="travelStyle"*/}
+                            {/*        value={searchData.travelStyle}*/}
+                            {/*        onChange={(e) => handleInputChange('travelStyle', e.target.value)}*/}
+                            {/*        className="w-full px-4 py-3 border border-border rounded-lg"*/}
+                            {/*    >*/}
+                            {/*        <option value="">Select style</option>*/}
+                            {/*        {travelStyles.map((style) => (*/}
+                            {/*            <option key={style.value} value={style.value}>{style.label}</option>*/}
+                            {/*        ))}*/}
+                            {/*    </select>*/}
+                            {/*</div>*/}
                         </div>
                         <div className="text-center">
                             <Button
@@ -323,7 +374,7 @@ const HeroCarousel = () => {
                                 onClick={handleSearch}
                                 iconName="Search"
                                 iconPosition="left"
-                                className="bg-[#0F172A] border-[#0F172A] text-white transition-colors duration-300 ease-in-out hover:bg-primary hover:text-white hover:border-primary px-8 py-4 text-lg font-semibold w-full"
+                                className="bg-[#4891c9] border-[#0F172A] text-white transition-colors duration-300 ease-in-out hover:bg-primary hover:text-white hover:border-primary px-8 py-4 text-lg font-semibold w-full"
                             >
                                 Search Packages
                             </Button>
