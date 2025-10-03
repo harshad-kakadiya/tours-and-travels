@@ -1,8 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Icon from '../../../components/AppIcon';
 import Image from '../../../components/AppImage';
 
-const BlogHero = () => {
+const BlogHero = ({ onSearch }) => {
+  const [searchInput, setSearchInput] = useState('');
+  
+  const handleSearchChange = (e) => {
+    setSearchInput(e.target.value);
+  };
+  
+  const handleSearchSubmit = () => {
+    onSearch(searchInput);
+  };
   return (
     <section className="relative bg-gradient-to-br from-primary via-primary/90 to-secondary overflow-hidden">
       <div className="absolute inset-0 bg-black/20"></div>
@@ -53,8 +62,14 @@ const BlogHero = () => {
                 type="text"
                 placeholder="Search destinations, guides, tips..."
                 className="w-full sm:w-96 px-6 py-4 rounded-full text-foreground placeholder-muted-foreground bg-white/95 backdrop-blur-sm border-0 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg"
+                value={searchInput}
+                onChange={handleSearchChange}
+                onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit()}
               />
-              <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 text-white p-2 rounded-full transition-colors duration-200">
+              <button 
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 text-white p-2 rounded-full transition-colors duration-200"
+                onClick={handleSearchSubmit}
+              >
                 <Icon name="Search" size={20} />
               </button>
             </div>

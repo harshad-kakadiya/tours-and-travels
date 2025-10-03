@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../../../components/AppIcon';
 import Image from '../../../components/AppImage';
 import api from '../../../utils/api';
+import ReactMarkdown from 'react-markdown';
 
 // Mock data for when API fails
 const mockArticles = [
@@ -72,15 +73,29 @@ const mockArticles = [
     }
 ];
 
-const ArticleGrid = ({ activeCategory }) => {
+const ArticleGrid = ({ activeCategory, searchQuery = '' }) => {
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const resultsRef = useRef(null);
 
     useEffect(() => {
         fetchArticles();
     }, []);
+    
+    // Scroll to results only when search is explicitly performed
+    useEffect(() => {
+        const shouldScroll = sessionStorage.getItem('shouldScroll');
+        if (searchQuery && shouldScroll === 'true' && resultsRef.current) {
+            resultsRef.current.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start'
+            });
+            // Reset the flag
+            sessionStorage.removeItem('shouldScroll');
+        }
+    }, [searchQuery]);
 
     const fetchArticles = async () => {
         try {
@@ -121,14 +136,21 @@ const ArticleGrid = ({ activeCategory }) => {
         return imageUrl;
     };
 
-    const filteredArticles = activeCategory === 'all'
-        ? (articles || [])
-        : (articles || []).filter(article =>
-            (article?.category?.title || article?.category || '')
-                .toLowerCase()
-                .replace(/\s+/g, '')
-                .replace('&', '') === activeCategory?.replace(/\s+/g, '')?.replace('&', '')
-        );
+    const filteredArticles = (articles || [])
+        .filter(article => {
+            // Filter by category if not 'all'
+            const categoryMatch = activeCategory === 'all' || 
+                (article?.category?.title || article?.category || '')
+                    .toLowerCase()
+                    .replace(/\s+/g, '')
+                    .replace('&', '') === activeCategory?.replace(/\s+/g, '')?.replace('&', '');
+            
+            // Filter by search query if provided
+            const searchMatch = !searchQuery || 
+                article.title.toLowerCase().includes(searchQuery.toLowerCase());
+            
+            return categoryMatch && searchMatch;
+        });
 
     if (loading) {
         return (
@@ -179,7 +201,7 @@ const ArticleGrid = ({ activeCategory }) => {
     }
 
     return (
-        <section className="bg-background py-16">
+        <section className="bg-background py-16" ref={resultsRef}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between mb-12">
                     <div>
@@ -201,66 +223,53 @@ const ArticleGrid = ({ activeCategory }) => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {filteredArticles.map((article) => (
-                        <article key={article._id} className="relative rounded-2xl overflow-hidden group cursor-pointer transition-all duration-300">
-                            {/* Background Image */}
-                            <div className="relative h-80">
-                                <Image
-                                    src={getImageUrl(article.blogImage)}
-                                    alt={article.title}
-                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                    onLoad={() => console.log('Image loaded successfully:', getImageUrl(article.blogImage))}
-                                    onError={() => console.log('Image failed to load:', getImageUrl(article.blogImage))}
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-
-                                {/* Category - Top Left */}
-                                <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm font-medium">
-                                    {article.category?.title || article.category || 'Travel'}
-                                </div>
-
-                                {/* Read Time - Top Right */}
-                                <div className="absolute top-4 right-4 bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                                    {article.readTime || '5 min read'}
-                                </div>
-
-                                {/* Article Title - Large White Text */}
-                                <div className="absolute bottom-20 left-6 right-6">
-                                    <h3 className="text-2xl font-bold text-white mb-2">
-                                        {article.title}
-                                    </h3>
-                                    <p className="text-white/90 text-sm">
-                                        By {article.author?.name || 'WanderWise Team'}
-                                    </p>
-                                </div>
-
-                                {/* Stats - Bottom Left */}
-                                <div className="absolute bottom-6 left-6">
-                                    <div className="flex items-center space-x-4 text-white">
-                                        <div className="flex items-center space-x-1">
-                                            <Icon name="Eye" size={16} />
-                                            <span className="text-sm">{article.stats?.views || '1.2K'}</span>
-                                        </div>
-                                        <div className="flex items-center space-x-1">
-                                            <Icon name="Heart" size={16} />
-                                            <span className="text-sm">{article.stats?.likes || '45'}</span>
-                                        </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                    {filteredArticles.map((article) => {
+                        const date = article.publishDate ? new Date(article.publishDate) : new Date();
+                        const formattedDate = {
+                            day: date.getDate(),
+                            month: date.toLocaleString('default', { month: 'short' })
+                        };
+                        
+                        return (
+                            <div
+                                key={article._id}
+                                className="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+                            >
+                                <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 w-full">
+                                    <img
+                                        src={getImageUrl(article.blogImage)}
+                                        alt={article.title}
+                                        className="absolute inset-0 w-full h-full object-cover"
+                                        loading="lazy"
+                                        onError={(e) => {
+                                            e.target.src = 'https://www.holidify.com/images/bgImages/HIMACHAL-PRADESH.jpg';
+                                        }}
+                                    />
+                                    <div className="absolute top-2 left-2 bg-black bg-opacity-60 text-white font-bold px-3 py-2 rounded text-center text-xs">
+                                        <div className="text-lg">{formattedDate.day}</div>
+                                        <div className="text-sm">{formattedDate.month}</div>
                                     </div>
                                 </div>
-
-                                {/* Read More Button - Bottom Right */}
-                                <div className="absolute bottom-6 right-6">
+                                <div className="flex flex-col flex-grow p-4 sm:p-5">
+                                    <h3 className="font-bold text-blue-900 text-base uppercase mb-2 line-clamp-2">
+                                        {article.title}
+                                    </h3>
+                                    <div className="text-sm text-gray-600 flex-grow line-clamp-3">
+                                        <ReactMarkdown>
+                                            {article.content?.substring(0, 120) + '...'}
+                                        </ReactMarkdown>
+                                    </div>
                                     <button
                                         onClick={() => handleReadMore(article._id)}
-                                        className="bg-white text-black px-6 py-2 rounded-lg font-semibold hover:bg-white/90 transition-colors"
+                                        className="text-blue-700 mt-4 inline-block hover:underline text-sm"
                                     >
-                                        Read More
+                                        Read more »
                                     </button>
                                 </div>
                             </div>
-                        </article>
-                    ))}
+                        );
+                    })}
                 </div>
 
                 <div className="text-center mt-12">

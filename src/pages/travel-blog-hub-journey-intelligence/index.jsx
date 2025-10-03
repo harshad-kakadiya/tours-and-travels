@@ -11,6 +11,7 @@ import NewsletterSubscription from './components/NewsletterSubscription';
 
 const TravelBlogHub = () => {
   const [activeCategory, setActiveCategory] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -18,6 +19,14 @@ const TravelBlogHub = () => {
 
   const handleCategoryChange = (category) => {
     setActiveCategory(category);
+  };
+  
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    // Add a flag to indicate search was performed
+    if (query) {
+      sessionStorage.setItem('shouldScroll', 'true');
+    }
   };
 
   return (
@@ -32,13 +41,13 @@ const TravelBlogHub = () => {
         <meta property="og:url" content="/travel-blog-hub-journey-intelligence" />
         <link rel="canonical" href="/travel-blog-hub-journey-intelligence" />
       </Helmet>
-      <BlogHero />
+      <BlogHero onSearch={handleSearch} />
       <CategoryFilter 
         onCategoryChange={handleCategoryChange}
         activeCategory={activeCategory}
       />
       <FeaturedArticle />
-      <ArticleGrid activeCategory={activeCategory} />
+      <ArticleGrid activeCategory={activeCategory} searchQuery={searchQuery} />
       {/*<PopularDestinations />*/}
       <TravelTools />
       <TravelTipsSection />
