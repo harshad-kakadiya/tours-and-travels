@@ -4,74 +4,30 @@ import Icon from '../../../components/AppIcon';
 import Image from '../../../components/AppImage';
 import api from '../../../utils/api';
 import ReactMarkdown from 'react-markdown';
+import rehypeRaw from "rehype-raw";
 
 // Mock data for when API fails
 const mockArticles = [
     {
         _id: 'article-1',
         title: 'Exploring the Majestic Himalayas: A Journey Through Northern India',
-        content: 'The Himalayas offer some of the most breathtaking landscapes in the world. From the snow-capped peaks to the lush valleys, this mountain range is a paradise for adventure seekers and nature lovers alike.',
+        content: 'The Himalayas offer some of the **most breathtaking landscapes** in the world. From the snow-capped peaks to the lush valleys, this mountain range is a paradise for adventure seekers and nature lovers alike.',
         blogImage: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        author: {
-            name: 'Rahul Sharma',
-            avatar: 'https://randomuser.me/api/portraits/men/32.jpg'
-        },
-        category: {
-            title: 'Adventure'
-        },
+        author: { name: 'Rahul Sharma', avatar: 'https://randomuser.me/api/portraits/men/32.jpg' },
+        category: { title: 'Adventure' },
         readTime: '8 min read',
         publishDate: new Date().toISOString(),
         tags: ['Himalayas', 'Trekking', 'Mountain', 'Adventure', 'Nature']
     },
-    {
-        _id: 'article-2',
-        title: 'The Golden Triangle: Delhi, Agra, and Jaipur',
-        content: "India's Golden Triangle is a classic introduction to the country: it showcases the great cities of Delhi, Agra, and Jaipur, and offers a fascinating glimpse into the many faces of India.",
-        blogImage: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        author: {
-            name: 'Priya Patel',
-            avatar: 'https://randomuser.me/api/portraits/women/44.jpg'
-        },
-        category: {
-            title: 'Cultural'
-        },
-        readTime: '6 min read',
-        publishDate: new Date(Date.now() - 86400000).toISOString(),
-        tags: ['Golden Triangle', 'Heritage', 'Culture', 'History']
-    },
-    {
-        _id: 'article-3',
-        title: 'Kerala Backwaters: A Serene Houseboat Experience',
-        content: 'The backwaters of Kerala offer a unique and peaceful experience. Gliding through the tranquil network of canals, lakes, and lagoons on a traditional houseboat is an unforgettable journey.',
-        blogImage: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        author: {
-            name: 'Arun Nair',
-            avatar: 'https://randomuser.me/api/portraits/men/62.jpg'
-        },
-        category: {
-            title: 'Relaxation'
-        },
-        readTime: '5 min read',
-        publishDate: new Date(Date.now() - 172800000).toISOString(),
-        tags: ['Kerala', 'Backwaters', 'Houseboat', 'Nature', 'Relaxation']
-    },
-    {
-        _id: 'article-4',
-        title: "Goa: Beaches, Cuisine, and Portuguese Heritage",
-        content: "Goa is India's pocket-sized paradise. With its stunning beaches, vibrant nightlife, delicious seafood, and Portuguese-influenced architecture, it offers a unique blend of East and West.",
-        blogImage: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        author: {
-            name: "Maria D'Souza",
-            avatar: 'https://randomuser.me/api/portraits/women/28.jpg'
-        },
-        category: {
-            title: 'Beach'
-        },
-        readTime: '7 min read',
-        publishDate: new Date(Date.now() - 259200000).toISOString(),
-        tags: ['Goa', 'Beaches', 'Cuisine', 'Heritage', 'Nightlife']
-    }
+    // ... other mock articles
 ];
+
+// Helper to truncate Markdown safely
+const truncateMarkdown = (text, maxLength = 120) => {
+    if (!text) return '';
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength) + '...';
+};
 
 const ArticleGrid = ({ activeCategory, searchQuery = '' }) => {
     const [articles, setArticles] = useState([]);
@@ -83,16 +39,11 @@ const ArticleGrid = ({ activeCategory, searchQuery = '' }) => {
     useEffect(() => {
         fetchArticles();
     }, []);
-    
-    // Scroll to results only when search is explicitly performed
+
     useEffect(() => {
         const shouldScroll = sessionStorage.getItem('shouldScroll');
         if (searchQuery && shouldScroll === 'true' && resultsRef.current) {
-            resultsRef.current.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'start'
-            });
-            // Reset the flag
+            resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
             sessionStorage.removeItem('shouldScroll');
         }
     }, [searchQuery]);
@@ -114,7 +65,6 @@ const ArticleGrid = ({ activeCategory, searchQuery = '' }) => {
         } catch (err) {
             console.error('Error fetching articles:', err);
             setError('Failed to load articles, showing some sample articles.');
-            // Fallback to mockArticles
             setArticles(mockArticles);
         } finally {
             setLoading(false);
@@ -127,28 +77,18 @@ const ArticleGrid = ({ activeCategory, searchQuery = '' }) => {
 
     const getImageUrl = (imageUrl) => {
         if (!imageUrl) return 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
-
-        // If it's already a full URL, return it
-        if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
-            return imageUrl;
-        }
-
+        if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) return imageUrl;
         return imageUrl;
     };
 
     const filteredArticles = (articles || [])
         .filter(article => {
-            // Filter by category if not 'all'
-            const categoryMatch = activeCategory === 'all' || 
+            const categoryMatch = activeCategory === 'all' ||
                 (article?.category?.title || article?.category || '')
                     .toLowerCase()
                     .replace(/\s+/g, '')
                     .replace('&', '') === activeCategory?.replace(/\s+/g, '')?.replace('&', '');
-            
-            // Filter by search query if provided
-            const searchMatch = !searchQuery || 
-                article.title.toLowerCase().includes(searchQuery.toLowerCase());
-            
+            const searchMatch = !searchQuery || article.title.toLowerCase().includes(searchQuery.toLowerCase());
             return categoryMatch && searchMatch;
         });
 
@@ -212,7 +152,6 @@ const ArticleGrid = ({ activeCategory, searchQuery = '' }) => {
                             {filteredArticles.length} articles found
                         </p>
                     </div>
-
                     <div className="hidden md:flex items-center space-x-2">
                         <button className="p-2 rounded-lg border border-border hover:bg-muted/50 transition-colors duration-200">
                             <Icon name="Grid3X3" size={20} />
@@ -230,7 +169,7 @@ const ArticleGrid = ({ activeCategory, searchQuery = '' }) => {
                             day: date.getDate(),
                             month: date.toLocaleString('default', { month: 'short' })
                         };
-                        
+
                         return (
                             <div
                                 key={article._id}
@@ -256,8 +195,13 @@ const ArticleGrid = ({ activeCategory, searchQuery = '' }) => {
                                         {article.title}
                                     </h3>
                                     <div className="text-sm text-gray-600 flex-grow line-clamp-3">
-                                        <ReactMarkdown>
-                                            {article.content?.substring(0, 120) + '...'}
+                                        <ReactMarkdown
+                                            rehypePlugins={[rehypeRaw]} // <-- This allows HTML inside Markdown to render
+                                            components={{
+                                                p: ({ node, ...props }) => <p {...props} className="mb-1" />
+                                            }}
+                                        >
+                                            {truncateMarkdown(article.content, 120)}
                                         </ReactMarkdown>
                                     </div>
                                     <button

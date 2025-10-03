@@ -121,7 +121,7 @@ const BestServicesSection = () => {
               <button
                 onClick={() => {
                   const message = encodeURIComponent("Hi! I'm interested in your travel services. Could you help me plan my next trip?");
-                  window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+                  window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
                 }}
                 className="bg-white text-primary px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors flex items-center justify-center space-x-2"
               >

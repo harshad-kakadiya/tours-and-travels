@@ -1,52 +1,33 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Icon from "../../../components/AppIcon";
 import { Link } from "react-router-dom";
 import Button from "../../../components/ui/Button";
+import axios from "axios";
 
 const Blog = () => {
     const [blogPosts, setBlogPosts] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetchBlogPosts();
+        const fetchBlogs = async () => {
+            try {
+                const res = await axios.get("https://tour-travels-be-h58q.onrender.com/api/blog");
+
+                console.log("API Response:", res.data); // 👈 Debug mate
+
+                // Handle both cases: direct array or inside `data`
+                const blogsArray = Array.isArray(res.data) ? res.data : res.data.data;
+                setBlogPosts(blogsArray || []);
+            } catch (error) {
+                console.error("Error fetching blogs:", error);
+                setBlogPosts([]); // fallback
+            }
+        };
+
+        fetchBlogs();
     }, []);
 
-    const fetchBlogPosts = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            const response = await fetch('https://tour-travels-be-h58q.onrender.com/api/blog');
-            const result = await response.json();
-
-            if (result.success && Array.isArray(result.data)) {
-                setBlogPosts(result.data.slice(0, 3)); // Show only 3 latest posts
-            } else {
-                setError("Blog data not found");
-            }
-        } catch (err) {
-            console.error("Error fetching blogs:", err);
-            setError("Failed to load blog posts");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return {
-            day: date.getDate().toString().padStart(2, '0'),
-            month: date.toLocaleString('default', { month: 'short' }).toUpperCase()
-        };
-    };
-
-    const getImageUrl = (imageUrl) => {
-        if (!imageUrl) return 'https://www.holidify.com/images/bgImages/HIMACHAL-PRADESH.jpg';
-        return imageUrl.startsWith('http') ? imageUrl : imageUrl;
-    };
-
     return (
-        <section className="py-8 sm:py-12 md:py-16 lg:py-20 bg-background relative z-0">
+        <section className="py-12 md:py-16 lg:py-20 relative bg-muted overflow-hidden">
             {/* Background Overlay */}
             <div
                 className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none"
@@ -70,95 +51,77 @@ const Blog = () => {
                     </p>
                 </div>
 
-                {/* Loader */}
-                {loading && (
-                    <div className="flex justify-center items-center py-20">
-                        <Icon name="Loader2" size={28} className="animate-spin text-primary mr-3" />
-                        <span className="text-muted-foreground text-sm">Loading blog posts...</span>
-                    </div>
-                )}
-
-                {/* Error */}
-                {!loading && error && (
-                    <div className="text-center py-12">
-                        <Icon name="AlertCircle" size={40} className="text-destructive mx-auto mb-4" />
-                        <p className="text-muted-foreground text-base">{error}</p>
-                    </div>
-                )}
-
-                {/* Blog Cards */}
-                {!loading && !error && blogPosts.length > 0 && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                        {blogPosts.map((post, idx) => {
-                            const date = formatDate(post.createdAt);
-                            const imgUrl = getImageUrl(post.blogImage);
-                            const postTitle = post.title || 'Untitled Blog';
-                            const postContent = post.content || '';
-
-                            return (
-                                <div
-                                    key={idx}
-                                    className="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
-                                >
-                                    <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 w-full">
-                                        <img
-                                            src={imgUrl}
-                                            alt={postTitle}
-                                            className="absolute inset-0 w-full h-full object-cover"
-                                            loading="lazy"
-                                            onError={(e) => {
-                                                e.target.src = 'https://www.holidify.com/images/bgImages/HIMACHAL-PRADESH.jpg';
-                                            }}
-                                        />
-                                        <div className="absolute top-2 left-2 bg-black bg-opacity-60 text-white font-bold px-3 py-2 rounded text-center text-xs">
-                                            <div className="text-lg">{date.day}</div>
-                                            <div className="text-sm">{date.month}</div>
+                {/* Grid Layout */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                    {Array.isArray(blogPosts) && blogPosts.length > 0 ? (
+                        blogPosts.map((post, idx) => (
+                            <div
+                                key={post._id || idx}
+                                className="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+                            >
+                                <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 w-full">
+                                    <img
+                                        src={
+                                            post.blogImage
+                                        }
+                                        alt={post.title}
+                                        className="absolute inset-0 w-full h-full object-cover"
+                                        loading="lazy"
+                                    />
+                                    <div className="absolute top-2 left-2 bg-black bg-opacity-60 text-white font-extrabold px-3 sm:px-4 py-2 sm:py-3 rounded text-center leading-tight">
+                                        <div className="text-lg sm:text-xl">
+                                            {post.createdAt
+                                                ? new Date(post.createdAt).getDate()
+                                                : "01"}
+                                        </div>
+                                        <div className="text-lg sm:text-xl">
+                                            {post.createdAt
+                                                ? new Date(post.createdAt).toLocaleString("default", {
+                                                    month: "short",
+                                                })
+                                                : "Jan"}
                                         </div>
                                     </div>
-                                    <div className="flex flex-col flex-grow p-4 sm:p-5">
-                                        <h3 className="font-bold text-blue-900 text-base uppercase mb-2 line-clamp-2">
-                                            {postTitle}
-                                        </h3>
-                                        <p className="text-sm text-gray-600 flex-grow line-clamp-3">
-                                            {postContent.substring(0, 120)}...
-                                        </p>
-                                        <Link
-                                            to={`/blog/${post._id}`}
-                                            className="text-blue-700 mt-4 inline-block hover:underline text-sm"
-                                        >
-                                            Read more »
-                                        </Link>
-                                    </div>
                                 </div>
-                            );
-                        })}
-                    </div>
-                )}
-
-                {/* No Posts */}
-                {!loading && !error && blogPosts.length === 0 && (
-                    <div className="text-center py-12">
-                        <Icon name="Info" size={32} className="text-muted-foreground mb-4" />
-                        <p className="text-muted-foreground text-sm">No blog posts found at the moment.</p>
-                    </div>
-                )}
+                                <div className="flex flex-col flex-grow p-4 sm:p-5">
+                                    <h3 className="font-bold text-blue-900 text-sm sm:text-base md:text-lg uppercase leading-tight mb-2">
+                                        {post.title}
+                                    </h3>
+                                    <p className="text-xs sm:text-sm md:text-base text-gray-600 mt-1 sm:mt-2 flex-grow leading-relaxed">
+                                        {post.content
+                                            ?.replace(/<[^>]+>/g, "") // HTML tag remove
+                                            .substring(0, 120) + "..."}
+                                    </p>
+                                    <Link
+                                        to={`/blog/${post._id}`}
+                                        className="text-xs sm:text-sm md:text-base text-blue-700 mt-3 sm:mt-4 inline-block hover:underline transition-all duration-200 hover:text-blue-800"
+                                    >
+                                        Read more »
+                                    </Link>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="text-center text-gray-500 col-span-3">
+                            No blogs found.
+                        </p>
+                    )}
+                </div>
 
                 {/* View All Button */}
-                {!loading && !error && blogPosts.length > 0 && (
-                    <div className="flex justify-center mt-10">
-                        <Link to="/travel-blog-hub-journey-intelligence">
-                            <Button
-                                variant="outline"
-                                size="lg"
-                                iconName="ArrowRight"
-                                iconPosition="right"
-                                className="px-6 py-3 text-base font-semibold border-2 bg-[#4891C9] text-white border-[#4891C9] "
-                            >
-                                View All Blogs
-                            </Button>
-                        </Link>
-                    </div>
-                )}
+                <div className="mt-8 text-center">
+                    <Link to="/blog" className="inline-block">
+                        <Button
+                            variant="outline"
+                            size="lg"
+                            iconName="ArrowRight"
+                            iconPosition="right"
+                            className="px-6 py-3 text-base font-semibold border-2 bg-[#4891C9] text-white border-[#4891C9]"
+                        >
+                            View All Blog Posts
+                        </Button>
+                    </Link>
+                </div>
             </div>
         </section>
     );

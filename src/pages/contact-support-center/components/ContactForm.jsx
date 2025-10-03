@@ -3,14 +3,12 @@ import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
 import Select from '../../../components/ui/Select';
-import api from '../../../utils/api';
-import { useAuth } from '../../../contexts/AuthContext';
 
 const ContactForm = () => {
     const [formData, setFormData] = useState({
-        fullname: '',
+        name: '',
         email: '',
-        phoneNumber: '',
+        phone: '',
         inquiryType: '',
         destination: '',
         travelDates: '',
@@ -25,12 +23,13 @@ const ContactForm = () => {
     const [showSuccess, setShowSuccess] = useState(false);
 
     const inquiryTypes = [
-        { value: 'Custom Package', label: 'Custom Package' },
-        { value: 'Group Tour', label: 'Group Tour' },
-        { value: 'Hotel Booking', label: 'Hotel Booking' },
-        { value: 'Taxi Service', label: 'Taxi Service' },
-        { value: 'Adventure Trip', label: 'Adventure Trip' },
-        { value: 'General Support', label: 'General Support' }
+        { value: 'tour-package', label: 'Tour Package Inquiry' },
+        { value: 'hotel-booking', label: 'Hotel Booking' },
+        { value: 'taxi-service', label: 'Taxi Service' },
+        { value: 'custom-itinerary', label: 'Custom Itinerary' },
+        { value: 'group-booking', label: 'Group Booking' },
+        { value: 'support', label: 'General Support' },
+        { value: 'feedback', label: 'Feedback & Suggestions' }
     ];
 
     const destinations = [
@@ -63,67 +62,40 @@ const ContactForm = () => {
     ];
 
     const handleInputChange = (field, value) => {
-        setFormData(prev => {
-            // Handle nested objects for travelDates and budgetRange
-            if (field.includes('.')) {
-                const [parent, child] = field.split('.');
-                return {
-                    ...prev,
-                    [parent]: {
-                        ...prev[parent],
-                        [child]: value
-                    }
-                };
-            }
-            
-            return {
-                ...prev,
-                [field]: value
-            };
-        });
+        setFormData(prev => ({
+            ...prev,
+            [field]: value
+        }));
     };
 
     const handleSubmit = async (e) => {
         e?.preventDefault();
         setIsSubmitting(true);
 
-        try {
-            // Make API call to the correct endpoint
-            const response = await api.post('https://tour-travels-be-h58q.onrender.com/api/inquiry', formData);
-            
-            // Handle successful submission
-            setIsSubmitting(false);
-            setShowSuccess(true);
+        // Simulate form submission
+        await new Promise(resolve => setTimeout(resolve, 2000));
 
-            // Reset form after success
-            setTimeout(() => {
-                setShowSuccess(false);
-                setFormData({
-                    fullname: '',
-                    email: '',
-                    phoneNumber: '',
-                    inquiryType: '',
-                    preferredDestination: '',
-                    travelDates: {
-                        from: '',
-                        to: ''
-                    },
-                    groupSize: '',
-                    budgetRange: {
-                        min: 0,
-                        max: 0
-                    },
-                    yourMessage: ''
-                });
-            }, 3000);
-        } catch (error) {
-            console.error('Error submitting contact form:', error);
-            setIsSubmitting(false);
-            // You could add error handling UI here if needed
-        }
+        setIsSubmitting(false);
+        setShowSuccess(true);
+
+        // Reset form after success
+        setTimeout(() => {
+            setShowSuccess(false);
+            setFormData({
+                name: '',
+                email: '',
+                phone: '',
+                inquiryType: '',
+                destination: '',
+                travelDates: '',
+                groupSize: '',
+                budget: '',
+                message: ''
+            });
+        }, 3000);
     };
 
-    const isFormValid = formData?.fullname && formData?.email && formData?.phoneNumber && formData?.inquiryType && formData?.yourMessage;
+    const isFormValid = formData?.name && formData?.email && formData?.phone && formData?.inquiryType && formData?.message;
 
     if (showSuccess) {
         return (
@@ -144,7 +116,7 @@ const ContactForm = () => {
                                 variant="default"
                                 onClick={() => {
                                     const message = encodeURIComponent(`Hi! I just submitted an inquiry form. My name is ${formData?.name}. Could you please provide an update on my request?`);
-                                    window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+                                    window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
                                 }}
                                 iconName="MessageCircle"
                                 iconPosition="left"
@@ -185,8 +157,8 @@ const ContactForm = () => {
                                 label="Full Name"
                                 type="text"
                                 placeholder="Enter your full name"
-                                value={formData?.fullname}
-                                onChange={(e) => handleInputChange('fullname', e?.target?.value)}
+                                value={formData?.name}
+                                onChange={(e) => handleInputChange('name', e?.target?.value)}
                                 required
                             />
                             <Input
@@ -203,9 +175,9 @@ const ContactForm = () => {
                             <Input
                                 label="Phone Number"
                                 type="tel"
-                                placeholder="+91 98765 43210"
-                                value={formData?.phoneNumber}
-                                onChange={(e) => handleInputChange('phoneNumber', e?.target?.value)}
+                                placeholder="+91 97258 55858"
+                                value={formData?.phone}
+                                onChange={(e) => handleInputChange('phone', e?.target?.value)}
                                 required
                             />
                             <Select
@@ -230,24 +202,17 @@ const ContactForm = () => {
                                     label="Preferred Destination"
                                     placeholder="Select destination"
                                     options={destinations}
-                                    value={formData?.preferredDestination}
-                                    onChange={(value) => handleInputChange('preferredDestination', value)}
+                                    value={formData?.destination}
+                                    onChange={(value) => handleInputChange('destination', value)}
                                     searchable
                                 />
-                                <div className="grid grid-cols-2 gap-2">
-                                    <Input
-                                        label="From Date"
-                                        type="date"
-                                        value={formData?.travelDates?.from}
-                                        onChange={(e) => handleInputChange('travelDates.from', e?.target?.value)}
-                                    />
-                                    <Input
-                                        label="To Date"
-                                        type="date"
-                                        value={formData?.travelDates?.to}
-                                        onChange={(e) => handleInputChange('travelDates.to', e?.target?.value)}
-                                    />
-                                </div>
+                                <Input
+                                    label="Travel Dates"
+                                    type="text"
+                                    placeholder="e.g., December 2024 or Flexible"
+                                    value={formData?.travelDates}
+                                    onChange={(e) => handleInputChange('travelDates', e?.target?.value)}
+                                />
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
@@ -256,24 +221,15 @@ const ContactForm = () => {
                                     placeholder="Select group size"
                                     options={groupSizes}
                                     value={formData?.groupSize}
-                                    onChange={(value) => handleInputChange('groupSize', parseInt(value) || 0)}
+                                    onChange={(value) => handleInputChange('groupSize', value)}
                                 />
-                                <div className="grid grid-cols-2 gap-2">
-                                    <Input
-                                        label="Min Budget (₹)"
-                                        type="number"
-                                        placeholder="Min"
-                                        value={formData?.budgetRange?.min}
-                                        onChange={(e) => handleInputChange('budgetRange.min', parseInt(e?.target?.value) || 0)}
-                                    />
-                                    <Input
-                                        label="Max Budget (₹)"
-                                        type="number"
-                                        placeholder="Max"
-                                        value={formData?.budgetRange?.max}
-                                        onChange={(e) => handleInputChange('budgetRange.max', parseInt(e?.target?.value) || 0)}
-                                    />
-                                </div>
+                                <Select
+                                    label="Budget Range"
+                                    placeholder="Select budget range"
+                                    options={budgetRanges}
+                                    value={formData?.budget}
+                                    onChange={(value) => handleInputChange('budget', value)}
+                                />
                             </div>
                         </div>
 
@@ -286,8 +242,8 @@ const ContactForm = () => {
                                 className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none transition-all duration-brand-fast"
                                 rows={5}
                                 placeholder="Tell us about your travel plans, preferences, special requirements, or any questions you have..."
-                                value={formData?.yourMessage}
-                                onChange={(e) => handleInputChange('yourMessage', e?.target?.value)}
+                                value={formData?.message}
+                                onChange={(e) => handleInputChange('message', e?.target?.value)}
                                 required
                             />
                             <p className="text-xs text-muted-foreground mt-1">
@@ -316,7 +272,7 @@ const ContactForm = () => {
                                 size="lg"
                                 onClick={() => {
                                     const message = encodeURIComponent("Hi! I'd like to discuss my travel plans. Can you help me with a personalized itinerary?");
-                                    window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+                                    window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
                                 }}
                                 iconName="MessageCircle"
                                 iconPosition="left"

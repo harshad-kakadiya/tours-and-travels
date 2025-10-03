@@ -156,7 +156,7 @@ const HotelBookingPortal = () => {
 
     const handleWhatsAppSupport = () => {
         const message = encodeURIComponent("Hi! I need help with hotel bookings. Could you assist me in finding the perfect accommodation?");
-        window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+        window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
     };
 
     return (

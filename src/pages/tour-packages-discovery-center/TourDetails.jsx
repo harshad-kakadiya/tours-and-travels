@@ -8,6 +8,7 @@ import axios from "axios";
 import PdfSchedule from "../../pdf/pdfSchedule";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import {Swiper, SwiperSlide} from "swiper/react";
 
 
 
@@ -166,6 +167,7 @@ const TourDetails = () => {
         fetchTour();
         return () => { isMounted = false; };
     }, [id]);
+    // console.log(tour?.images?.[0],"0000000000000000000")
 
     const [selectedDate, setSelectedDate] = useState('');
     const [sharing, setSharing] = useState('two');
@@ -194,24 +196,20 @@ const TourDetails = () => {
             four: Math.round(basePrice * 0.85)
         };
     }, [tour, basePrice]);
-
-    const handleBook = () => {
-        // Get all selected fields for the WhatsApp message
-        const selectedPackageInfo = selectedPackage ? `${selectedPackage.from} (₹${Number(selectedPackage.discountedPrice || selectedPackage.price || 0).toLocaleString()})` : 'Not selected';
-        
-        // Build a comprehensive message with all selected fields
+    
+    const whatsappMessage = `Hi! I'm interested in the ${tour?.title} on ${selectedDate || 'my preferred date'} for ${sharing} sharing.`;
+    
+    const handleWhatsAppBooking = () => {
         const message = encodeURIComponent(
-            `*Tour Inquiry*\n\n` +
+            `*Tour Booking Inquiry*\n\n` +
             `*Tour:* ${tour?.title}\n` +
-            `*Location:* ${tour?.location || 'Not specified'}\n` +
-            `*Package:* ${selectedPackageInfo}\n` +
-            `*Date:* ${selectedDate || 'Not selected'}\n` +
-            `*Sharing Type:* ${sharing} sharing\n` +
+            `*Date:* ${selectedDate || 'Flexible'}\n` +
+            `*Sharing:* ${sharing} sharing\n` +
             `*Group Size:* ${tour?.groupSize || 'Not specified'}\n\n` +
-            `I would like to book/inquire about this tour. Please provide more information.`
+            whatsappMessage
         );
         
-        window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+        window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
     };
 
     return (
@@ -219,38 +217,52 @@ const TourDetails = () => {
             {/* Hero */}
             <section className="pt-0">
                 <div className="relative h-[42vh] sm:h-[56vh] w-full">
-                    <Image
-                        src={tour?.images?.[0] || tour?.image}
-                        alt={tour?.title}
-                        className="w-full h-full object-cover"
-                    />
-                    <div
-                        className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.55)_100%)]"/>
+                    {tour?.images && tour.images.length > 1 ? (
+                        // Swiper slider for multiple images
+                        <Swiper
+                            spaceBetween={0}
+                            slidesPerView={1}
+                            loop={true}
+                            autoplay={{ delay: 5000 }}
+                            pagination={{ clickable: true }}
+                            className="h-full"
+                        >
+                            {tour.images.map((img, idx) => (
+                                <SwiperSlide key={idx} className="h-full">
+                                    <img
+                                        src={img}
+                                        alt={`${tour.title} - ${idx + 1}`}
+                                        className="w-full h-full object-cover"
+                                    />
+                                </SwiperSlide>
+                            ))}
+                        </Swiper>
+                    ) : (
+                        // Single image
+                        <img
+                            src={tour?.images?.[0]}
+                            alt={tour?.title}
+                            className="w-full h-full object-cover"
+                        />
+                    )}
+
+                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.55)_100%)]" />
                     <div className="absolute bottom-6 left-0 right-0">
-                        <div
-                            className="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                        <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
                             <div>
                                 <h1 className="text-white text-3xl sm:text-4xl font-heading font-bold mb-2">{tour?.title}</h1>
                                 <div className="flex flex-wrap gap-3 text-white/90">
-                                    <div className="flex items-center gap-1"><Icon name="MapPin"
-                                                                                   size={16}/><span>{tour?.location}</span>
-                                    </div>
-                                    <div className="flex items-center gap-1"><Icon name="Calendar"
-                                                                                   size={16}/><span>{tour?.duration} Days</span>
-                                    </div>
-                                    <div className="flex items-center gap-1"><Icon name="Star"
-                                                                                   size={16}/><span>{tour?.rating || '4.8'}</span>
-                                    </div>
+                                    <div className="flex items-center gap-1"><Icon name="MapPin" size={16}/><span>{tour?.location}</span></div>
+                                    <div className="flex items-center gap-1"><Icon name="Calendar" size={16}/><span>{tour?.duration} Days</span></div>
+                                    <div className="flex items-center gap-1"><Icon name="Star" size={16}/><span>{tour?.rating || '4.8'}</span></div>
                                 </div>
                             </div>
                             <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 text-right shadow-lg">
                                 <div className="text-muted-foreground text-sm">Starting from</div>
                                 <div className="flex items-center justify-end gap-2">
-                                    <span
-                                        className="text-3xl font-bold text-foreground">₹{(tour?.price || 0).toLocaleString()}</span>
+                                    <span className="text-3xl font-bold text-foreground">₹{(tour?.price || 0).toLocaleString()}</span>
                                     {Number(tour?.originalPrice) > Number(tour?.price) && (
-                                        <span
-                                            className="text-lg text-muted-foreground line-through">₹{Number(tour?.originalPrice || 0).toLocaleString()}</span>
+                                        <span className="text-lg text-muted-foreground line-through">₹{Number(tour?.originalPrice || 0).toLocaleString()}</span>
                                     )}
                                 </div>
                             </div>
@@ -258,6 +270,7 @@ const TourDetails = () => {
                     </div>
                 </div>
             </section>
+
 
             {/* Chips row */}
             <section className="hidden md:block">
@@ -430,7 +443,7 @@ const TourDetails = () => {
                                     <li className="flex items-center justify-between"><span>Sharing</span><span
                                         className="text-foreground font-medium">{sharing}</span></li>
                                 </ul>
-                                <Button onClick={handleBook} fullWidth className="bg-primary hover:bg-primary/90"
+                                <Button onClick={handleWhatsAppBooking} fullWidth className="bg-primary hover:bg-primary/90"
                                         iconName="MessageCircle" iconPosition="left">
                                     Book / Inquire on WhatsApp
                                 </Button>

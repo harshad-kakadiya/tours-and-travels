@@ -72,34 +72,34 @@ const Routes = () => {
 
               {/* Protected Routes - Require Authentication */}
               <Route path="/tour/:id" element={
-                <ProtectedRoute>
+                // <ProtectedRoute>
                   <TourDetails />
-                </ProtectedRoute>
+                // </ProtectedRoute>
               } />
               <Route path="/tour-packages-discovery-center" element={
-                <ProtectedRoute>
+                // <ProtectedRoute>
                   <TourPackagesDiscoveryCenter />
-                </ProtectedRoute>
+                // </ProtectedRoute>
               } />
               <Route path="/hotel-booking-portal" element={
-                <ProtectedRoute>
+                // <ProtectedRoute>
                   <HotelBookingPortal />
-                </ProtectedRoute>
+                // </ProtectedRoute>
               } />
               <Route path="/hotel/:id" element={
-                <ProtectedRoute>
+                // <ProtectedRoute>
                   <HotelDetails />
-                </ProtectedRoute>
+                // </ProtectedRoute>
               } />
               <Route path="/taxi-booking-system" element={
-                <ProtectedRoute>
+                // <ProtectedRoute>
                   <TaxiBookingSystem />
-                </ProtectedRoute>
+                // </ProtectedRoute>
               } />
               <Route path="/dashboard" element={
-                <ProtectedRoute>
+                // <ProtectedRoute>
                   <UserDashboard />
-                </ProtectedRoute>
+                // </ProtectedRoute>
               } />
 
               {/* 404 Route */}

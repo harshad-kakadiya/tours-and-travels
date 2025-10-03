@@ -90,14 +90,7 @@ const HeroCarousel = () => {
         Object.entries(searchData).forEach(([key, value]) => {
             if (value) searchParams.append(key, value);
         });
-        
-        // Check if we have any filter parameters before navigating
-        if (searchParams.toString()) {
-            navigate(`/tour-packages-discovery-center?${searchParams.toString()}`);
-        } else {
-            // If no filters are selected, still navigate but show all packages
-            navigate('/tour-packages-discovery-center');
-        }
+        navigate(`/tour-packages-discovery-center?${searchParams.toString()}`);
     };
 
     const heroSlides = [
@@ -176,7 +169,7 @@ const HeroCarousel = () => {
 
     const handleInquiry = (packageTitle) => {
         const message = encodeURIComponent(`Hi! I'm interested in the ${packageTitle} package. Could you provide more details and help me plan this trip?`);
-        window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+        window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
     };
 
     return (

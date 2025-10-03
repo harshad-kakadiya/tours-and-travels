@@ -29,7 +29,7 @@ const WhatsAppFloatingButton = () => {
 
   const handleWhatsAppClick = () => {
     const message = encodeURIComponent("Hi! I'm interested in exploring travel packages with WanderWise Tours. Could you help me plan my next adventure?");
-    window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+    window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
   };
 
   return (

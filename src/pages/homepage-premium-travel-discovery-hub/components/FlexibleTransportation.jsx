@@ -100,7 +100,7 @@ const FlexibleTransportation = () => {
     } else {
       message = encodeURIComponent(`Hi! I'm interested in booking a ${item?.vehicleType} (${item?.model}) at ${item?.perKmRate}/km. Please help me with the booking.`);
     }
-    window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+    window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
   };
 
   return (
@@ -320,7 +320,7 @@ const FlexibleTransportation = () => {
               size="lg"
               onClick={() => {
                 let message = encodeURIComponent("Hi! I need custom transportation arrangements for my trip. Could you help me with a personalized quote?");
-                window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+                window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
               }}
               iconName="MessageCircle"
               iconPosition="left"
