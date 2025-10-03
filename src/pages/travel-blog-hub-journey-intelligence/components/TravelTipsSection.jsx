@@ -1,5 +1,6 @@
 import React from 'react';
 import Icon from '../../../components/AppIcon';
+import {Link} from "react-router-dom";
 
 const TravelTipsSection = () => {
     const quickTips = [
@@ -167,10 +168,15 @@ const TravelTipsSection = () => {
                         <p className="text-white/90 mb-6 max-w-2xl mx-auto">
                             Our travel experts are here to help! Ask us anything about destinations, planning, or travel tips.
                         </p>
-                        <button className="bg-white text-primary hover:bg-white/90 px-8 py-3 rounded-lg font-semibold transition-colors duration-200 flex items-center space-x-2 mx-auto">
-                            <Icon name="MessageCircle" size={18} />
-                            <span>Ask Our Experts</span>
-                        </button>
+                        <div className="flex justify-center">
+                            <Link
+                                to="/contact-support-center"
+                                className="inline-flex items-center space-x-2 bg-white text-primary hover:bg-white/90 px-6 py-3 rounded-full font-semibold transition-colors duration-200 shadow-sm"
+                            >
+                                <Icon name="MessageCircle" size={18} />
+                                <span>Ask Our Experts</span>
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </div>
