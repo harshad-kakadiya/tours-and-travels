@@ -155,15 +155,15 @@ const PackageFilters = ({ filters, onFiltersChange, onClearFilters }) => {
             </div>
 
             {/* Theme Filter */}
-            <div>
-              <Select
-                label="Travel Theme"
-                options={themeOptions}
-                value={filters?.theme}
-                onChange={(value) => handleFilterChange('theme', value)}
-                placeholder="Select theme"
-              />
-            </div>
+            {/*<div>*/}
+            {/*  <Select*/}
+            {/*    label="Travel Theme"*/}
+            {/*    options={themeOptions}*/}
+            {/*    value={filters?.theme}*/}
+            {/*    onChange={(value) => handleFilterChange('theme', value)}*/}
+            {/*    placeholder="Select theme"*/}
+            {/*  />*/}
+            {/*</div>*/}
 
             {/* Difficulty Filter */}
             <div>
