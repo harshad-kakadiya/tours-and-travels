@@ -316,7 +316,7 @@ const TourDetails = () => {
                                             <div>
                                                 <div className="font-semibold text-foreground flex items-center gap-2">
                                                     {active && <span className="w-2 h-2 rounded-full bg-primary"/>}
-                                                    {p?.from || 'Package'}
+                                                   From - {p?.from || 'Package'}
                                                 </div>
                                                 <div className="text-muted-foreground text-xs">Per person</div>
                                             </div>
