@@ -65,14 +65,21 @@ const TourDetails = () => {
                 return;
             }
 
+            // Force a small delay to ensure the component is fully rendered
+            await new Promise(resolve => setTimeout(resolve, 500));
+
             const canvas = await html2canvas(pdfRef.current, {
                 scale: 2,
                 useCORS: true,
-                allowTaint: true
+                allowTaint: true,
+                logging: true,
+                backgroundColor: '#ffffff'
             });
+            
             const imgData = canvas.toDataURL("image/png");
 
-            const pdf = new jsPDF("p", "mm", "a4");
+            // Use landscape orientation for better fit
+            const pdf = new jsPDF("l", "mm", "a4");
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
             const imgWidth = pdfWidth;
@@ -91,7 +98,9 @@ const TourDetails = () => {
                 heightLeft -= pdfHeight;
             }
 
+            // Force download
             pdf.save(`${tour?.title || "tour-schedule"}.pdf`);
+            console.log("PDF generated successfully");
             return true;
 
         } catch (error) {
@@ -141,21 +150,19 @@ const TourDetails = () => {
 
             console.log('API response:', response.data);
 
-            // Generate and download PDF with a small delay to ensure DOM is ready
-            setTimeout(async () => {
-                try {
-                    await generateAndDownloadPDF();
-                    // Reset form and close modal
-                    reset();
-                    setIsModalOpen(false);
-                    alert('Schedule downloaded successfully!');
-                } catch (pdfError) {
-                    console.error('Error generating PDF:', pdfError);
-                    alert('Schedule saved but PDF download failed. Please try again.');
-                } finally {
-                    setIsSubmitting(false);
-                }
-            }, 500);
+            // Generate and download PDF immediately
+            try {
+                await generateAndDownloadPDF();
+                // Reset form and close modal after successful PDF generation
+                reset();
+                setIsModalOpen(false);
+                alert('Schedule downloaded successfully!');
+            } catch (pdfError) {
+                console.error('Error generating PDF:', pdfError);
+                alert('Schedule saved but PDF download failed. Please try again.');
+            } finally {
+                setIsSubmitting(false);
+            }
 
         } catch (error) {
             console.error('Error submitting schedule:', error);
