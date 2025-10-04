@@ -121,7 +121,7 @@ const FixedRoutePackages = ({ onBookingClick }) => {
               {/* Background Image */}
               <div className="relative h-80">
                     {/* Image */}
-                    <div className="h-48 overflow-hidden">
+                    <div className="h-80 overflow-hidden">
                       <img 
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                         src={pkg?.image}
