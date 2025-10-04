@@ -576,13 +576,15 @@ const TourDetails = () => {
                         {errors.name && <span className="text-red-500 text-xs">Name is required</span>}
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-foreground mb-1">Contact Number *</label>
+                        <label className="block text-sm font-medium text-foreground mb-1">
+                            Contact Number *
+                        </label>
                         <input
                             {...register('contact', {
-                                required: true,
+                                required: 'Contact number is required',
                                 pattern: {
-                                    value: /^[0-9+\-\s()]{10,}$/,
-                                    message: "Please enter a valid contact number"
+                                    value: /^[0-9]{10}$/,
+                                    message: 'Contact number must be exactly 10 digits'
                                 }
                             })}
                             className="w-full border border-border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-primary/50"
@@ -591,13 +593,11 @@ const TourDetails = () => {
                         />
                         {errors.contact && (
                             <span className="text-red-500 text-xs">
-                                {errors.contact.type === 'required'
-                                    ? 'Contact number is required'
-                                    : 'Please enter a valid contact number'
-                                }
-                            </span>
+      {errors.contact.message}
+    </span>
                         )}
                     </div>
+
 
                     {/* Display selected tour info for confirmation */}
                     <div className="p-3 bg-gray-50 rounded-lg text-sm border border-border">
