@@ -41,7 +41,7 @@ const Footer = () => {
     };
 
     const handleEmailClick = () => {
-        window.location.href = 'mailto:info@wanderwisetours.com';
+        window.location.href = 'mailto:mychoiceholiday889@gmail.com';
     };
 
     const handlePhoneClick = () => {
@@ -84,7 +84,7 @@ const Footer = () => {
                                 className="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors group"
                             >
                                 <Icon name="Mail" size={18} className="group-hover:text-secondary transition-colors" />
-                                <span className="break-all">info@wanderwisetours.com</span>
+                                <span className="break-all">mychoiceholiday889@gmail.com</span>
                             </button>
 
                             <div className="flex items-center space-x-3 text-gray-300">
