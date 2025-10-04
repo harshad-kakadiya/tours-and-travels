@@ -10,8 +10,6 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import {Swiper, SwiperSlide} from "swiper/react";
 
-
-
 // Section Component
 const Section = ({ title, children, defaultOpen = true }) => {
     const [open, setOpen] = useState(defaultOpen);
@@ -55,18 +53,84 @@ const TourDetails = () => {
     const navigate = useNavigate();
     const [tour, setTour] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const pdfRef = useRef();
 
+    // Separate PDF generation function
+    const generateAndDownloadPDF = async () => {
+        try {
+            if (!pdfRef.current) {
+                console.error('PDF ref not found');
+                return;
+            }
+
+            const canvas = await html2canvas(pdfRef.current, {
+                scale: 2,
+                useCORS: true,
+                allowTaint: true
+            });
+            const imgData = canvas.toDataURL("image/png");
+
+            const pdf = new jsPDF("p", "mm", "a4");
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const imgWidth = pdfWidth;
+            const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+            heightLeft -= pdfHeight;
+
+            while (heightLeft > 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+                heightLeft -= pdfHeight;
+            }
+
+            pdf.save(`${tour?.title || "tour-schedule"}.pdf`);
+            return true;
+
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            throw new Error('PDF generation failed');
+        }
+    };
 
     const onSubmit = async (data) => {
+        setIsSubmitting(true);
         try {
             const authToken = localStorage.getItem('authToken');
-            if (!authToken) return;
+            if (!authToken) {
+                console.error('No auth token found');
+                alert('Please login to download schedule');
+                setIsSubmitting(false);
+                return;
+            }
 
-            await axios.post(
-                `${import.meta.env.VITE_API_BASE_URL}/schedule`,
-                data,
+            // Prepare the schedule data with tour information
+            const scheduleData = {
+                name: data.name,
+                contact: data.contact,
+                tourId: tour?.id,
+                tourTitle: tour?.title,
+                selectedDate: selectedDate,
+                sharingType: sharing,
+                selectedPackage: selectedPackage?.from || 'Default',
+                price: priceMap[sharing] || 0,
+                duration: tour?.duration,
+                location: tour?.location
+            };
+
+            console.log('Submitting schedule data:', scheduleData);
+
+            // Make API call
+            const response = await axios.post(
+                'https://tour-travels-be.onrender.com/api/schedule',
+                scheduleData,
                 {
                     headers: {
                         Authorization: `Bearer ${authToken}`,
@@ -75,44 +139,39 @@ const TourDetails = () => {
                 }
             );
 
-            reset();
-            setIsModalOpen(false);
+            console.log('API response:', response.data);
 
-            // PDF download
-            if (pdfRef.current) {
-                const canvas = await html2canvas(pdfRef.current, { scale: 2 });
-                const imgData = canvas.toDataURL("image/png");
-
-                const pdf = new jsPDF("p", "mm", "a4");
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = pdf.internal.pageSize.getHeight();
-                const imgWidth = pdfWidth;
-                const imgHeight = (canvas.height * pdfWidth) / canvas.width;
-
-                let heightLeft = imgHeight;
-                let position = 0;
-
-                pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-                heightLeft -= pdfHeight;
-
-                while (heightLeft > 0) {
-                    position = heightLeft - imgHeight;
-                    pdf.addPage();
-                    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-                    heightLeft -= pdfHeight;
+            // Generate and download PDF with a small delay to ensure DOM is ready
+            setTimeout(async () => {
+                try {
+                    await generateAndDownloadPDF();
+                    // Reset form and close modal
+                    reset();
+                    setIsModalOpen(false);
+                    alert('Schedule downloaded successfully!');
+                } catch (pdfError) {
+                    console.error('Error generating PDF:', pdfError);
+                    alert('Schedule saved but PDF download failed. Please try again.');
+                } finally {
+                    setIsSubmitting(false);
                 }
-
-                pdf.save(`${tour?.title || "tour-schedule"}.pdf`);
-            }
+            }, 500);
 
         } catch (error) {
-            console.error(error);
+            console.error('Error submitting schedule:', error);
+            if (error.response) {
+                // Server responded with error status
+                alert(`Failed to submit schedule: ${error.response.data.message || 'Server error'}`);
+            } else if (error.request) {
+                // Request made but no response received
+                alert('Failed to submit schedule: No response from server');
+            } else {
+                // Something else happened
+                alert('Failed to submit schedule. Please try again.');
+            }
+            setIsSubmitting(false);
         }
     };
-
-
-
-
 
     useEffect(() => {
         let isMounted = true;
@@ -167,7 +226,7 @@ const TourDetails = () => {
         fetchTour();
         return () => { isMounted = false; };
     }, [id]);
-    // console.log(tour?.images?.[0],"0000000000000000000")
+    console.log(tour,"0000000000000000000")
 
     const [selectedDate, setSelectedDate] = useState('');
     const [sharing, setSharing] = useState('two');
@@ -182,34 +241,29 @@ const TourDetails = () => {
     }, [tour, selectedPackage]);
 
     const priceMap = useMemo(() => {
-        const st = Array.isArray(tour?.sharingTypes) ? tour?.sharingTypes?.[0] : null;
+        // Get the first sharingType object from the selected package
+        const st = selectedPackage?.sharingTypes?.[0] || null;
         if (st) {
             return {
-                two: Number(st?.twoSharing || basePrice),
-                three: Number(st?.threeSharing || Math.round(basePrice * 0.9)),
-                four: Number(st?.fourSharing || Math.round(basePrice * 0.85))
+                two: Number(st?.twoSharing || 0),
+                three: Number(st?.threeSharing || 0),
+                four: Number(st?.fourSharing || 0)
             };
         }
         return {
             two: basePrice,
-            three: Math.round(basePrice * 0.9),
-            four: Math.round(basePrice * 0.85)
+            three: 0,
+            four: 0
         };
-    }, [tour, basePrice]);
-    
-    const whatsappMessage = `Hi! I'm interested in the ${tour?.title} on ${selectedDate || 'my preferred date'} for ${sharing} sharing.`;
-    
+    }, [selectedPackage, basePrice]);
+
     const handleWhatsAppBooking = () => {
         const message = encodeURIComponent(
-            `*Tour Booking Inquiry*\n\n` +
-            `*Tour:* ${tour?.title}\n` +
-            `*Date:* ${selectedDate || 'Flexible'}\n` +
-            `*Sharing:* ${sharing} sharing\n` +
-            `*Group Size:* ${tour?.groupSize || 'Not specified'}\n\n` +
-            whatsappMessage
+            `Hi! I'm interested in the ${tour?.title} on ${selectedDate || 'my preferred date'} for ${sharing} sharing.` +
+            `*Group Size:* ${tour?.groupSize || 'Not specified'}\n\n`
         );
-        
-        window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
+
+        window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
     };
 
     return (
@@ -316,7 +370,7 @@ const TourDetails = () => {
                                             <div>
                                                 <div className="font-semibold text-foreground flex items-center gap-2">
                                                     {active && <span className="w-2 h-2 rounded-full bg-primary"/>}
-                                                   From - {p?.from || 'Package'}
+                                                    {p?.from || 'Package'}
                                                 </div>
                                                 <div className="text-muted-foreground text-xs">Per person</div>
                                             </div>
@@ -501,32 +555,74 @@ const TourDetails = () => {
             </section>
 
             {/* Modal */}
-            <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                <h2 className="text-lg font-semibold mb-4">Enter your details</h2>
+            <Modal open={isModalOpen} onClose={() => !isSubmitting && setIsModalOpen(false)}>
+                <h2 className="text-lg font-semibold mb-4">Enter your details to download schedule</h2>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-foreground mb-1">Name</label>
+                        <label className="block text-sm font-medium text-foreground mb-1">Name *</label>
                         <input
                             {...register('name', {required: true})}
-                            className="w-full border border-border rounded-lg p-2"
-                            placeholder="Your Name"
+                            className="w-full border border-border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                            placeholder="Your Full Name"
+                            disabled={isSubmitting}
                         />
                         {errors.name && <span className="text-red-500 text-xs">Name is required</span>}
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-foreground mb-1">Contact</label>
+                        <label className="block text-sm font-medium text-foreground mb-1">Contact Number *</label>
                         <input
-                            {...register('contact', {required: true})}
-                            className="w-full border border-border rounded-lg p-2"
-                            placeholder="Your Contact"
+                            {...register('contact', {
+                                required: true,
+                                pattern: {
+                                    value: /^[0-9+\-\s()]{10,}$/,
+                                    message: "Please enter a valid contact number"
+                                }
+                            })}
+                            className="w-full border border-border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                            placeholder="Your Contact Number"
+                            disabled={isSubmitting}
                         />
-                        {errors.contact && <span className="text-red-500 text-xs">Contact is required</span>}
+                        {errors.contact && (
+                            <span className="text-red-500 text-xs">
+                                {errors.contact.type === 'required'
+                                    ? 'Contact number is required'
+                                    : 'Please enter a valid contact number'
+                                }
+                            </span>
+                        )}
                     </div>
-                    <button type="submit" className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90">
-                        Submit & Download
+
+                    {/* Display selected tour info for confirmation */}
+                    <div className="p-3 bg-gray-50 rounded-lg text-sm border border-border">
+                        <p className="font-medium text-foreground">Tour Details:</p>
+                        <p><strong>Tour:</strong> {tour?.title}</p>
+                        <p><strong>Date:</strong> {selectedDate || 'Not selected'}</p>
+                        <p><strong>Sharing:</strong> {sharing} sharing</p>
+                        <p><strong>Package:</strong> {selectedPackage?.from || 'Default'}</p>
+                    </div>
+
+                    <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                    >
+                        {isSubmitting ? (
+                            <>
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                Processing...
+                            </>
+                        ) : (
+                            'Submit & Download Schedule'
+                        )}
                     </button>
+
+                    <p className="text-xs text-muted-foreground text-center">
+                        We'll save your details and generate your personalized schedule PDF.
+                    </p>
                 </form>
             </Modal>
+
+            {/* Hidden PDF element */}
             <div style={{position: "absolute", left: "-9999px", top: 0}}>
                 <PdfSchedule ref={pdfRef} tour={tour}/>
             </div>

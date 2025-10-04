@@ -10,6 +10,11 @@ const FixedRoutePackages = ({ onBookingClick }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const categories = [
+    { id: 'city-tours', name: 'City Tours', icon: 'Building2' },
+    { id: 'airport-transfers', name: 'Airport Transfers', icon: 'Plane' },
+    { id: 'inter-city', name: 'Inter-city', icon: 'MapPin' }
+  ];
 
   useEffect(() => {
     fetchPackages();
@@ -40,7 +45,7 @@ const FixedRoutePackages = ({ onBookingClick }) => {
         `Price: ₹${pkg.price} (${pkg.wayType}). ` +
         `Please provide more details and booking assistance.`
     );
-    window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
+    window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
   };
 
   if (loading) {
@@ -82,6 +87,24 @@ const FixedRoutePackages = ({ onBookingClick }) => {
 
   return (
       <div className="space-y-6">
+        {/* Category Tabs */}
+        <div className="flex flex-wrap gap-2">
+          {categories?.map((category) => (
+              <button
+                  key={category?.id}
+                  onClick={() => setSelectedCategory(category?.id)}
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                      selectedCategory === category?.id
+                          ? 'bg-primary text-white shadow-md'
+                          : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                  }`}
+              >
+                <Icon name={category?.icon} size={16} />
+                <span>{category?.name}</span>
+              </button>
+          ))}
+        </div>
+
         {/* Packages Grid */}
         {packages.length === 0 ? (
             <div className="text-center py-12">
@@ -92,20 +115,20 @@ const FixedRoutePackages = ({ onBookingClick }) => {
               <p className="text-muted-foreground">No fixed route packages are currently available.</p>
             </div>
         ) : (
-          <div className="grid md:grid-cols-2 gap-6">
-            {packages?.map((pkg) => (
+        <div className="grid md:grid-cols-2 gap-6">
+              {packages?.map((pkg) => (
             <div key={pkg?._id} className="relative rounded-2xl overflow-hidden group cursor-pointer transition-all duration-300">
               {/* Background Image */}
               <div className="relative h-80">
-                {/* Image */}
-                <div className="h-80 overflow-hidden">
-                  <Image
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    src={pkg?.image}
-                    alt={pkg?.name}
-                  />
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    {/* Image */}
+                    <div className="h-48 overflow-hidden">
+                      <img 
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        src={pkg?.image}
+                        alt={pkg?.name}
+                      />
+                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 
                 {/* Route Type - Top Left */}
                 <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm font-medium">
@@ -142,8 +165,8 @@ const FixedRoutePackages = ({ onBookingClick }) => {
                 </div>
               </div>
             </div>
-            ))}
-          </div>
+          ))}
+        </div>
         )}
       </div>
   );

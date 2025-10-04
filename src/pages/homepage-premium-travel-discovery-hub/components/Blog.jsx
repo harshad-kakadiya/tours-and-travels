@@ -1,33 +1,43 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import Icon from "../../../components/AppIcon";
 import { Link } from "react-router-dom";
 import Button from "../../../components/ui/Button";
-import axios from "axios";
+import rehypeRaw from "rehype-raw";
+import ReactMarkdown from "react-markdown";
 
 const Blog = () => {
-    const [blogPosts, setBlogPosts] = useState([]);
-
-    useEffect(() => {
-        const fetchBlogs = async () => {
-            try {
-                const res = await axios.get("https://tour-travels-be-h58q.onrender.com/api/blog");
-
-                console.log("API Response:", res.data); // 👈 Debug mate
-
-                // Handle both cases: direct array or inside `data`
-                const blogsArray = Array.isArray(res.data) ? res.data : res.data.data;
-                setBlogPosts(blogsArray || []);
-            } catch (error) {
-                console.error("Error fetching blogs:", error);
-                setBlogPosts([]); // fallback
-            }
-        };
-
-        fetchBlogs();
-    }, []);
-
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    
+    const blogPosts = [
+        {
+            date: "23",
+            month: "MAR",
+            image: "https://www.holidify.com/images/bgImages/HIMACHAL-PRADESH.jpg",
+            title: "JAISALMER - THE GOLDEN CITY",
+            description: `Jaisalmer a culturally rich place, known as "The Golden City", town carved from yellowish sandstones. The city is located at the Rajasthan, India.`,
+            link: "/blog/jaisalmer",
+        },
+        {
+            date: "23",
+            month: "MAR",
+            image: "https://www.holidify.com/images/bgImages/HIMACHAL-PRADESH.jpg",
+            title: "BEST TREKKING PLACES OF HIMACHAL PRADESH",
+            description: `Himachal Pradesh is a state in the northern sector of India. Situated in the Western Himalayas, bordered by the Tibetan plateau.`,
+            link: "/blog/himachal-trekking",
+        },
+        {
+            date: "23",
+            month: "MAR",
+            image: "https://www.holidify.com/images/bgImages/HIMACHAL-PRADESH.jpg",
+            title: "CHADAR TREK - THE WINTER TRAIL",
+            description: `"Chadar Trek" states the frozen path over the flowing water. Don't you feel exciting as you are going to do this adventure?`,
+            link: "/blog/chadar-trek",
+        },
+    ];
+    
     return (
-        <section className="py-12 md:py-16 lg:py-20 relative bg-muted overflow-hidden">
+        <section className="py-16 bg-muted/30 relative">
             {/* Background Overlay */}
             <div
                 className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none"
@@ -53,75 +63,66 @@ const Blog = () => {
 
                 {/* Grid Layout */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                    {Array.isArray(blogPosts) && blogPosts.length > 0 ? (
-                        blogPosts.map((post, idx) => (
-                            <div
-                                key={post._id || idx}
-                                className="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
-                            >
-                                <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 w-full">
-                                    <img
-                                        src={
-                                            post.blogImage
-                                        }
-                                        alt={post.title}
-                                        className="absolute inset-0 w-full h-full object-cover"
-                                        loading="lazy"
-                                    />
-                                    <div className="absolute top-2 left-2 bg-black bg-opacity-60 text-white font-extrabold px-3 sm:px-4 py-2 sm:py-3 rounded text-center leading-tight">
-                                        <div className="text-lg sm:text-xl">
-                                            {post.createdAt
-                                                ? new Date(post.createdAt).getDate()
-                                                : "01"}
-                                        </div>
-                                        <div className="text-lg sm:text-xl">
-                                            {post.createdAt
-                                                ? new Date(post.createdAt).toLocaleString("default", {
-                                                    month: "short",
-                                                })
-                                                : "Jan"}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex flex-col flex-grow p-4 sm:p-5">
-                                    <h3 className="font-bold text-blue-900 text-sm sm:text-base md:text-lg uppercase leading-tight mb-2">
-                                        {post.title}
-                                    </h3>
-                                    <p className="text-xs sm:text-sm md:text-base text-gray-600 mt-1 sm:mt-2 flex-grow leading-relaxed">
-                                        {post.content
-                                            ?.replace(/<[^>]+>/g, "") // HTML tag remove
-                                            .substring(0, 120) + "..."}
-                                    </p>
-                                    <Link
-                                        to={`/blog/${post._id}`}
-                                        className="text-xs sm:text-sm md:text-base text-blue-700 mt-3 sm:mt-4 inline-block hover:underline transition-all duration-200 hover:text-blue-800"
-                                    >
-                                        Read more »
-                                    </Link>
+                    {blogPosts.map((post, idx) => (
+                        <div
+                            key={idx}
+                            className="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+                        >
+                            <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 w-full">
+                                <img
+                                    src={post.image}
+                                    alt={post.title}
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                    loading="lazy"
+                                />
+                                <div className="absolute top-2 left-2 bg-black bg-opacity-60 text-white font-extrabold px-3 sm:px-4 py-2 sm:py-3 rounded text-center leading-tight">
+                                    <div className="text-lg sm:text-xl">{post.date}</div>
+                                    <div className="text-lg sm:text-xl">{post.month}</div>
                                 </div>
                             </div>
-                        ))
-                    ) : (
-                        <p className="text-center text-gray-500 col-span-3">
-                            No blogs found.
-                        </p>
-                    )}
+                            <div className="flex flex-col flex-grow p-4 sm:p-5">
+                                <h3 className="font-bold text-blue-900 text-sm sm:text-base md:text-lg uppercase leading-tight mb-2">
+                                    {post.title}
+                                </h3>
+                                <p className="text-xs sm:text-sm md:text-base text-gray-600 mt-1 sm:mt-2 flex-grow leading-relaxed">
+                                    {post.description}
+                                </p>
+                                <Link
+                                    to={post.link}
+                                    className="text-xs sm:text-sm md:text-base text-blue-700 mt-3 sm:mt-4 inline-block hover:underline transition-all duration-200 hover:text-blue-800"
+                                >
+                                    Read more »
+                                </Link>
+                            </div>
+                        </div>
+                    ))}
                 </div>
+                )}
+
+                {/* No Posts */}
+                {!loading && !error && blogPosts.length === 0 && (
+                    <div className="text-center py-12">
+                        <Icon name="Info" size={32} className="text-muted-foreground mb-4" />
+                        <p className="text-muted-foreground text-sm">No blog posts found at the moment.</p>
+                    </div>
+                )}
 
                 {/* View All Button */}
-                <div className="mt-8 text-center">
-                    <Link to="/blog" className="inline-block">
-                        <Button
-                            variant="outline"
-                            size="lg"
-                            iconName="ArrowRight"
-                            iconPosition="right"
-                            className="px-6 py-3 text-base font-semibold border-2 bg-[#4891C9] text-white border-[#4891C9]"
-                        >
-                            View All Blog Posts
-                        </Button>
-                    </Link>
-                </div>
+                {!loading && !error && blogPosts.length > 0 && (
+                    <div className="flex justify-center mt-10">
+                        <Link to="/travel-blog-hub-journey-intelligence">
+                            <Button
+                                variant="outline"
+                                size="lg"
+                                iconName="ArrowRight"
+                                iconPosition="right"
+                                className="px-6 py-3 text-base font-semibold border-2 bg-[#4891C9] text-white border-[#4891C9] "
+                            >
+                                View All Blogs
+                            </Button>
+                        </Link>
+                    </div>
+                )}
             </div>
         </section>
     );
