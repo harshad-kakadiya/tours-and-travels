@@ -10,11 +10,11 @@ const FixedRoutePackages = ({ onBookingClick }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const categories = [
-    { id: 'city-tours', name: 'City Tours', icon: 'Building2' },
-    { id: 'airport-transfers', name: 'Airport Transfers', icon: 'Plane' },
-    { id: 'inter-city', name: 'Inter-city', icon: 'MapPin' }
-  ];
+  // const categories = [
+  //   { id: 'city-tours', name: 'City Tours', icon: 'Building2' },
+  //   { id: 'airport-transfers', name: 'Airport Transfers', icon: 'Plane' },
+  //   { id: 'inter-city', name: 'Inter-city', icon: 'MapPin' }
+  // ];
 
   useEffect(() => {
     fetchPackages();
@@ -88,22 +88,22 @@ const FixedRoutePackages = ({ onBookingClick }) => {
   return (
       <div className="space-y-6">
         {/* Category Tabs */}
-        <div className="flex flex-wrap gap-2">
-          {categories?.map((category) => (
-              <button
-                  key={category?.id}
-                  onClick={() => setSelectedCategory(category?.id)}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                      selectedCategory === category?.id
-                          ? 'bg-primary text-white shadow-md'
-                          : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                  }`}
-              >
-                <Icon name={category?.icon} size={16} />
-                <span>{category?.name}</span>
-              </button>
-          ))}
-        </div>
+        {/*<div className="flex flex-wrap gap-2">*/}
+        {/*  {categories?.map((category) => (*/}
+        {/*      <button*/}
+        {/*          key={category?.id}*/}
+        {/*          onClick={() => setSelectedCategory(category?.id)}*/}
+        {/*          className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${*/}
+        {/*              selectedCategory === category?.id*/}
+        {/*                  ? 'bg-primary text-white shadow-md'*/}
+        {/*                  : 'bg-muted text-muted-foreground hover:bg-muted/80'*/}
+        {/*          }`}*/}
+        {/*      >*/}
+        {/*        <Icon name={category?.icon} size={16} />*/}
+        {/*        <span>{category?.name}</span>*/}
+        {/*      </button>*/}
+        {/*  ))}*/}
+        {/*</div>*/}
 
         {/* Packages Grid */}
         {packages.length === 0 ? (
