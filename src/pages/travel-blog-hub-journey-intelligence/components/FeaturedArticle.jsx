@@ -194,10 +194,7 @@ const FeaturedArticle = () => {
                     <Icon name="BookOpen" size={18} />
                     <span>Read Full Article</span>
                   </button>
-                  <button className="flex items-center justify-center space-x-2 px-6 py-3 border border-border hover:bg-muted/50 rounded-lg font-medium transition-colors duration-200">
-                    <Icon name="Bookmark" size={18} />
-                    <span>Save</span>
-                  </button>
+
                 </div>
               </div>
             </div>
