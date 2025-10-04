@@ -19,7 +19,6 @@ import RegisterPage from './pages/auth/RegisterPage';
 import UserDashboard from './pages/UserDashboard';
 import TourDetails from './pages/tour-packages-discovery-center/TourDetails.jsx';
 import AboutUs from './pages/about-us';
-
 // Component to redirect authenticated users away from auth pages
 const AuthRedirect = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
