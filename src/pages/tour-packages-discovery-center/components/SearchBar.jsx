@@ -93,18 +93,31 @@ const SearchBar = ({ onSearch, onSortChange, sortBy, totalResults }) => {
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
                     {/* Sort Dropdown */}
                     <div className="flex items-center gap-2 w-full sm:w-auto">
-                        <Icon name="ArrowUpDown" size={16} className="text-muted-foreground" />
-                        <select
-                            value={sortBy}
-                            onChange={(e) => onSortChange(e?.target?.value)}
-                            className="text-sm border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background flex-1 sm:flex-none"
-                        >
-                            {sortOptions?.map((option) => (
-                                <option key={option?.value} value={option?.value}>
-                                    {option?.label}
-                                </option>
-                            ))}
-                        </select>
+                        <Icon
+                            name="ArrowUpDown"
+                            size={16}
+                            className="text-muted-foreground"
+                        />
+                        <div className="relative w-full sm:w-auto">
+                            <select
+                                value={sortBy}
+                                onChange={(e) => onSortChange(e?.target?.value)}
+                                className="appearance-none text-sm border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background flex-1 sm:flex-none pr-8" // added pr-8
+                            >
+                                {sortOptions?.map((option) => (
+                                    <option key={option?.value} value={option?.value}>
+                                        {option?.label}
+                                    </option>
+                                ))}
+                            </select>
+
+                            {/* Down Icon on Right */}
+                            <Icon
+                                name="ChevronDown"
+                                size={14}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+                            />
+                        </div>
                     </div>
 
                     {/* Advanced Search Toggle */}
@@ -119,6 +132,7 @@ const SearchBar = ({ onSearch, onSortChange, sortBy, totalResults }) => {
                         Advanced
                     </Button>
                 </div>
+
             </div>
 
             {/* Advanced Search Options */}

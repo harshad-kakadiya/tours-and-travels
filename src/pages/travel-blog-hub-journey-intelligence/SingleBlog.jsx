@@ -193,20 +193,20 @@ const SingleBlog = () => {
             <div className="bg-card border-t border-border">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
-                        <div className="flex items-center space-x-4">
-                            <button className="flex items-center space-x-2 px-4 py-2 border border-border rounded-lg hover:bg-muted/50 transition-colors">
-                                <Icon name="Heart" size={16} />
-                                <span>Like</span>
-                            </button>
-                            <button className="flex items-center space-x-2 px-4 py-2 border border-border rounded-lg hover:bg-muted/50 transition-colors">
-                                <Icon name="Share2" size={16} />
-                                <span>Share</span>
-                            </button>
-                            <button className="flex items-center space-x-2 px-4 py-2 border border-border rounded-lg hover:bg-muted/50 transition-colors">
-                                <Icon name="Bookmark" size={16} />
-                                <span>Save</span>
-                            </button>
-                        </div>
+                        {/*<div className="flex items-center space-x-4">*/}
+                        {/*    <button className="flex items-center space-x-2 px-4 py-2 border border-border rounded-lg hover:bg-muted/50 transition-colors">*/}
+                        {/*        <Icon name="Heart" size={16} />*/}
+                        {/*        <span>Like</span>*/}
+                        {/*    </button>*/}
+                        {/*    <button className="flex items-center space-x-2 px-4 py-2 border border-border rounded-lg hover:bg-muted/50 transition-colors">*/}
+                        {/*        <Icon name="Share2" size={16} />*/}
+                        {/*        <span>Share</span>*/}
+                        {/*    </button>*/}
+                        {/*    <button className="flex items-center space-x-2 px-4 py-2 border border-border rounded-lg hover:bg-muted/50 transition-colors">*/}
+                        {/*        <Icon name="Bookmark" size={16} />*/}
+                        {/*        <span>Save</span>*/}
+                        {/*    </button>*/}
+                        {/*</div>*/}
 
                         <button
                             onClick={handleBackToBlog}
