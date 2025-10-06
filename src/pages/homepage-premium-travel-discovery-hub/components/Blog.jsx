@@ -98,13 +98,13 @@ const Blog = () => {
                             return (
                                 <div
                                     key={idx}
-                                    className="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+                                    className="flex flex-col bg-white rounded-lg overflow-hidden shadow-md transition-all duration-300 transform hover:shadow-2xl hover:scale-105 group"
                                 >
-                                    <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 w-full">
+                                    <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 w-full overflow-hidden">
                                         <img
                                             src={imgUrl}
                                             alt={postTitle}
-                                            className="absolute inset-0 w-full h-full object-cover"
+                                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                             loading="lazy"
                                             onError={(e) => {
                                                 e.target.src = 'https://www.holidify.com/images/bgImages/HIMACHAL-PRADESH.jpg';

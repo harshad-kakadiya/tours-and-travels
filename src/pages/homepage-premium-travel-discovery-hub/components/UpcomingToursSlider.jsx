@@ -12,17 +12,17 @@ import Button from '../../../components/ui/Button';
 
 const UpcomingToursSlider = () => {
     const [upcomingTours, setUpcomingTours] = useState([]);
-    const [isLoading, setIsLoading] = useState(true); // NEW: Loading state
+    const [isLoading, setIsLoading] = useState(true);
+    const [hoveredIndex, setHoveredIndex] = useState(null); // 👈 Hover tracking
+
     const prevRef = useRef(null);
     const nextRef = useRef(null);
-
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
     useEffect(() => {
         const handleResize = () => {
             setIsMobile(window.innerWidth < 768);
         };
-
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
@@ -65,12 +65,12 @@ const UpcomingToursSlider = () => {
 
                 if (isMounted) {
                     setUpcomingTours(mapped);
-                    setIsLoading(false); // Done loading
+                    setIsLoading(false);
                 }
             } catch (e) {
                 if (isMounted) {
                     setUpcomingTours([]);
-                    setIsLoading(false); // Even if error, stop loading
+                    setIsLoading(false);
                 }
             }
         };
@@ -130,14 +130,12 @@ const UpcomingToursSlider = () => {
                     )}
                 </div>
 
-                {/* Show loader while loading */}
                 {isLoading ? (
                     <div className="flex justify-center items-center h-64">
                         <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-primary border-solid"></div>
                     </div>
                 ) : (
                     <>
-                        {/* Swiper Slider */}
                         <div className="relative">
                             <Swiper
                                 modules={[Navigation, Pagination]}
@@ -178,14 +176,21 @@ const UpcomingToursSlider = () => {
                                 }}
                                 className="group"
                             >
-                                {upcomingTours.map((tour) => (
+                                {upcomingTours.map((tour, index) => (
                                     <SwiperSlide key={tour.id}>
-                                        <div className="relative rounded-2xl overflow-hidden group cursor-pointer h-80">
+                                        <div
+                                            className="relative rounded-2xl overflow-hidden group cursor-pointer h-80"
+                                            onMouseEnter={() => setHoveredIndex(index)}
+                                            onMouseLeave={() => setHoveredIndex(null)}
+                                        >
                                             <Image
                                                 src={tour.image}
                                                 alt={tour.title}
-                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                                className={`w-full h-full object-cover transition-transform duration-500 ${
+                                                    hoveredIndex === index ? 'scale-110' : 'scale-100'
+                                                }`}
                                             />
+
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
                                             <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm font-medium">
