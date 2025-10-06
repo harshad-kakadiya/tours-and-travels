@@ -138,7 +138,7 @@ const ComparisonPanel = ({ packages, onRemove, onClear, isOpen, onToggle }) => {
                   )?.join('\n---\n');
                   
                   const message = encodeURIComponent(`Hi! I'd like to compare these packages:\n\n${report}\n\nCould you help me choose the best option?`);
-                  window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+                  window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
                 }}
                 iconName="MessageCircle"
                 iconPosition="left"

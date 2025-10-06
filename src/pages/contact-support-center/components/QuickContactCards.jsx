@@ -5,7 +5,7 @@ import Button from '../../../components/ui/Button';
 const QuickContactCards = () => {
     const handleWhatsAppClick = () => {
         const message = encodeURIComponent("Hi! I need assistance with my travel plans. Could you please help me?");
-        window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+        window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
     };
 
     const handleCallClick = (number) => {
@@ -42,8 +42,8 @@ const QuickContactCards = () => {
             color: "bg-primary",
             hoverColor: "hover:bg-primary/90",
             textColor: "text-white",
-            details: "+91 98765 43210 • Mon-Sun: 9 AM - 9 PM",
-            onClick: () => handleCallClick("+919876543210"),
+            details: "+91 97258 55858 • Mon-Sun: 9 AM - 9 PM",
+            onClick: () => handleCallClick("+919725855858"),
         },
         {
             id: 3,

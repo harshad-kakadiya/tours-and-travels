@@ -1,10 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../../../components/AppIcon';
 import logo from "../../../../public/assets/images/22d66695-43aa-43a2-9cb6-2d1d7a62872c .jpg";
 
 const Footer = () => {
     const currentYear = new Date()?.getFullYear();
+    const [destinations, setDestinations] = useState([]);
+
+    useEffect(() => {
+        fetch('https://tour-travels-be-h58q.onrender.com/api/state')
+            .then(res => res.json())
+            .then(data => {
+                if (Array.isArray(data)) {
+                    setDestinations(data.slice(0, 6)); // take first 6 items
+                }
+            })
+            .catch(err => console.error('Error fetching destinations:', err));
+    }, []);
 
     const quickLinks = [
         { name: 'Tour Packages', path: '/tour-packages-discovery-center' },
@@ -12,15 +24,6 @@ const Footer = () => {
         { name: 'Taxi Services', path: '/taxi-booking-system' },
         { name: 'Travel Blog', path: '/travel-blog-hub-journey-intelligence' },
         { name: 'Contact Us', path: '/contact-support-center' }
-    ];
-
-    const destinations = [
-        'Kerala Backwaters',
-        'Rajasthan Heritage',
-        'Himalayan Treks',
-        'Goa Beaches',
-        'Karnataka Temples',
-        'Uttarakhand Spiritual'
     ];
 
     const supportLinks = [
@@ -34,15 +37,15 @@ const Footer = () => {
 
     const handleWhatsAppClick = () => {
         const message = encodeURIComponent("Hi! I need assistance with my travel planning. Could you help me?");
-        window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+        window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
     };
 
     const handleEmailClick = () => {
-        window.location.href = 'mailto:info@wanderwisetours.com';
+        window.location.href = 'mailto:mychoiceholiday889@gmail.com';
     };
 
     const handlePhoneClick = () => {
-        window.location.href = 'tel:+919876543210';
+        window.location.href = 'tel:+919725855858';
     };
 
     return (
@@ -73,7 +76,7 @@ const Footer = () => {
                                 className="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors group"
                             >
                                 <Icon name="Phone" size={18} className="group-hover:text-secondary transition-colors" />
-                                <span>+91 98765 43210</span>
+                                <span>+91 97258 55858</span>
                             </button>
 
                             <button
@@ -81,7 +84,7 @@ const Footer = () => {
                                 className="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors group"
                             >
                                 <Icon name="Mail" size={18} className="group-hover:text-secondary transition-colors" />
-                                <span className="break-all">info@wanderwisetours.com</span>
+                                <span className="break-all">mychoiceholiday889@gmail.com</span>
                             </button>
 
                             <div className="flex items-center space-x-3 text-gray-300">
@@ -114,13 +117,13 @@ const Footer = () => {
                         <h3 className="text-lg font-heading font-semibold mb-4">Popular Destinations</h3>
                         <ul className="space-y-3">
                             {destinations.map((destination) => (
-                                <li key={destination}>
+                                <li key={destination.name}>
                                     <Link
                                         to="/tour-packages-discovery-center"
                                         className="text-gray-300 hover:text-white transition-colors flex items-center space-x-2 group"
                                     >
                                         <Icon name="MapPin" size={14} className="group-hover:text-secondary transition-colors" />
-                                        <span>{destination}</span>
+                                        <span>{destination.name}</span>
                                     </Link>
                                 </li>
                             ))}
@@ -207,7 +210,7 @@ const Footer = () => {
                     <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between space-y-3 sm:space-y-0 text-white text-sm">
                         <div className="flex items-center space-x-2">
                             <Icon name="Phone" size={16} />
-                            <span>24/7 Emergency: +91 98765 43210</span>
+                            <span>24/7 Emergency: +91 97258 55858</span>
                         </div>
                         <div className="hidden sm:block w-px h-4 bg-white/30"></div>
                         <button

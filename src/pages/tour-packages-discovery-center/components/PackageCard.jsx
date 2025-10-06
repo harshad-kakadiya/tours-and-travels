@@ -42,7 +42,7 @@ const PackageCard = ({ package: pkg, onInquire, onCompare, isComparing, isSelect
 
     const handleWhatsAppInquiry = () => {
         const message = encodeURIComponent(`Hi! I'm interested in the "${pkg?.title}" package. Could you provide more details about pricing and availability?`);
-        window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+        window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
     };
 
     return (

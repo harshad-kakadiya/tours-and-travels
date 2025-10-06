@@ -8,8 +8,7 @@ import axios from "axios";
 import PdfSchedule from "../../pdf/pdfSchedule";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-
-
+import {Swiper, SwiperSlide} from "swiper/react";
 
 // Section Component
 const Section = ({ title, children, defaultOpen = true }) => {
@@ -54,18 +53,93 @@ const TourDetails = () => {
     const navigate = useNavigate();
     const [tour, setTour] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const pdfRef = useRef();
 
+    // Separate PDF generation function
+    const generateAndDownloadPDF = async () => {
+        try {
+            if (!pdfRef.current) {
+                console.error('PDF ref not found');
+                return;
+            }
+
+            // Force a small delay to ensure the component is fully rendered
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            const canvas = await html2canvas(pdfRef.current, {
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                logging: true,
+                backgroundColor: '#ffffff'
+            });
+            
+            const imgData = canvas.toDataURL("image/png");
+
+            // Use landscape orientation for better fit
+            const pdf = new jsPDF("l", "mm", "a4");
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const imgWidth = pdfWidth;
+            const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+            heightLeft -= pdfHeight;
+
+            while (heightLeft > 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+                heightLeft -= pdfHeight;
+            }
+
+            // Force download
+            pdf.save(`${tour?.title || "tour-schedule"}.pdf`);
+            console.log("PDF generated successfully");
+            return true;
+
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            throw new Error('PDF generation failed');
+        }
+    };
 
     const onSubmit = async (data) => {
+        setIsSubmitting(true);
         try {
             const authToken = localStorage.getItem('authToken');
-            if (!authToken) return;
+            if (!authToken) {
+                console.error('No auth token found');
+                alert('Please login to download schedule');
+                setIsSubmitting(false);
+                return;
+            }
 
-            await axios.post(
-                `${import.meta.env.VITE_API_BASE_URL}/schedule`,
-                data,
+            // Prepare the schedule data with tour information
+            const scheduleData = {
+                name: data.name,
+                contact: data.contact,
+                tourId: tour?.id,
+                tourTitle: tour?.title,
+                selectedDate: selectedDate,
+                sharingType: sharing,
+                selectedPackage: selectedPackage?.from || 'Default',
+                price: priceMap[sharing] || 0,
+                duration: tour?.duration,
+                location: tour?.location
+            };
+
+            console.log('Submitting schedule data:', scheduleData);
+
+            // Make API call
+            const response = await axios.post(
+                'https://tour-travels-be.onrender.com/api/schedule',
+                scheduleData,
                 {
                     headers: {
                         Authorization: `Bearer ${authToken}`,
@@ -74,44 +148,37 @@ const TourDetails = () => {
                 }
             );
 
-            reset();
-            setIsModalOpen(false);
+            console.log('API response:', response.data);
 
-            // PDF download
-            if (pdfRef.current) {
-                const canvas = await html2canvas(pdfRef.current, { scale: 2 });
-                const imgData = canvas.toDataURL("image/png");
-
-                const pdf = new jsPDF("p", "mm", "a4");
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = pdf.internal.pageSize.getHeight();
-                const imgWidth = pdfWidth;
-                const imgHeight = (canvas.height * pdfWidth) / canvas.width;
-
-                let heightLeft = imgHeight;
-                let position = 0;
-
-                pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-                heightLeft -= pdfHeight;
-
-                while (heightLeft > 0) {
-                    position = heightLeft - imgHeight;
-                    pdf.addPage();
-                    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-                    heightLeft -= pdfHeight;
-                }
-
-                pdf.save(`${tour?.title || "tour-schedule"}.pdf`);
+            // Generate and download PDF immediately
+            try {
+                await generateAndDownloadPDF();
+                // Reset form and close modal after successful PDF generation
+                reset();
+                setIsModalOpen(false);
+                alert('Schedule downloaded successfully!');
+            } catch (pdfError) {
+                console.error('Error generating PDF:', pdfError);
+                alert('Schedule saved but PDF download failed. Please try again.');
+            } finally {
+                setIsSubmitting(false);
             }
 
         } catch (error) {
-            console.error(error);
+            console.error('Error submitting schedule:', error);
+            if (error.response) {
+                // Server responded with error status
+                alert(`Failed to submit schedule: ${error.response.data.message || 'Server error'}`);
+            } else if (error.request) {
+                // Request made but no response received
+                alert('Failed to submit schedule: No response from server');
+            } else {
+                // Something else happened
+                alert('Failed to submit schedule. Please try again.');
+            }
+            setIsSubmitting(false);
         }
     };
-
-
-
-
 
     useEffect(() => {
         let isMounted = true;
@@ -166,6 +233,7 @@ const TourDetails = () => {
         fetchTour();
         return () => { isMounted = false; };
     }, [id]);
+    console.log(tour,"0000000000000000000")
 
     const [selectedDate, setSelectedDate] = useState('');
     const [sharing, setSharing] = useState('two');
@@ -180,37 +248,28 @@ const TourDetails = () => {
     }, [tour, selectedPackage]);
 
     const priceMap = useMemo(() => {
-        const st = Array.isArray(tour?.sharingTypes) ? tour?.sharingTypes?.[0] : null;
+        // Get the first sharingType object from the selected package
+        const st = selectedPackage?.sharingTypes?.[0] || null;
         if (st) {
             return {
-                two: Number(st?.twoSharing || basePrice),
-                three: Number(st?.threeSharing || Math.round(basePrice * 0.9)),
-                four: Number(st?.fourSharing || Math.round(basePrice * 0.85))
+                two: Number(st?.twoSharing || 0),
+                three: Number(st?.threeSharing || 0),
+                four: Number(st?.fourSharing || 0)
             };
         }
         return {
             two: basePrice,
-            three: Math.round(basePrice * 0.9),
-            four: Math.round(basePrice * 0.85)
+            three: 0,
+            four: 0
         };
-    }, [tour, basePrice]);
+    }, [selectedPackage, basePrice]);
 
-    const handleBook = () => {
-        // Get all selected fields for the WhatsApp message
-        const selectedPackageInfo = selectedPackage ? `${selectedPackage.from} (₹${Number(selectedPackage.discountedPrice || selectedPackage.price || 0).toLocaleString()})` : 'Not selected';
-        
-        // Build a comprehensive message with all selected fields
+    const handleWhatsAppBooking = () => {
         const message = encodeURIComponent(
-            `*Tour Inquiry*\n\n` +
-            `*Tour:* ${tour?.title}\n` +
-            `*Location:* ${tour?.location || 'Not specified'}\n` +
-            `*Package:* ${selectedPackageInfo}\n` +
-            `*Date:* ${selectedDate || 'Not selected'}\n` +
-            `*Sharing Type:* ${sharing} sharing\n` +
-            `*Group Size:* ${tour?.groupSize || 'Not specified'}\n\n` +
-            `I would like to book/inquire about this tour. Please provide more information.`
+            `Hi! I'm interested in the ${tour?.title} on ${selectedDate || 'my preferred date'} for ${sharing} sharing.` +
+            `*Group Size:* ${tour?.groupSize || 'Not specified'}\n\n`
         );
-        
+
         window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
     };
 
@@ -219,38 +278,52 @@ const TourDetails = () => {
             {/* Hero */}
             <section className="pt-0">
                 <div className="relative h-[42vh] sm:h-[56vh] w-full">
-                    <Image
-                        src={tour?.images?.[0] || tour?.image}
-                        alt={tour?.title}
-                        className="w-full h-full object-cover"
-                    />
-                    <div
-                        className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.55)_100%)]"/>
+                    {tour?.images && tour.images.length > 1 ? (
+                        // Swiper slider for multiple images
+                        <Swiper
+                            spaceBetween={0}
+                            slidesPerView={1}
+                            loop={true}
+                            autoplay={{ delay: 5000 }}
+                            pagination={{ clickable: true }}
+                            className="h-full"
+                        >
+                            {tour.images.map((img, idx) => (
+                                <SwiperSlide key={idx} className="h-full">
+                                    <img
+                                        src={img}
+                                        alt={`${tour.title} - ${idx + 1}`}
+                                        className="w-full h-full object-cover"
+                                    />
+                                </SwiperSlide>
+                            ))}
+                        </Swiper>
+                    ) : (
+                        // Single image
+                        <img
+                            src={tour?.images?.[0]}
+                            alt={tour?.title}
+                            className="w-full h-full object-cover"
+                        />
+                    )}
+
+                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.55)_100%)]" />
                     <div className="absolute bottom-6 left-0 right-0">
-                        <div
-                            className="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                        <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
                             <div>
                                 <h1 className="text-white text-3xl sm:text-4xl font-heading font-bold mb-2">{tour?.title}</h1>
                                 <div className="flex flex-wrap gap-3 text-white/90">
-                                    <div className="flex items-center gap-1"><Icon name="MapPin"
-                                                                                   size={16}/><span>{tour?.location}</span>
-                                    </div>
-                                    <div className="flex items-center gap-1"><Icon name="Calendar"
-                                                                                   size={16}/><span>{tour?.duration} Days</span>
-                                    </div>
-                                    <div className="flex items-center gap-1"><Icon name="Star"
-                                                                                   size={16}/><span>{tour?.rating || '4.8'}</span>
-                                    </div>
+                                    <div className="flex items-center gap-1"><Icon name="MapPin" size={16}/><span>{tour?.location}</span></div>
+                                    <div className="flex items-center gap-1"><Icon name="Calendar" size={16}/><span>{tour?.duration} Days</span></div>
+                                    <div className="flex items-center gap-1"><Icon name="Star" size={16}/><span>{tour?.rating || '4.8'}</span></div>
                                 </div>
                             </div>
                             <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 text-right shadow-lg">
                                 <div className="text-muted-foreground text-sm">Starting from</div>
                                 <div className="flex items-center justify-end gap-2">
-                                    <span
-                                        className="text-3xl font-bold text-foreground">₹{(tour?.price || 0).toLocaleString()}</span>
+                                    <span className="text-3xl font-bold text-foreground">₹{(tour?.price || 0).toLocaleString()}</span>
                                     {Number(tour?.originalPrice) > Number(tour?.price) && (
-                                        <span
-                                            className="text-lg text-muted-foreground line-through">₹{Number(tour?.originalPrice || 0).toLocaleString()}</span>
+                                        <span className="text-lg text-muted-foreground line-through">₹{Number(tour?.originalPrice || 0).toLocaleString()}</span>
                                     )}
                                 </div>
                             </div>
@@ -258,6 +331,7 @@ const TourDetails = () => {
                     </div>
                 </div>
             </section>
+
 
             {/* Chips row */}
             <section className="hidden md:block">
@@ -430,7 +504,7 @@ const TourDetails = () => {
                                     <li className="flex items-center justify-between"><span>Sharing</span><span
                                         className="text-foreground font-medium">{sharing}</span></li>
                                 </ul>
-                                <Button onClick={handleBook} fullWidth className="bg-primary hover:bg-primary/90"
+                                <Button onClick={handleWhatsAppBooking} fullWidth className="bg-primary hover:bg-primary/90"
                                         iconName="MessageCircle" iconPosition="left">
                                     Book / Inquire on WhatsApp
                                 </Button>
@@ -488,32 +562,74 @@ const TourDetails = () => {
             </section>
 
             {/* Modal */}
-            <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                <h2 className="text-lg font-semibold mb-4">Enter your details</h2>
+            <Modal open={isModalOpen} onClose={() => !isSubmitting && setIsModalOpen(false)}>
+                <h2 className="text-lg font-semibold mb-4">Enter your details to download schedule</h2>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-foreground mb-1">Name</label>
+                        <label className="block text-sm font-medium text-foreground mb-1">Name *</label>
                         <input
                             {...register('name', {required: true})}
-                            className="w-full border border-border rounded-lg p-2"
-                            placeholder="Your Name"
+                            className="w-full border border-border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                            placeholder="Your Full Name"
+                            disabled={isSubmitting}
                         />
                         {errors.name && <span className="text-red-500 text-xs">Name is required</span>}
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-foreground mb-1">Contact</label>
+                        <label className="block text-sm font-medium text-foreground mb-1">
+                            Contact Number *
+                        </label>
                         <input
-                            {...register('contact', {required: true})}
-                            className="w-full border border-border rounded-lg p-2"
-                            placeholder="Your Contact"
+                            {...register('contact', {
+                                required: 'Contact number is required',
+                                pattern: {
+                                    value: /^[0-9]{10}$/,
+                                    message: 'Contact number must be exactly 10 digits'
+                                }
+                            })}
+                            className="w-full border border-border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                            placeholder="Your Contact Number"
+                            disabled={isSubmitting}
                         />
-                        {errors.contact && <span className="text-red-500 text-xs">Contact is required</span>}
+                        {errors.contact && (
+                            <span className="text-red-500 text-xs">
+      {errors.contact.message}
+    </span>
+                        )}
                     </div>
-                    <button type="submit" className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90">
-                        Submit & Download
+
+
+                    {/* Display selected tour info for confirmation */}
+                    <div className="p-3 bg-gray-50 rounded-lg text-sm border border-border">
+                        <p className="font-medium text-foreground">Tour Details:</p>
+                        <p><strong>Tour:</strong> {tour?.title}</p>
+                        <p><strong>Date:</strong> {selectedDate || 'Not selected'}</p>
+                        <p><strong>Sharing:</strong> {sharing} sharing</p>
+                        <p><strong>Package:</strong> {selectedPackage?.from || 'Default'}</p>
+                    </div>
+
+                    <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                    >
+                        {isSubmitting ? (
+                            <>
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                Processing...
+                            </>
+                        ) : (
+                            'Submit & Download Schedule'
+                        )}
                     </button>
+
+                    <p className="text-xs text-muted-foreground text-center">
+                        We'll save your details and generate your personalized schedule PDF.
+                    </p>
                 </form>
             </Modal>
+
+            {/* Hidden PDF element */}
             <div style={{position: "absolute", left: "-9999px", top: 0}}>
                 <PdfSchedule ref={pdfRef} tour={tour}/>
             </div>

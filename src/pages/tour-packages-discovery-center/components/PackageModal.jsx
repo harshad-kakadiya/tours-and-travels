@@ -57,7 +57,7 @@ const PackageModal = ({ package: pkg, isOpen, onClose }) => {
   const handleInquirySubmit = (e) => {
     e?.preventDefault();
     const message = encodeURIComponent(`Hi! I'm interested in "${pkg?.title}" package.\n\nDetails:\nName: ${inquiryForm?.name}\nEmail: ${inquiryForm?.email}\nPhone: ${inquiryForm?.phone}\nTravel Date: ${inquiryForm?.travelDate}\nTravelers: ${inquiryForm?.travelers}\nMessage: ${inquiryForm?.message}`);
-    window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+    window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
   };
 
   const downloadBrochure = () => {
@@ -413,7 +413,7 @@ const PackageModal = ({ package: pkg, isOpen, onClose }) => {
                     variant="default"
                     onClick={() => {
                       const message = encodeURIComponent(`Hi! I'm interested in the "${pkg?.title}" package. Could you provide more details?`);
-                      window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+                      window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
                     }}
                     iconName="MessageCircle"
                     iconPosition="left"

@@ -63,8 +63,8 @@ const HomepagePremiumTravelDiscoveryHub = () => {
                         "name": "WanderWise Tours",
                         "description": "Premium travel agency specializing in authentic Indian experiences",
                         "url": "https://wanderwisetours.com",
-                        "telephone": "+919876543210",
-                        "email": "info@wanderwisetours.com",
+                        "telephone": "+919725855858",
+                        "email": "mychoiceholiday889@gmail.com",
                         "address": {
                             "@type": "PostalAddress",
                             "addressCountry": "IN",

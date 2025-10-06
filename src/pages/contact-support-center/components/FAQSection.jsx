@@ -13,7 +13,7 @@ const FAQSection = () => {
         {
           id: 1,
           question: "How do I book a tour package with WanderWise?",
-          answer: `You can book a tour package in multiple ways:\n• Fill out our inquiry form on the website\n• Contact us via WhatsApp at +91 98765 43210\n• Call our booking hotline directly\n• Visit our office in Connaught Place, New Delhi\n\nOur travel experts will help you customize the perfect itinerary based on your preferences and budget.`
+          answer: `You can book a tour package in multiple ways:\n• Fill out our inquiry form on the website\n• Contact us via WhatsApp at +91 97258 55858\n• Call our booking hotline directly\n• Visit our office in Connaught Place, New Delhi\n\nOur travel experts will help you customize the perfect itinerary based on your preferences and budget.`
         },
         {
           id: 2,
@@ -55,7 +55,7 @@ const FAQSection = () => {
         {
           id: 7,
           question: "How can I reach customer support during my trip?",
-          answer: `We provide 24/7 support during your trip:\n• Emergency helpline: +91 98765 43211\n• WhatsApp support: +91 98765 43210\n• Email: emergency@wanderwise.com\n• Local coordinator contact details provided\n\nOur support team can assist with any issues, changes, or emergencies during your travel.`
+          answer: `We provide 24/7 support during your trip:\n• Emergency helpline: +91 97258 55858\n• WhatsApp support: +91 97258 55858\n• Email: emergency@wanderwise.com\n• Local coordinator contact details provided\n\nOur support team can assist with any issues, changes, or emergencies during your travel.`
         },
         {
           id: 8,
@@ -156,20 +156,14 @@ const FAQSection = () => {
               <button
                 onClick={() => {
                   const message = encodeURIComponent("Hi! I have some questions that aren't covered in your FAQ. Could you please help me?");
-                  window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+                  window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
                 }}
                 className="inline-flex items-center justify-center px-6 py-3 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-lg font-medium transition-colors duration-brand-fast thumb-friendly"
               >
                 <Icon name="MessageCircle" size={20} className="mr-2" />
                 Chat on WhatsApp
               </button>
-              <button
-                onClick={() => window.open('tel:+919876543210', '_self')}
-                className="inline-flex items-center justify-center px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-lg font-medium transition-colors duration-brand-fast thumb-friendly"
-              >
-                <Icon name="Phone" size={20} className="mr-2" />
-                Call Us Now
-              </button>
+
             </div>
           </div>
         </div>

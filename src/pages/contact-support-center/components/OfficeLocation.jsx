@@ -6,7 +6,7 @@ const OfficeLocation = () => {
   const officeDetails = {
     address: "WanderWise Tours Pvt. Ltd.\n3rd Floor, Travel Hub Complex\nConnaught Place, New Delhi - 110001\nIndia",
     coordinates: "28.6139,77.2090", // New Delhi coordinates
-    phone: "+91 98765 43210",
+    phone: "+91 97258 55858",
     email: "info@wanderwise.com",
     hours: "Monday - Sunday: 9:00 AM - 9:00 PM"
   };

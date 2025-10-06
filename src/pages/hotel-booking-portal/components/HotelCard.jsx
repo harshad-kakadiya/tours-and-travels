@@ -20,7 +20,7 @@ const HotelCard = ({ hotel, onInquire, onViewDetails }) => {
 
   const handleWhatsAppInquiry = () => {
     const message = encodeURIComponent(`Hi! I'm interested in ${hotel?.name} in ${hotel?.location}. Could you provide more details about availability and pricing?`);
-    window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+    window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
   };
 
   const getAmenityIcon = (name) => {

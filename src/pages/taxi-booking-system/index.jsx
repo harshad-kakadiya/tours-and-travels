@@ -26,7 +26,7 @@ const TaxiBookingSystem = () => {
         const message = encodeURIComponent("Hi! I need help with taxi booking. Can you assist me?");
         // Open WhatsApp in a new tab after a short delay to show loader effect
         setTimeout(() => {
-            window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+            window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
             setLoading(false);
         }, 500);
     };
@@ -154,64 +154,64 @@ const TaxiBookingSystem = () => {
                 </section>
 
                 {/* Quick Stats */}
-                <section className="py-12 bg-primary text-white">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                            <div>
-                                <div className="text-3xl font-bold mb-2">50K+</div>
-                                <div className="text-primary-foreground/80">Happy Customers</div>
-                            </div>
-                            <div>
-                                <div className="text-3xl font-bold mb-2">500+</div>
-                                <div className="text-primary-foreground/80">Verified Drivers</div>
-                            </div>
-                            <div>
-                                <div className="text-3xl font-bold mb-2">25+</div>
-                                <div className="text-primary-foreground/80">Cities Covered</div>
-                            </div>
-                            <div>
-                                <div className="text-3xl font-bold mb-2">4.8</div>
-                                <div className="text-primary-foreground/80">Average Rating</div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                {/*<section className="py-12 bg-primary text-white">*/}
+                {/*    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">*/}
+                {/*        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">*/}
+                {/*            <div>*/}
+                {/*                <div className="text-3xl font-bold mb-2">50K+</div>*/}
+                {/*                <div className="text-primary-foreground/80">Happy Customers</div>*/}
+                {/*            </div>*/}
+                {/*            <div>*/}
+                {/*                <div className="text-3xl font-bold mb-2">500+</div>*/}
+                {/*                <div className="text-primary-foreground/80">Verified Drivers</div>*/}
+                {/*            </div>*/}
+                {/*            <div>*/}
+                {/*                <div className="text-3xl font-bold mb-2">25+</div>*/}
+                {/*                <div className="text-primary-foreground/80">Cities Covered</div>*/}
+                {/*            </div>*/}
+                {/*            <div>*/}
+                {/*                <div className="text-3xl font-bold mb-2">4.8</div>*/}
+                {/*                <div className="text-primary-foreground/80">Average Rating</div>*/}
+                {/*            </div>*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*</section>*/}
 
                 {/* CTA Section */}
-                <section className="py-16 bg-gradient-to-r from-secondary/10 to-accent/10">
-                    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                        <h2 className="text-3xl font-bold text-foreground mb-4">
-                            Ready to Book Your Ride?
-                        </h2>
-                        <p className="text-xl text-muted-foreground mb-8">
-                            Join thousands of satisfied customers who trust WanderWise Tours for their transportation needs
-                        </p>
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <Button
-                                variant="default"
-                                size="lg"
-                                onClick={() => handleServiceChange('fixed-route')}
-                                iconName="MapPin"
-                                iconPosition="left"
-                                iconSize={16}
-                                disabled={loading}
-                            >
-                                Browse Packages
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="lg"
-                                onClick={() => handleServiceChange('per-km')}
-                                iconName="Calculator"
-                                iconPosition="left"
-                                iconSize={16}
-                                disabled={loading}
-                            >
-                                Calculate Fare
-                            </Button>
-                        </div>
-                    </div>
-                </section>
+                {/*<section className="py-16 bg-gradient-to-r from-secondary/10 to-accent/10">*/}
+                {/*    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">*/}
+                {/*        <h2 className="text-3xl font-bold text-foreground mb-4">*/}
+                {/*            Ready to Book Your Ride?*/}
+                {/*        </h2>*/}
+                {/*        <p className="text-xl text-muted-foreground mb-8">*/}
+                {/*            Join thousands of satisfied customers who trust WanderWise Tours for their transportation needs*/}
+                {/*        </p>*/}
+                {/*        <div className="flex flex-col sm:flex-row gap-4 justify-center">*/}
+                {/*            <Button*/}
+                {/*                variant="default"*/}
+                {/*                size="lg"*/}
+                {/*                onClick={() => handleServiceChange('fixed-route')}*/}
+                {/*                iconName="MapPin"*/}
+                {/*                iconPosition="left"*/}
+                {/*                iconSize={16}*/}
+                {/*                disabled={loading}*/}
+                {/*            >*/}
+                {/*                Browse Packages*/}
+                {/*            </Button>*/}
+                {/*            <Button*/}
+                {/*                variant="outline"*/}
+                {/*                size="lg"*/}
+                {/*                onClick={() => handleServiceChange('per-km')}*/}
+                {/*                iconName="Calculator"*/}
+                {/*                iconPosition="left"*/}
+                {/*                iconSize={16}*/}
+                {/*                disabled={loading}*/}
+                {/*            >*/}
+                {/*                Calculate Fare*/}
+                {/*            </Button>*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*</section>*/}
 
             </div>
         </>

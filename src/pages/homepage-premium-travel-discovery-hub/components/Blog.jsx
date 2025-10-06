@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Icon from "../../../components/AppIcon";
 import { Link } from "react-router-dom";
 import Button from "../../../components/ui/Button";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 
 const Blog = () => {
     const [blogPosts, setBlogPosts] = useState([]);
@@ -43,6 +45,22 @@ const Blog = () => {
     const getImageUrl = (imageUrl) => {
         if (!imageUrl) return 'https://www.holidify.com/images/bgImages/HIMACHAL-PRADESH.jpg';
         return imageUrl.startsWith('http') ? imageUrl : imageUrl;
+    };
+
+    // Function to truncate markdown content while preserving plain text
+    const truncateMarkdown = (markdown, maxLength) => {
+        if (!markdown) return '';
+
+        // Remove markdown syntax to get plain text
+        const plainText = markdown
+            .replace(/[#*`\[\]()!]/g, '') // Remove basic markdown syntax
+            .replace(/\n/g, ' ') // Replace newlines with spaces
+            .replace(/\s+/g, ' ') // Collapse multiple spaces
+            .trim();
+
+        // Truncate to max length
+        if (plainText.length <= maxLength) return plainText;
+        return plainText.substring(0, maxLength) + '...';
     };
 
     return (
@@ -97,14 +115,14 @@ const Blog = () => {
 
                             return (
                                 <div
-                                    key={idx}
-                                    className="flex flex-col bg-white rounded-lg overflow-hidden shadow-md transition-all duration-300 transform hover:shadow-2xl hover:scale-105 group"
+                                    key={post._id || idx}
+                                    className="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
                                 >
-                                    <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 w-full overflow-hidden">
+                                    <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 w-full">
                                         <img
                                             src={imgUrl}
                                             alt={postTitle}
-                                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                            className="absolute inset-0 w-full h-full object-cover"
                                             loading="lazy"
                                             onError={(e) => {
                                                 e.target.src = 'https://www.holidify.com/images/bgImages/HIMACHAL-PRADESH.jpg';
@@ -119,9 +137,16 @@ const Blog = () => {
                                         <h3 className="font-bold text-blue-900 text-base uppercase mb-2 line-clamp-2">
                                             {postTitle}
                                         </h3>
-                                        <p className="text-sm text-gray-600 flex-grow line-clamp-3">
-                                            {postContent.substring(0, 120)}...
-                                        </p>
+                                        <div className="text-sm text-gray-600 flex-grow line-clamp-3">
+                                            <ReactMarkdown
+                                                rehypePlugins={[rehypeRaw]}
+                                                components={{
+                                                    p: ({ node, ...props }) => <p {...props} className="mb-1" />
+                                                }}
+                                            >
+                                                {truncateMarkdown(postContent, 120)}
+                                            </ReactMarkdown>
+                                        </div>
                                         <Link
                                             to={`/blog/${post._id}`}
                                             className="text-blue-700 mt-4 inline-block hover:underline text-sm"

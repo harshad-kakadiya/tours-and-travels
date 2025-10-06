@@ -208,19 +208,12 @@ const SupportTestimonials = () => {
               <button
                 onClick={() => {
                   const message = encodeURIComponent("Hi! I'd like to experience your customer support. Can you help me plan my next trip?");
-                  window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+                  window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
                 }}
                 className="inline-flex items-center justify-center px-6 py-3 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-lg font-medium transition-colors duration-brand-fast thumb-friendly"
               >
                 <Icon name="MessageCircle" size={20} className="mr-2" />
                 Start Planning Your Trip
-              </button>
-              <button
-                onClick={() => window.open('tel:+919876543210', '_self')}
-                className="inline-flex items-center justify-center px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-lg font-medium transition-colors duration-brand-fast thumb-friendly"
-              >
-                <Icon name="Phone" size={20} className="mr-2" />
-                Speak with an Expert
               </button>
             </div>
           </div>

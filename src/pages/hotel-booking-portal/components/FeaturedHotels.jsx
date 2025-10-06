@@ -6,7 +6,7 @@ import Button from '../../../components/ui/Button';
 const FeaturedHotels = ({ hotels, onViewDetails }) => {
   const handleWhatsAppInquiry = (hotel) => {
     const message = encodeURIComponent(`Hi! I'm interested in the featured hotel ${hotel?.name} in ${hotel?.location}. Could you provide more details about availability and special offers?`);
-    window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+    window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
   };
 
   return (

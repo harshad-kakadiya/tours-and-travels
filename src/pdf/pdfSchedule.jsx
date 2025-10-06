@@ -92,7 +92,7 @@ const PdfSchedule = forwardRef(({ tour }, ref) => (
                 <div className="text-right text-white">
                     <div className="mb-2 flex gap-2 justify-end">
                         <p className="text-xl text-gray-400">Contact Number:</p>
-                        <p className="text-xl font-semibold">+91 98765 43210</p>
+                        <p className="text-xl font-semibold">+91 97258 55858</p>
                     </div>
 
                     <div className="flex gap-2 justify-end">

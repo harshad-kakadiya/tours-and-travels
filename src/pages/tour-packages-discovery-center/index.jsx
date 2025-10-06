@@ -91,22 +91,9 @@ const TourPackagesDiscoveryCenter = () => {
 
     useEffect(() => {
         const params = new URLSearchParams(locationHook.search);
-        const destination = params.get('destination') || '';
-        const budget = params.get('budget') || '';
-        const duration = params.get('duration') || '';
-        const travelStyle = params.get('travelStyle') || '';
         const state = params.get('state') || '';
-        
-        // Update filters with URL parameters
-        setFilters((prev) => ({ 
-            ...prev, 
-            state: state || destination, // Use either state or destination parameter
-            budget: budget,
-            duration: duration,
-            theme: travelStyle // Map travelStyle to theme
-        }));
-        
-        if (state || destination) {
+        if (state) {
+            setFilters((prev) => ({ ...prev, state }));
             setSearchTerm('');
         }
     }, [locationHook.search]);

@@ -47,7 +47,7 @@ Special Requests: ${inquiryData?.specialRequests}
 
 Please provide availability and pricing details.`);
     
-    window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+    window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
     setShowInquiryForm(false);
     onClose();
   };
@@ -241,7 +241,7 @@ Please provide availability and pricing details.`);
                     variant="default"
                     onClick={() => {
                       const message = encodeURIComponent(`Hi! I'm interested in booking ${hotel?.name} in ${hotel?.location}. Could you help me with availability and pricing?`);
-                      window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+                      window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
                     }}
                     iconName="MessageCircle"
                     iconPosition="left"

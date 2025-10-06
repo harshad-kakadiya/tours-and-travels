@@ -43,7 +43,7 @@ const HotelDetails = () => {
 
   const onWhatsApp = () => {
     const msg = encodeURIComponent(`Hi! I'm interested in ${hotel?.name}. Please share details.`);
-    window.open(`https://wa.me/919876543210?text=${msg}`, '_blank');
+    window.open(`https://wa.me/919725855858?text=${msg}`, '_blank');
   };
 
   if (loading) {

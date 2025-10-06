@@ -119,7 +119,7 @@ const AboutUs = () => {
                                 key={index}
                                 className={"bg-white p-6 rounded-lg shadow-sm border border-gray-300"}
                             >
-                                <div className="text-indigo-600 mb-4">{icon}</div>
+                                <div className="text-[#4891C9] mb-4">{icon}</div>
                                 <h4 className="text-lg font-medium text-gray-900">{title}</h4>
                                 <p className="mt-2 text-gray-600">{description}</p>
                             </div>

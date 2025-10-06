@@ -37,7 +37,7 @@ const BookingModal = ({ isOpen, onClose, bookingData, selectedDriver }) => {
 
   const handleWhatsAppContact = () => {
     const message = encodeURIComponent(`Hi! I've booked a taxi through WanderWise Tours. Booking ID: WW${Date.now()?.toString()?.slice(-6)}. Please confirm my ride details.`);
-    window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+    window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
   };
 
   if (bookingConfirmed) {
