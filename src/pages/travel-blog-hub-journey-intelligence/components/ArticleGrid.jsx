@@ -19,7 +19,7 @@ const mockArticles = [
         publishDate: new Date().toISOString(),
         tags: ['Himalayas', 'Trekking', 'Mountain', 'Adventure', 'Nature']
     },
-    // ... other mock articles
+    // ... add other mock articles here
 ];
 
 // Helper to truncate Markdown safely
@@ -33,6 +33,7 @@ const ArticleGrid = ({ activeCategory, searchQuery = '' }) => {
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [visibleCount, setVisibleCount] = useState(6); // <-- Show 6 initially
     const navigate = useNavigate();
     const resultsRef = useRef(null);
 
@@ -163,7 +164,7 @@ const ArticleGrid = ({ activeCategory, searchQuery = '' }) => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                    {filteredArticles.map((article) => {
+                    {filteredArticles.slice(0, visibleCount).map((article) => {
                         const date = article.publishDate ? new Date(article.publishDate) : new Date();
                         const formattedDate = {
                             day: date.getDate(),
@@ -196,7 +197,7 @@ const ArticleGrid = ({ activeCategory, searchQuery = '' }) => {
                                     </h3>
                                     <div className="text-sm text-gray-600 flex-grow line-clamp-3">
                                         <ReactMarkdown
-                                            rehypePlugins={[rehypeRaw]} // <-- This allows HTML inside Markdown to render
+                                            rehypePlugins={[rehypeRaw]}
                                             components={{
                                                 p: ({ node, ...props }) => <p {...props} className="mb-1" />
                                             }}
@@ -216,12 +217,17 @@ const ArticleGrid = ({ activeCategory, searchQuery = '' }) => {
                     })}
                 </div>
 
-                <div className="text-center mt-12">
-                    <button className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center space-x-2 mx-auto">
-                        <span>Load More Articles</span>
-                        <Icon name="ChevronDown" size={18} />
-                    </button>
-                </div>
+                {visibleCount < filteredArticles.length && (
+                    <div className="text-center mt-12">
+                        <button
+                            onClick={() => setVisibleCount(prev => prev + 6)}
+                            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center space-x-2 mx-auto"
+                        >
+                            <span>Load More Articles</span>
+                            <Icon name="ChevronDown" size={18} />
+                        </button>
+                    </div>
+                )}
             </div>
         </section>
     );
