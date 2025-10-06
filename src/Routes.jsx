@@ -22,6 +22,7 @@ import AboutUs from './pages/about-us';
 // Component to redirect authenticated users away from auth pages
 const AuthRedirect = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
+
   
   if (loading) {
     return (
