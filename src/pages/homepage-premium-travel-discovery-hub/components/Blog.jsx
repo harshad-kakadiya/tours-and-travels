@@ -47,20 +47,15 @@ const Blog = () => {
         return imageUrl.startsWith('http') ? imageUrl : imageUrl;
     };
 
-    // Function to truncate markdown content while preserving plain text
     const truncateMarkdown = (markdown, maxLength) => {
         if (!markdown) return '';
-
-        // Remove markdown syntax to get plain text
         const plainText = markdown
-            .replace(/[#*`\[\]()!]/g, '') // Remove basic markdown syntax
-            .replace(/\n/g, ' ') // Replace newlines with spaces
-            .replace(/\s+/g, ' ') // Collapse multiple spaces
+            .replace(/[#*`\[\]()!]/g, '')
+            .replace(/\n/g, ' ')
+            .replace(/\s+/g, ' ')
             .trim();
 
-        // Truncate to max length
-        if (plainText.length <= maxLength) return plainText;
-        return plainText.substring(0, maxLength) + '...';
+        return plainText.length <= maxLength ? plainText : plainText.substring(0, maxLength) + '...';
     };
 
     return (
@@ -116,13 +111,14 @@ const Blog = () => {
                             return (
                                 <div
                                     key={post._id || idx}
-                                    className="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+                                    className="flex flex-col bg-white rounded-lg shadow-md overflow-hidden group transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
                                 >
-                                    <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 w-full">
+                                    {/* Image */}
+                                    <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 w-full overflow-hidden">
                                         <img
                                             src={imgUrl}
                                             alt={postTitle}
-                                            className="absolute inset-0 w-full h-full object-cover"
+                                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                             loading="lazy"
                                             onError={(e) => {
                                                 e.target.src = 'https://www.holidify.com/images/bgImages/HIMACHAL-PRADESH.jpg';
@@ -133,10 +129,13 @@ const Blog = () => {
                                             <div className="text-sm">{date.month}</div>
                                         </div>
                                     </div>
+
+                                    {/* Content */}
                                     <div className="flex flex-col flex-grow p-4 sm:p-5">
                                         <h3 className="font-bold text-blue-900 text-base uppercase mb-2 line-clamp-2">
                                             {postTitle}
                                         </h3>
+
                                         <div className="text-sm text-gray-600 flex-grow line-clamp-3">
                                             <ReactMarkdown
                                                 rehypePlugins={[rehypeRaw]}
@@ -147,6 +146,7 @@ const Blog = () => {
                                                 {truncateMarkdown(postContent, 120)}
                                             </ReactMarkdown>
                                         </div>
+
                                         <Link
                                             to={`/blog/${post._id}`}
                                             className="text-blue-700 mt-4 inline-block hover:underline text-sm"
