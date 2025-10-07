@@ -75,7 +75,7 @@ const TourDetails = () => {
                 logging: true,
                 backgroundColor: '#ffffff'
             });
-            
+
             const imgData = canvas.toDataURL("image/png");
 
             // Use landscape orientation for better fit
@@ -266,11 +266,28 @@ const TourDetails = () => {
 
     const handleWhatsAppBooking = () => {
         const message = encodeURIComponent(
-            `Hi! I'm interested in the ${tour?.title} on ${selectedDate || 'my preferred date'} for ${sharing} sharing.` +
-            `*Group Size:* ${tour?.groupSize || 'Not specified'}\n\n`
+            `Hi! I'm interested in booking the ${tour?.title}.\n\n` +
+            `*Tour Details:*\n` +
+            `📍 ${tour?.location}\n` +
+            `📅 ${selectedDate || 'My preferred date'}\n` +
+            `👥 ${sharing} sharing\n` +
+            `💰 Package: ${selectedPackage?.from || 'Standard'}\n` +
+            `⏱️ ${tour?.duration} Days\n` +
+            `👨‍👩‍👧‍👦 Group Size: ${tour?.groupSize || 'Not specified'}\n\n` +
+            `Please share more details and availability.`
         );
 
         window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+    };
+
+    // Function to format date for display
+    const formatDateForDisplay = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-IN', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        });
     };
 
     return (
@@ -402,25 +419,28 @@ const TourDetails = () => {
 
                         {/* Date picker */}
                         <Section title="Select Date">
-                            <div className="flex flex-wrap gap-2">
-                                {(Array.isArray(tour?.availableDates) ? tour?.availableDates : (tour?.availableDates ? [tour?.availableDates] : [])).map((dRaw) => {
-                                    const dateObj = new Date(dRaw);
-                                    const d = isNaN(dateObj.getTime()) ? String(dRaw) : dateObj.toLocaleDateString(undefined, {
-                                        month: 'short',
-                                        day: '2-digit',
-                                        year: undefined
-                                    });
-                                    return (
-                                        <button
-                                            key={String(dRaw)}
-                                            onClick={() => setSelectedDate(d)}
-                                            className={`px-3 py-1.5 rounded-md border text-sm shadow-sm ${selectedDate === d ? 'bg-primary text-white border-primary' : 'bg-card border-border hover:border-muted-foreground/30'}`}
-                                        >
-                                            {d}
-                                        </button>
-                                    );
-                                })}
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-foreground mb-2">
+                                    Select your preferred travel date
+                                </label>
+                                <input
+                                    type="date"
+                                    value={selectedDate}
+                                    onChange={(e) => setSelectedDate(e.target.value)}
+                                    min={new Date().toISOString().split('T')[0]}
+                                    className="w-full max-w-xs border border-border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                />
                             </div>
+
+                            {/* Selected date display */}
+                            {selectedDate && (
+                                <div className="flex items-center gap-2 p-3 bg-primary/10 border border-primary/20 rounded-lg">
+                                    <Icon name="Calendar" size={16} className="text-primary" />
+                                    <span className="text-sm font-medium text-foreground">
+                                        Selected Date: <span className="text-primary">{formatDateForDisplay(selectedDate)}</span>
+                                    </span>
+                                </div>
+                            )}
                         </Section>
 
                         {/* Sharing type */}
@@ -485,24 +505,31 @@ const TourDetails = () => {
                                         const original = hasDiscount ? Math.round(discounted * ratio) : null;
                                         return (
                                             <span className="flex items-center gap-2">
-                          <span className="text-2xl font-bold text-foreground">₹{discounted.toLocaleString()}</span>
+                                                <span className="text-2xl font-bold text-foreground">₹{discounted.toLocaleString()}</span>
                                                 {hasDiscount && (
                                                     <span
                                                         className="text-base text-muted-foreground line-through">₹{Number(original || 0).toLocaleString()}</span>
                                                 )}
-                        </span>
+                                            </span>
                                         );
                                     })()}
                                 </div>
                                 <ul className="text-sm text-muted-foreground mb-4 space-y-1">
-                                    <li className="flex items-center justify-between"><span>Package</span><span
-                                        className="text-foreground font-medium">{selectedPackage?.from || 'Select package'}</span>
+                                    <li className="flex items-center justify-between">
+                                        <span>Package</span>
+                                        <span className="text-foreground font-medium">{selectedPackage?.from || 'Select package'}</span>
                                     </li>
-                                    <li className="flex items-center justify-between"><span>Date</span><span
-                                        className="text-foreground font-medium">{selectedDate || 'Select date'}</span>
+                                    <li className="flex items-center justify-between">
+                                        <span>Date</span>
+                                        <span className="text-foreground font-medium flex items-center gap-1">
+                                            <Icon name="Calendar" size={14} />
+                                            {selectedDate ? formatDateForDisplay(selectedDate) : 'Select date'}
+                                        </span>
                                     </li>
-                                    <li className="flex items-center justify-between"><span>Sharing</span><span
-                                        className="text-foreground font-medium">{sharing}</span></li>
+                                    <li className="flex items-center justify-between">
+                                        <span>Sharing</span>
+                                        <span className="text-foreground font-medium">{sharing}</span>
+                                    </li>
                                 </ul>
                                 <Button onClick={handleWhatsAppBooking} fullWidth className="bg-primary hover:bg-primary/90"
                                         iconName="MessageCircle" iconPosition="left">
@@ -593,17 +620,16 @@ const TourDetails = () => {
                         />
                         {errors.contact && (
                             <span className="text-red-500 text-xs">
-      {errors.contact.message}
-    </span>
+                                {errors.contact.message}
+                            </span>
                         )}
                     </div>
-
 
                     {/* Display selected tour info for confirmation */}
                     <div className="p-3 bg-gray-50 rounded-lg text-sm border border-border">
                         <p className="font-medium text-foreground">Tour Details:</p>
                         <p><strong>Tour:</strong> {tour?.title}</p>
-                        <p><strong>Date:</strong> {selectedDate || 'Not selected'}</p>
+                        <p><strong>Date:</strong> {selectedDate ? formatDateForDisplay(selectedDate) : 'Not selected'}</p>
                         <p><strong>Sharing:</strong> {sharing} sharing</p>
                         <p><strong>Package:</strong> {selectedPackage?.from || 'Default'}</p>
                     </div>
