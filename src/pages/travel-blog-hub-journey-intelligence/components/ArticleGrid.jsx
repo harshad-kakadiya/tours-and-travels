@@ -19,7 +19,28 @@ const mockArticles = [
         publishDate: new Date().toISOString(),
         tags: ['Himalayas', 'Trekking', 'Mountain', 'Adventure', 'Nature']
     },
-    // ... add other mock articles here
+    {
+        _id: 'article-2',
+        title: 'Cultural Heritage of Rajasthan: Palaces and Forts',
+        content: 'Rajasthan is known for its rich cultural heritage and magnificent architecture. The palaces and forts tell stories of the royal era and the brave Rajput warriors.',
+        blogImage: 'https://images.unsplash.com/photo-1532386233008-7c4f2c1e60d0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        author: { name: 'Priya Singh', avatar: 'https://randomuser.me/api/portraits/women/44.jpg' },
+        category: { title: 'Culture' },
+        readTime: '6 min read',
+        publishDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        tags: ['Rajasthan', 'Culture', 'Heritage', 'Palaces', 'Forts']
+    },
+    {
+        _id: 'article-3',
+        title: 'Beach Paradise: Andaman and Nicobar Islands',
+        content: 'Crystal clear waters, white sandy beaches, and vibrant marine life make Andaman and Nicobar Islands a perfect tropical getaway for beach lovers.',
+        blogImage: 'https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        author: { name: 'Arun Kumar', avatar: 'https://randomuser.me/api/portraits/men/67.jpg' },
+        category: { title: 'Beach' },
+        readTime: '5 min read',
+        publishDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+        tags: ['Andaman', 'Beach', 'Islands', 'Marine Life', 'Tropical']
+    }
 ];
 
 // Helper to truncate Markdown safely
@@ -33,7 +54,8 @@ const ArticleGrid = ({ activeCategory, searchQuery = '' }) => {
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [visibleCount, setVisibleCount] = useState(6); // <-- Show 6 initially
+    const [visibleCount, setVisibleCount] = useState(6);
+    const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
     const navigate = useNavigate();
     const resultsRef = useRef(null);
 
@@ -61,7 +83,7 @@ const ArticleGrid = ({ activeCategory, searchQuery = '' }) => {
                 setArticles(result.data);
             } else {
                 setError('No articles found.');
-                setArticles([]);
+                setArticles(mockArticles);
             }
         } catch (err) {
             console.error('Error fetching articles:', err);
@@ -92,6 +114,110 @@ const ArticleGrid = ({ activeCategory, searchQuery = '' }) => {
             const searchMatch = !searchQuery || article.title.toLowerCase().includes(searchQuery.toLowerCase());
             return categoryMatch && searchMatch;
         });
+
+    // Article card component to avoid repetition
+    const ArticleCard = ({ article, viewMode }) => {
+        const date = article.publishDate ? new Date(article.publishDate) : new Date();
+        const formattedDate = {
+            day: date.getDate(),
+            month: date.toLocaleString('default', { month: 'short' })
+        };
+
+        if (viewMode === 'list') {
+            return (
+                <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                    <div className="md:w-1/3 relative h-48 md:h-auto">
+                        <img
+                            src={getImageUrl(article.blogImage)}
+                            alt={article.title}
+                            className="absolute inset-0 w-full h-full object-cover"
+                            loading="lazy"
+                            onError={(e) => {
+                                e.target.src = 'https://www.holidify.com/images/bgImages/HIMACHAL-PRADESH.jpg';
+                            }}
+                        />
+                        <div className="absolute top-2 left-2 bg-black bg-opacity-60 text-white font-bold px-3 py-2 rounded text-center text-xs">
+                            <div className="text-lg">{formattedDate.day}</div>
+                            <div className="text-sm">{formattedDate.month}</div>
+                        </div>
+                    </div>
+                    <div className="flex flex-col flex-grow p-4 sm:p-5 md:w-2/3">
+                        <h3 className="font-bold text-blue-900 text-base uppercase mb-2 line-clamp-2">
+                            {article.title}
+                        </h3>
+                        <div className="text-sm text-gray-600 flex-grow line-clamp-3 mb-3">
+                            <ReactMarkdown
+                                rehypePlugins={[rehypeRaw]}
+                                components={{
+                                    p: ({ node, ...props }) => <p {...props} className="mb-1" />
+                                }}
+                            >
+                                {truncateMarkdown(article.content, 150)}
+                            </ReactMarkdown>
+                        </div>
+                        <div className="flex justify-between items-center mt-auto">
+                            <span className="text-xs text-gray-500">
+                                {article.readTime || '5 min read'}
+                            </span>
+                            <button
+                                onClick={() => handleReadMore(article._id)}
+                                className="text-blue-700 hover:underline text-sm font-medium"
+                            >
+                                Read more »
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Grid view (default)
+        return (
+            <div className="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 w-full">
+                    <img
+                        src={getImageUrl(article.blogImage)}
+                        alt={article.title}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        loading="lazy"
+                        onError={(e) => {
+                            e.target.src = 'https://www.holidify.com/images/bgImages/HIMACHAL-PRADESH.jpg';
+                        }}
+                    />
+                    <div className="absolute top-2 left-2 bg-black bg-opacity-60 text-white font-bold px-3 py-2 rounded text-center text-xs">
+                        <div className="text-lg">{formattedDate.day}</div>
+                        <div className="text-sm">{formattedDate.month}</div>
+                    </div>
+                </div>
+                <div className="flex flex-col flex-grow p-4 sm:p-5">
+                    <h3 className="font-bold text-blue-900 text-base uppercase mb-2 line-clamp-2">
+                        {article.title}
+                    </h3>
+                    <div className="text-sm text-gray-600 flex-grow line-clamp-3">
+                        <ReactMarkdown
+                            rehypePlugins={[rehypeRaw]}
+                            components={{
+                                p: ({ node, ...props }) => <p {...props} className="mb-1" />
+                            }}
+                        >
+                            {truncateMarkdown(article.content, 120)}
+                        </ReactMarkdown>
+                    </div>
+                    <div className="flex justify-between items-center mt-4">
+                        <span className="text-xs text-gray-500">
+                            {article.readTime || '5 min read'}
+                        </span>
+                        <button
+                            onClick={() => handleReadMore(article._id)}
+                            className="text-blue-700 hover:underline text-sm font-medium"
+                        >
+                            Read more »
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    };
 
     if (loading) {
         return (
@@ -154,67 +280,41 @@ const ArticleGrid = ({ activeCategory, searchQuery = '' }) => {
                         </p>
                     </div>
                     <div className="hidden md:flex items-center space-x-2">
-                        <button className="p-2 rounded-lg border border-border hover:bg-muted/50 transition-colors duration-200">
+                        <button
+                            onClick={() => setViewMode('grid')}
+                            className={`p-2 rounded-lg border transition-colors duration-200 ${
+                                viewMode === 'grid'
+                                    ? 'bg-primary text-primary-foreground border-primary'
+                                    : 'border-border hover:bg-muted/50'
+                            }`}
+                        >
                             <Icon name="Grid3X3" size={20} />
                         </button>
-                        <button className="p-2 rounded-lg border border-border hover:bg-muted/50 transition-colors duration-200">
+                        <button
+                            onClick={() => setViewMode('list')}
+                            className={`p-2 rounded-lg border transition-colors duration-200 ${
+                                viewMode === 'list'
+                                    ? 'bg-primary text-primary-foreground border-primary'
+                                    : 'border-border hover:bg-muted/50'
+                            }`}
+                        >
                             <Icon name="List" size={20} />
                         </button>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                    {filteredArticles.slice(0, visibleCount).map((article) => {
-                        const date = article.publishDate ? new Date(article.publishDate) : new Date();
-                        const formattedDate = {
-                            day: date.getDate(),
-                            month: date.toLocaleString('default', { month: 'short' })
-                        };
-
-                        return (
-                            <div
-                                key={article._id}
-                                className="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
-                            >
-                                <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 w-full">
-                                    <img
-                                        src={getImageUrl(article.blogImage)}
-                                        alt={article.title}
-                                        className="absolute inset-0 w-full h-full object-cover"
-                                        loading="lazy"
-                                        onError={(e) => {
-                                            e.target.src = 'https://www.holidify.com/images/bgImages/HIMACHAL-PRADESH.jpg';
-                                        }}
-                                    />
-                                    <div className="absolute top-2 left-2 bg-black bg-opacity-60 text-white font-bold px-3 py-2 rounded text-center text-xs">
-                                        <div className="text-lg">{formattedDate.day}</div>
-                                        <div className="text-sm">{formattedDate.month}</div>
-                                    </div>
-                                </div>
-                                <div className="flex flex-col flex-grow p-4 sm:p-5">
-                                    <h3 className="font-bold text-blue-900 text-base uppercase mb-2 line-clamp-2">
-                                        {article.title}
-                                    </h3>
-                                    <div className="text-sm text-gray-600 flex-grow line-clamp-3">
-                                        <ReactMarkdown
-                                            rehypePlugins={[rehypeRaw]}
-                                            components={{
-                                                p: ({ node, ...props }) => <p {...props} className="mb-1" />
-                                            }}
-                                        >
-                                            {truncateMarkdown(article.content, 120)}
-                                        </ReactMarkdown>
-                                    </div>
-                                    <button
-                                        onClick={() => handleReadMore(article._id)}
-                                        className="text-blue-700 mt-4 inline-block hover:underline text-sm"
-                                    >
-                                        Read more »
-                                    </button>
-                                </div>
-                            </div>
-                        );
-                    })}
+                <div className={`${
+                    viewMode === 'grid'
+                        ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8'
+                        : 'grid grid-cols-1 gap-6 md:gap-8'
+                }`}>
+                    {filteredArticles.slice(0, visibleCount).map((article) => (
+                        <ArticleCard
+                            key={article._id}
+                            article={article}
+                            viewMode={viewMode}
+                        />
+                    ))}
                 </div>
 
                 {visibleCount < filteredArticles.length && (

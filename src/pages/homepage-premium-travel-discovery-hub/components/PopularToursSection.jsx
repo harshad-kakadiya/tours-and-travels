@@ -7,49 +7,94 @@ import Button from '../../../components/ui/Button';
 
 const PopularToursSection = () => {
     const [popularTours, setPopularTours] = useState([]);
-    const [isLoading, setIsLoading] = useState(true); // Loader state
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         let isMounted = true;
         const fetchTours = async () => {
             try {
-                const res = await fetch('https://tour-travels-be.onrender.com/api/tour');
+                // Fetch popular tours from the API
+                const res = await fetch('https://tour-travels-be.onrender.com/api/tour/highlights');
                 const data = await res.json();
 
-                const list = Array.isArray(data)
-                    ? data
-                    : Array.isArray(data?.data)
-                        ? data?.data
-                        : [data].filter(Boolean);
+                console.log('API Response:', data); // Debug log
 
-                const mapped = list?.slice(0, 6)?.map((t) => {
-                    const durationStr = typeof t?.duration === 'string' ? t?.duration : String(t?.duration || '');
+                // Extract popular tours from the API response
+                let popularList = [];
+
+                if (data && data.popular && Array.isArray(data.popular)) {
+                    // If API returns separate popular array
+                    popularList = data.popular;
+                } else if (Array.isArray(data)) {
+                    // If API returns a single array with all tours
+                    popularList = data.filter(tour =>
+                        tour.type === 'popular' ||
+                        tour.category === 'popular' ||
+                        // If no specific field, use all tours for now
+                        true
+                    );
+                } else if (data && data.data && Array.isArray(data.data)) {
+                    // If API returns { data: [] } structure
+                    popularList = data.data.filter(tour =>
+                        tour.type === 'popular' ||
+                        tour.category === 'popular' ||
+                        true
+                    );
+                }
+
+                console.log('Popular Tours List:', popularList); // Debug log
+
+                const mapped = popularList?.slice(0, 6)?.map((t) => {
+                    // Extract the lowest price from packages
+                    const lowestPrice = t?.packages?.reduce((min, pkg) => {
+                        const packagePrice = Math.min(
+                            pkg?.price || Infinity,
+                            pkg?.sharingTypes?.[0]?.twoSharing || Infinity,
+                            pkg?.sharingTypes?.[0]?.threeSharing || Infinity,
+                            pkg?.sharingTypes?.[0]?.fourSharing || Infinity
+                        );
+                        return Math.min(min, packagePrice);
+                    }, Infinity);
+
+                    const hasDiscount = Number(t?.discount || 0) > 0;
+                    const discountedPrice = hasDiscount ? t?.discountedPrice : lowestPrice;
+                    const originalPrice = hasDiscount ? lowestPrice : undefined;
+
+                    // Get location from state or location field
+                    const location = t?.state?.name || t?.location || '';
+
+                    // Get image from images array or gallery
                     const image = Array.isArray(t?.images) && t?.images?.[0]
                         ? t?.images?.[0]
-                        : (t?.gallery?.[0]?.image || '');
-                    const hasDiscount = Number(t?.discount || 0) > 0;
+                        : Array.isArray(t?.gallery) && t?.gallery?.[0]?.image
+                            ? t?.gallery?.[0]?.image
+                            : '/default-tour-image.jpg';
 
                     return {
                         id: t?._id || t?.id,
-                        title: t?.title,
-                        location: t?.location || t?.state?.name || '',
-                        duration: durationStr || '',
-                        price: `₹${Number(t?.discountedPrice || t?.price || 0).toLocaleString()}`,
-                        originalPrice: hasDiscount ? `₹${Number(t?.price || 0).toLocaleString()}` : undefined,
+                        title: t?.title || 'Untitled Tour',
+                        location: location,
+                        duration: t?.duration || '',
+                        price: `₹${Number(discountedPrice || originalPrice || 0).toLocaleString()}`,
+                        originalPrice: originalPrice ? `₹${Number(originalPrice).toLocaleString()}` : undefined,
                         image,
-                        badge: hasDiscount ? 'Offer' : 'Popular',
+                        badge: hasDiscount ? `Save ${t.discount}%` : 'Popular',
                         badgeColor: hasDiscount ? 'bg-emerald-600' : 'bg-green-500',
+                        discount: t?.discount || 0,
                     };
-                }) || [];
+                })?.filter(tour => tour.price !== '₹0' && tour.price !== '₹NaN') || [];
+
+                console.log('Mapped Popular Tours:', mapped); // Debug log
 
                 if (isMounted) {
                     setPopularTours(mapped);
-                    setIsLoading(false); // Data loaded
+                    setIsLoading(false);
                 }
             } catch (e) {
+                console.error('Error fetching popular tours:', e);
                 if (isMounted) {
                     setPopularTours([]);
-                    setIsLoading(false); // Even on error, stop loading
+                    setIsLoading(false);
                 }
             }
         };
@@ -84,7 +129,7 @@ const PopularToursSection = () => {
                                 size="lg"
                                 iconName="ArrowRight"
                                 iconPosition="right"
-                                className="px-6 py-3 text-base font-semibold border-2 bg-[#4891C9] text-white border-[#4891C9] "
+                                className="px-6 py-3 text-base font-semibold border-2 bg-[#4891C9] text-white border-[#4891C9]"
                             >
                                 View All Tours
                             </Button>
@@ -97,7 +142,7 @@ const PopularToursSection = () => {
                     <div className="flex justify-center items-center min-h-[300px]">
                         <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-primary border-solid"></div>
                     </div>
-                ) : (
+                ) : popularTours.length > 0 ? (
                     <>
                         {/* Tours Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -115,6 +160,7 @@ const PopularToursSection = () => {
                                             src={tour.image}
                                             alt={tour.title}
                                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                            fallback={<div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500">No Image Available</div>}
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
@@ -169,13 +215,30 @@ const PopularToursSection = () => {
                                     size="lg"
                                     iconName="ArrowRight"
                                     iconPosition="right"
-                                    className="px-6 py-3 text-base font-semibold border-2 bg-[#4891C9] text-white border-[#4891C9] "
+                                    className="px-6 py-3 text-base font-semibold border-2 bg-[#4891C9] text-white border-[#4891C9]"
                                 >
                                     View All Tours
                                 </Button>
                             </Link>
                         </div>
                     </>
+                ) : (
+                    <div className="text-center py-12">
+                        <div className="bg-gray-100 rounded-lg p-8 max-w-md mx-auto">
+                            <Icon name="TrendingUp" size={48} className="text-gray-400 mx-auto mb-4" />
+                            <h3 className="text-xl font-semibold text-gray-700 mb-2">No Popular Tours</h3>
+                            <p className="text-gray-500 mb-4">Check back later for popular tour packages.</p>
+                            <Link to="/tour-packages-discovery-center">
+                                <Button
+                                    variant="outline"
+                                    size="lg"
+                                    className="px-6 py-3 text-base font-semibold border-2 bg-[#4891C9] text-white border-[#4891C9]"
+                                >
+                                    Browse All Tours
+                                </Button>
+                            </Link>
+                        </div>
+                    </div>
                 )}
             </div>
         </section>

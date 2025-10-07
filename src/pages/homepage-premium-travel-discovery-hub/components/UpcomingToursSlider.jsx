@@ -13,7 +13,7 @@ import Button from '../../../components/ui/Button';
 const UpcomingToursSlider = () => {
     const [upcomingTours, setUpcomingTours] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [hoveredIndex, setHoveredIndex] = useState(null); // 👈 Hover tracking
+    const [hoveredIndex, setHoveredIndex] = useState(null);
 
     const prevRef = useRef(null);
     const nextRef = useRef(null);
@@ -32,42 +32,92 @@ const UpcomingToursSlider = () => {
 
         const fetchTours = async () => {
             try {
-                const res = await fetch('https://tour-travels-be.onrender.com/api/tour');
+                const res = await fetch('https://tour-travels-be.onrender.com/api/tour/highlights');
                 const data = await res.json();
 
-                const list = Array.isArray(data)
-                    ? data
-                    : Array.isArray(data?.data)
-                        ? data?.data
-                        : [data].filter(Boolean);
+                console.log('API Response:', data); // Debug log
 
-                const mapped = list
+                // Extract the upcoming tours from the API response
+                // Assuming the API returns an object with 'popular' and 'upcoming' arrays
+                let upcomingList = [];
+
+                if (data && data.upcoming && Array.isArray(data.upcoming)) {
+                    // If API returns separate upcoming array
+                    upcomingList = data.upcoming;
+                } else if (Array.isArray(data)) {
+                    // If API returns a single array, filter upcoming tours
+                    // You might need to adjust this filter based on your actual data structure
+                    upcomingList = data.filter(tour =>
+                        tour.type === 'upcoming' ||
+                        tour.category === 'upcoming' ||
+                        // Add other conditions to identify upcoming tours
+                        true // Temporary - show all tours for testing
+                    );
+                } else if (data && data.data && Array.isArray(data.data)) {
+                    // If API returns { data: [] } structure
+                    upcomingList = data.data.filter(tour =>
+                        tour.type === 'upcoming' ||
+                        tour.category === 'upcoming' ||
+                        true // Temporary - show all tours for testing
+                    );
+                }
+
+                console.log('Upcoming List:', upcomingList); // Debug log
+
+                const mapped = upcomingList
                     ?.slice(0, 9)
                     ?.map((t) => {
-                        const durationStr = typeof t?.duration === 'string' ? t?.duration : String(t?.duration || '');
-                        const image =
-                            Array.isArray(t?.images) && t?.images?.[0]
-                                ? t?.images?.[0]
-                                : t?.gallery?.[0]?.image || '';
+                        // Extract the lowest price from packages
+                        const lowestPrice = t?.packages?.reduce((min, pkg) => {
+                            const packagePrice = Math.min(
+                                pkg?.price || Infinity,
+                                pkg?.sharingTypes?.[0]?.twoSharing || Infinity,
+                                pkg?.sharingTypes?.[0]?.threeSharing || Infinity,
+                                pkg?.sharingTypes?.[0]?.fourSharing || Infinity
+                            );
+                            return Math.min(min, packagePrice);
+                        }, Infinity);
+
                         const hasDiscount = Number(t?.discount || 0) > 0;
+                        const discountedPrice = hasDiscount ? t?.discountedPrice : lowestPrice;
+                        const originalPrice = hasDiscount ? lowestPrice : undefined;
+
+                        // Get location from state or location field
+                        const location = t?.state?.name || t?.location || '';
+
+                        // Get image from images array or gallery
+                        const image = Array.isArray(t?.images) && t?.images?.[0]
+                            ? t?.images?.[0]
+                            : Array.isArray(t?.gallery) && t?.gallery?.[0]?.image
+                                ? t?.gallery?.[0]?.image
+                                : '/default-tour-image.jpg'; // Add a default image
+
                         return {
                             id: t?._id || t?.id,
-                            title: t?.title,
-                            location: t?.location || t?.state?.name || '',
-                            duration: durationStr || '',
-                            price: `₹${Number(t?.discountedPrice || t?.price || 0).toLocaleString()}`,
-                            originalPrice: hasDiscount ? `₹${Number(t?.price || 0).toLocaleString()}` : undefined,
-                            image,
-                            badge: hasDiscount ? 'Offer' : 'Popular',
-                            badgeColor: hasDiscount ? 'bg-emerald-600' : 'bg-green-500',
+                            title: t?.title || 'Untitled Tour',
+                            location: location,
+                            duration: t?.duration || '',
+                            price: `₹${Number(discountedPrice || originalPrice || 0).toLocaleString()}`,
+                            originalPrice: originalPrice ? `₹${Number(originalPrice).toLocaleString()}` : undefined,
+                            image: image,
+                            badge: hasDiscount ? `Save ${t.discount}%` : 'Upcoming',
+                            badgeColor: hasDiscount ? 'bg-emerald-600' : 'bg-blue-500',
+                            discount: t?.discount || 0,
+                            difficulty: t?.difficulty || '',
+                            altitude: t?.altitude || '',
+                            bestTimeToVisit: t?.bestTimeToVisit || '',
                         };
-                    }) || [];
+                    })
+                    ?.filter(tour => tour.price !== '₹0' && tour.price !== '₹NaN') || [];
+
+                console.log('Mapped Tours:', mapped); // Debug log
 
                 if (isMounted) {
                     setUpcomingTours(mapped);
                     setIsLoading(false);
                 }
             } catch (e) {
+                console.error('Error fetching tours:', e);
                 if (isMounted) {
                     setUpcomingTours([]);
                     setIsLoading(false);
@@ -98,7 +148,7 @@ const UpcomingToursSlider = () => {
                         </p>
                     </div>
 
-                    {!isMobile && (
+                    {!isMobile && upcomingTours.length > 0 && (
                         <div className="flex items-center space-x-4">
                             <Link to="/tour-packages-discovery-center">
                                 <Button
@@ -106,7 +156,7 @@ const UpcomingToursSlider = () => {
                                     size="lg"
                                     iconName="ArrowRight"
                                     iconPosition="right"
-                                    className="px-6 py-3 text-base font-semibold border-2 bg-[#4891C9] text-white border-[#4891C9] "
+                                    className="px-6 py-3 text-base font-semibold border-2 bg-[#4891C9] text-white border-[#4891C9]"
                                 >
                                     View All
                                 </Button>
@@ -134,7 +184,7 @@ const UpcomingToursSlider = () => {
                     <div className="flex justify-center items-center h-64">
                         <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-primary border-solid"></div>
                     </div>
-                ) : (
+                ) : upcomingTours.length > 0 ? (
                     <>
                         <div className="relative">
                             <Swiper
@@ -146,7 +196,7 @@ const UpcomingToursSlider = () => {
                                     1024: { slidesPerView: 3 },
                                 }}
                                 navigation={
-                                    !isMobile
+                                    !isMobile && upcomingTours.length > 0
                                         ? {
                                             prevEl: prevRef.current,
                                             nextEl: nextRef.current,
@@ -154,7 +204,7 @@ const UpcomingToursSlider = () => {
                                         : false
                                 }
                                 pagination={
-                                    isMobile
+                                    isMobile && upcomingTours.length > 0
                                         ? {
                                             clickable: true,
                                             el: '.swiper-pagination',
@@ -162,13 +212,13 @@ const UpcomingToursSlider = () => {
                                         : false
                                 }
                                 onInit={(swiper) => {
-                                    if (!isMobile) {
+                                    if (!isMobile && upcomingTours.length > 0) {
                                         swiper.params.navigation.prevEl = prevRef.current;
                                         swiper.params.navigation.nextEl = nextRef.current;
                                         swiper.navigation.init();
                                         swiper.navigation.update();
                                     }
-                                    if (isMobile) {
+                                    if (isMobile && upcomingTours.length > 0) {
                                         swiper.params.pagination.el = '.swiper-pagination';
                                         swiper.pagination.init();
                                         swiper.pagination.update();
@@ -189,6 +239,7 @@ const UpcomingToursSlider = () => {
                                                 className={`w-full h-full object-cover transition-transform duration-500 ${
                                                     hoveredIndex === index ? 'scale-110' : 'scale-100'
                                                 }`}
+                                                fallback={<div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500">No Image Available</div>}
                                             />
 
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
@@ -226,7 +277,9 @@ const UpcomingToursSlider = () => {
                                 ))}
                             </Swiper>
 
-                            {isMobile && <div className="swiper-pagination mt-6 !relative !bottom-0 text-center" />}
+                            {isMobile && upcomingTours.length > 0 && (
+                                <div className="swiper-pagination mt-6 !relative !bottom-0 text-center" />
+                            )}
                         </div>
 
                         <div className="md:hidden flex justify-center mt-8">
@@ -236,13 +289,30 @@ const UpcomingToursSlider = () => {
                                     size="lg"
                                     iconName="ArrowRight"
                                     iconPosition="right"
-                                    className="px-6 py-3 text-base font-semibold border-2 bg-[#4891C9] text-white border-[#4891C9] "
+                                    className="px-6 py-3 text-base font-semibold border-2 bg-[#4891C9] text-white border-[#4891C9]"
                                 >
                                     View All Tours
                                 </Button>
                             </Link>
                         </div>
                     </>
+                ) : (
+                    <div className="text-center py-12">
+                        <div className="bg-gray-100 rounded-lg p-8 max-w-md mx-auto">
+                            <Icon name="Calendar" size={48} className="text-gray-400 mx-auto mb-4" />
+                            <h3 className="text-xl font-semibold text-gray-700 mb-2">No Upcoming Tours</h3>
+                            <p className="text-gray-500 mb-4">Check back later for new upcoming tour packages.</p>
+                            <Link to="/tour-packages-discovery-center">
+                                <Button
+                                    variant="outline"
+                                    size="lg"
+                                    className="px-6 py-3 text-base font-semibold border-2 bg-[#4891C9] text-white border-[#4891C9]"
+                                >
+                                    Browse All Tours
+                                </Button>
+                            </Link>
+                        </div>
+                    </div>
                 )}
             </div>
         </section>
