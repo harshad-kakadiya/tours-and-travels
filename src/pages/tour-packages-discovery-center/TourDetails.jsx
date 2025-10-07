@@ -267,13 +267,13 @@ const TourDetails = () => {
     const handleWhatsAppBooking = () => {
         const message = encodeURIComponent(
             `Hi! I'm interested in booking the ${tour?.title}.\n\n` +
-            `*Tour Details:*\n` +
-            `📍 ${tour?.location}\n` +
-            `📅 ${selectedDate || 'My preferred date'}\n` +
-            `👥 ${sharing} sharing\n` +
-            `💰 Package: ${selectedPackage?.from || 'Standard'}\n` +
-            `⏱️ ${tour?.duration} Days\n` +
-            `👨‍👩‍👧‍👦 Group Size: ${tour?.groupSize || 'Not specified'}\n\n` +
+            `*Tour Details:*,\n` +
+            ` ${tour?.location},\n` +
+            ` ${selectedDate || 'My preferred date'},\n` +
+            ` ${sharing} sharing,\n` +
+            ` Package: ${selectedPackage?.from || 'Standard'},\n` +
+            ` ${tour?.duration} Days,\n` +
+            `Group Size: ${tour?.groupSize || 'Not specified'},\n\n` +
             `Please share more details and availability.`
         );
 
