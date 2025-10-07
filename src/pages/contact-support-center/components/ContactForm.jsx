@@ -6,12 +6,15 @@ import Select from '../../../components/ui/Select';
 
 const ContactForm = () => {
     const [formData, setFormData] = useState({
-        name: '',
+        fullname: '',
         email: '',
-        phone: '',
+        phoneNumber: '',
         inquiryType: '',
-        destination: '',
-        travelDates: '',
+        preferredDestination: '',
+        travelDates: {
+            from: '',
+            to: ''
+        },
         groupSize: '',
         budgetRange: {
             min: 0,
@@ -21,6 +24,10 @@ const ContactForm = () => {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [error, setError] = useState('');
+
+    // Token - you can get this from your auth context, localStorage, or environment variables
+    const [authToken] = useState(localStorage.getItem('authToken') || 'your-auth-token-here');
 
     const inquiryTypes = [
         { value: 'tour-package', label: 'Tour Package Inquiry' },
@@ -68,34 +75,174 @@ const ContactForm = () => {
         }));
     };
 
+    const handleTravelDateChange = (field, value) => {
+        setFormData(prev => ({
+            ...prev,
+            travelDates: {
+                ...prev.travelDates,
+                [field]: value
+            }
+        }));
+    };
+
+    // Function to get token from your preferred source
+    const getAuthToken = () => {
+        // Choose one of these methods based on your setup:
+
+        // Method 1: From localStorage (recommended)
+        return localStorage.getItem('authToken');
+
+        // Method 2: From sessionStorage
+        // return sessionStorage.getItem('authToken');
+
+        // Method 3: From context/state
+        // return authToken;
+
+        // Method 4: From environment variable
+        // return process.env.REACT_APP_API_TOKEN;
+
+        // Method 5: Hardcoded (for testing - remove in production)
+        // return 'your-actual-auth-token-here';
+    };
+
+    // Function to map budget range values to min and max values
+    const getBudgetRange = (budgetValue) => {
+        switch (budgetValue) {
+            case 'budget':
+                return { min: 10000, max: 25000 };
+            case 'mid-range':
+                return { min: 25000, max: 50000 };
+            case 'premium':
+                return { min: 50000, max: 100000 };
+            case 'luxury':
+                return { min: 100000, max: 500000 };
+            case 'flexible':
+                return { min: 0, max: 0 };
+            default:
+                return { min: 0, max: 0 };
+        }
+    };
+
+    // Function to parse group size string to number
+    const parseGroupSize = (groupSizeValue) => {
+        switch (groupSizeValue) {
+            case '1':
+                return 1;
+            case '2':
+                return 2;
+            case '3-5':
+                return 4; // average of 3-5
+            case '6-10':
+                return 8; // average of 6-10
+            case '10+':
+                return 12; // default for 10+
+            default:
+                return 0;
+        }
+    };
+
+    // Function to format date for API
+    const formatDateForAPI = (dateString) => {
+        if (!dateString) return '';
+        // If it's already in the correct format, return as is
+        if (dateString.includes('T')) return dateString;
+
+        // Otherwise, convert to ISO string
+        const date = new Date(dateString);
+        return date.toISOString();
+    };
+
     const handleSubmit = async (e) => {
         e?.preventDefault();
         setIsSubmitting(true);
+        setError('');
 
-        // Simulate form submission
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        try {
+            // Get authentication token
+            const token = getAuthToken();
 
-        setIsSubmitting(false);
-        setShowSuccess(true);
+            if (!token) {
+                throw new Error('Authentication token not found. Please log in again.');
+            }
 
-        // Reset form after success
-        setTimeout(() => {
-            setShowSuccess(false);
-            setFormData({
-                name: '',
-                email: '',
-                phone: '',
-                inquiryType: '',
-                destination: '',
-                travelDates: '',
-                groupSize: '',
-                budget: '',
-                message: ''
+            // Prepare the payload for API - matching the exact field names from your API
+            const payload = {
+                fullname: formData.fullname,
+                email: formData.email,
+                phoneNumber: formData.phoneNumber,
+                inquiryType: formData.inquiryType,
+                preferredDestination: formData.preferredDestination,
+                travelDates: {
+                    from: formatDateForAPI(formData.travelDates.from),
+                    to: formatDateForAPI(formData.travelDates.to)
+                },
+                groupSize: parseGroupSize(formData.groupSize),
+                budgetRange: formData.budget ? getBudgetRange(formData.budget) : { min: 0, max: 0 },
+                yourMessage: formData.yourMessage
+            };
+
+            console.log('Submitting payload:', payload); // For debugging
+
+            // API call to submit inquiry with token in header
+            const response = await fetch('https://tour-travels-be-h58q.onrender.com/api/Inquiry', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    // Alternative header formats if needed:
+                    // 'x-auth-token': token,
+                    // 'token': token,
+                },
+                body: JSON.stringify(payload)
             });
-        }, 3000);
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => null);
+                throw new Error(errorData?.message || `Failed to submit inquiry: ${response.status} ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            console.log('API Response:', result); // For debugging
+
+            // Handle successful submission
+            setIsSubmitting(false);
+            setShowSuccess(true);
+
+            // Reset form after success
+            setTimeout(() => {
+                setShowSuccess(false);
+                setFormData({
+                    fullname: '',
+                    email: '',
+                    phoneNumber: '',
+                    inquiryType: '',
+                    preferredDestination: '',
+                    travelDates: {
+                        from: '',
+                        to: ''
+                    },
+                    groupSize: '',
+                    budgetRange: {
+                        min: 0,
+                        max: 0
+                    },
+                    yourMessage: ''
+                });
+            }, 3000);
+
+        } catch (error) {
+            console.error('Error submitting inquiry:', error);
+            setIsSubmitting(false);
+            setError(error.message || 'Failed to submit inquiry. Please try again.');
+
+            // Auto-hide error after 5 seconds
+            setTimeout(() => {
+                setError('');
+            }, 5000);
+        }
     };
 
-    const isFormValid = formData?.name && formData?.email && formData?.phone && formData?.inquiryType && formData?.message;
+    const isFormValid = formData?.fullname && formData?.email && formData?.phoneNumber && formData?.inquiryType && formData?.yourMessage;
 
     if (showSuccess) {
         return (
@@ -115,7 +262,7 @@ const ContactForm = () => {
                             <Button
                                 variant="default"
                                 onClick={() => {
-                                    const message = encodeURIComponent(`Hi! I just submitted an inquiry form. My name is ${formData?.name}. Could you please provide an update on my request?`);
+                                    const message = encodeURIComponent(`Hi! I just submitted an inquiry form. My name is ${formData?.fullname}. Could you please provide an update on my request?`);
                                     window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
                                 }}
                                 iconName="MessageCircle"
@@ -150,6 +297,14 @@ const ContactForm = () => {
                 </div>
 
                 <div className="bg-card rounded-2xl shadow-brand-medium p-8">
+                    {/* Error Message */}
+                    {error && (
+                        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 flex items-center">
+                            <Icon name="AlertCircle" size={20} className="mr-2" />
+                            {error}
+                        </div>
+                    )}
+
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Personal Information */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -157,8 +312,8 @@ const ContactForm = () => {
                                 label="Full Name"
                                 type="text"
                                 placeholder="Enter your full name"
-                                value={formData?.name}
-                                onChange={(e) => handleInputChange('name', e?.target?.value)}
+                                value={formData?.fullname}
+                                onChange={(e) => handleInputChange('fullname', e?.target?.value)}
                                 required
                             />
                             <Input
@@ -176,8 +331,8 @@ const ContactForm = () => {
                                 label="Phone Number"
                                 type="tel"
                                 placeholder="+91 97258 55858"
-                                value={formData?.phone}
-                                onChange={(e) => handleInputChange('phone', e?.target?.value)}
+                                value={formData?.phoneNumber}
+                                onChange={(e) => handleInputChange('phoneNumber', e?.target?.value)}
                                 required
                             />
                             <Select
@@ -202,17 +357,29 @@ const ContactForm = () => {
                                     label="Preferred Destination"
                                     placeholder="Select destination"
                                     options={destinations}
-                                    value={formData?.destination}
-                                    onChange={(value) => handleInputChange('destination', value)}
+                                    value={formData?.preferredDestination}
+                                    onChange={(value) => handleInputChange('preferredDestination', value)}
                                     searchable
                                 />
-                                <Input
-                                    label="Travel Dates"
-                                    type="text"
-                                    placeholder="e.g., December 2024 or Flexible"
-                                    value={formData?.travelDates}
-                                    onChange={(e) => handleInputChange('travelDates', e?.target?.value)}
-                                />
+                                <div className="space-y-2">
+                                    <label className="block text-sm font-medium text-foreground">
+                                        Travel Dates
+                                    </label>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        <Input
+                                            type="date"
+                                            placeholder="From Date"
+                                            value={formData?.travelDates?.from}
+                                            onChange={(e) => handleTravelDateChange('from', e?.target?.value)}
+                                        />
+                                        <Input
+                                            type="date"
+                                            placeholder="To Date"
+                                            value={formData?.travelDates?.to}
+                                            onChange={(e) => handleTravelDateChange('to', e?.target?.value)}
+                                        />
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
@@ -242,8 +409,8 @@ const ContactForm = () => {
                                 className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none transition-all duration-brand-fast"
                                 rows={5}
                                 placeholder="Tell us about your travel plans, preferences, special requirements, or any questions you have..."
-                                value={formData?.message}
-                                onChange={(e) => handleInputChange('message', e?.target?.value)}
+                                value={formData?.yourMessage}
+                                onChange={(e) => handleInputChange('yourMessage', e?.target?.value)}
                                 required
                             />
                             <p className="text-xs text-muted-foreground mt-1">
@@ -258,7 +425,7 @@ const ContactForm = () => {
                                 variant="default"
                                 size="lg"
                                 loading={isSubmitting}
-                                disabled={!isFormValid}
+                                disabled={!isFormValid || isSubmitting}
                                 iconName="Send"
                                 iconPosition="right"
                                 className="flex-0 sm:flex-1"
