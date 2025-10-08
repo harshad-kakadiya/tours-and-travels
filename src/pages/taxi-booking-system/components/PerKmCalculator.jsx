@@ -115,6 +115,9 @@ const PerKmCalculator = ({ onBookingClick }) => {
                     <div className="p-4 text-center border-b">
                       <p className="text-2xl font-bold text-gray-800">From ₹ {pkg?.perKmPrice} / KM</p>
                     </div>
+                    <div className="p-3 text-center ">
+                      <p className="text-gray-700 font-medium">Round Trip</p>
+                    </div>
 
                     {/* Features */}
                     <div className="p-4 space-y-2">

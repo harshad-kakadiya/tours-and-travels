@@ -10,12 +10,6 @@ const FixedRoutePackages = ({ onBookingClick }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // const categories = [
-  //   { id: 'city-tours', name: 'City Tours', icon: 'Building2' },
-  //   { id: 'airport-transfers', name: 'Airport Transfers', icon: 'Plane' },
-  //   { id: 'inter-city', name: 'Inter-city', icon: 'MapPin' }
-  // ];
-
   useEffect(() => {
     fetchPackages();
   }, []);
@@ -46,6 +40,57 @@ const FixedRoutePackages = ({ onBookingClick }) => {
         `Please provide more details and booking assistance.`
     );
     window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+  };
+
+  // Function to render features with appropriate icons
+  const renderFeature = (feature, index) => {
+    // Map common feature keywords to icons
+    const getFeatureIcon = (featureText) => {
+      const lowerFeature = featureText.toLowerCase();
+
+      if (lowerFeature.includes('ac') || lowerFeature.includes('air conditioning') || lowerFeature.includes('cool')) {
+        return { name: 'Snowflake', color: 'text-green-600', bgColor: 'bg-green-100' };
+      }
+      if (lowerFeature.includes('driver') || lowerFeature.includes('professional') || lowerFeature.includes('chauffeur')) {
+        return { name: 'UserCheck', color: 'text-blue-600', bgColor: 'bg-blue-100' };
+      }
+      if (lowerFeature.includes('24/7') || lowerFeature.includes('24x7') || lowerFeature.includes('available')) {
+        return { name: 'Clock', color: 'text-purple-600', bgColor: 'bg-purple-100' };
+      }
+      if (lowerFeature.includes('wifi') || lowerFeature.includes('wi-fi')) {
+        return { name: 'Wifi', color: 'text-orange-600', bgColor: 'bg-orange-100' };
+      }
+      if (lowerFeature.includes('water') || lowerFeature.includes('bottle')) {
+        return { name: 'Droplets', color: 'text-cyan-600', bgColor: 'bg-cyan-100' };
+      }
+      if (lowerFeature.includes('sightseeing') || lowerFeature.includes('tour')) {
+        return { name: 'Map', color: 'text-red-600', bgColor: 'bg-red-100' };
+      }
+      if (lowerFeature.includes('fuel') || lowerFeature.includes('petrol') || lowerFeature.includes('diesel')) {
+        return { name: 'Fuel', color: 'text-yellow-600', bgColor: 'bg-yellow-100' };
+      }
+      if (lowerFeature.includes('toll') || lowerFeature.includes('tax')) {
+        return { name: 'Receipt', color: 'text-indigo-600', bgColor: 'bg-indigo-100' };
+      }
+      if (lowerFeature.includes('parking') || lowerFeature.includes('park')) {
+        return { name: 'ParkingCircle', color: 'text-pink-600', bgColor: 'bg-pink-100' };
+      }
+      // Default icon for other features
+      return { name: 'Check', color: 'text-gray-600', bgColor: 'bg-gray-100' };
+    };
+
+    const iconConfig = getFeatureIcon(feature);
+
+    return (
+        <div key={index} className="flex items-center space-x-3">
+          <div className={`w-8 h-8 rounded-full ${iconConfig.bgColor} flex items-center justify-center flex-shrink-0`}>
+            <Icon name={iconConfig.name} size={16} className={iconConfig.color} />
+          </div>
+          <div className="text-left">
+            <p className="text-sm font-medium text-gray-800">{feature}</p>
+          </div>
+        </div>
+    );
   };
 
   if (loading) {
@@ -87,24 +132,6 @@ const FixedRoutePackages = ({ onBookingClick }) => {
 
   return (
       <div className="space-y-6">
-        {/* Category Tabs */}
-        {/*<div className="flex flex-wrap gap-2">*/}
-        {/*  {categories?.map((category) => (*/}
-        {/*      <button*/}
-        {/*          key={category?.id}*/}
-        {/*          onClick={() => setSelectedCategory(category?.id)}*/}
-        {/*          className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${*/}
-        {/*              selectedCategory === category?.id*/}
-        {/*                  ? 'bg-primary text-white shadow-md'*/}
-        {/*                  : 'bg-muted text-muted-foreground hover:bg-muted/80'*/}
-        {/*          }`}*/}
-        {/*      >*/}
-        {/*        <Icon name={category?.icon} size={16} />*/}
-        {/*        <span>{category?.name}</span>*/}
-        {/*      </button>*/}
-        {/*  ))}*/}
-        {/*</div>*/}
-
         {/* Packages Grid */}
         {packages.length === 0 ? (
             <div className="text-center py-12">
@@ -115,58 +142,66 @@ const FixedRoutePackages = ({ onBookingClick }) => {
               <p className="text-muted-foreground">No fixed route packages are currently available.</p>
             </div>
         ) : (
-        <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-3 gap-6">
               {packages?.map((pkg) => (
-            <div key={pkg?._id} className="relative rounded-2xl overflow-hidden group cursor-pointer transition-all duration-300">
-              {/* Background Image */}
-              <div className="relative h-80">
+                  <div
+                      key={pkg?._id}
+                      className="rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 bg-white mb-8"
+                  >
+                    {/* Header with From & To */}
+                    <div className="bg-primary text-white p-4 text-center">
+                      <h3 className="text-lg font-medium flex items-center justify-center gap-2">
+                        {pkg?.from} <Icon name="ArrowRight" size={16} /> {pkg?.to}
+                      </h3>
+                    </div>
+                    <div className="p-4 text-center border-b">
+                      <p className="text-2xl font-bold text-gray-800">from ₹ {pkg?.price}</p>
+                    </div>
+
+                    {/* Way Type */}
+                    <div className="p-3 text-center ">
+                      <p className="text-gray-700 font-medium">OneWay Trip</p>
+                    </div>
+
                     {/* Image */}
-                    <div className="h-80 overflow-hidden">
-                      <img 
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        src={pkg?.image}
-                        alt={pkg?.name}
+                    <div className="h-48 overflow-hidden">
+                      <Image
+                          src={pkg?.image}
+                          alt={pkg?.name}
+                          className="w-full h-full object-cover"
                       />
                     </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                
-                {/* Route Type - Top Left */}
-                <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm font-medium">
-                  {pkg?.wayType === 'oneway' ? 'One Way' : 'Round Trip'}
-                </div>
 
-                {/* Package Title - Large White Text */}
-                <div className="absolute bottom-20 left-6 right-6">
-                  <h3 className="text-2xl font-bold text-white mb-2">
-                    {pkg?.name}
-                  </h3>
-                  <p className="text-white/90 text-sm">
-                    {pkg?.from} to {pkg?.to}
-                  </p>
-                </div>
+                    {/* Features Section - Dynamic from API (using feactures field) */}
+                    <div className="p-4 border-t border-b">
+                      <div className="space-y-3">
+                        {pkg?.feactures && pkg.feactures.length > 0 ? (
+                            pkg.feactures.map((feature, index) => (
+                                <div key={index} className="flex items-center gap-2">
+                                  <Icon name="Check" size={16} className="text-green-500" />
+                                  <span className="text-gray-700">{feature}</span>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="text-center py-2">
+                              <p className="text-sm text-muted-foreground">No features listed</p>
+                            </div>
+                        )}
+                      </div>
+                    </div>
 
-                {/* Pricing - Bottom Left */}
-                <div className="absolute bottom-6 left-6">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-3xl font-bold text-white">
-                      ₹{pkg?.price}
-                    </span>
+                    {/* Book Now Button */}
+                    <div className="p-4 text-center">
+                      <button
+                          onClick={() => handleWhatsAppBooking(pkg)}
+                          className="w-full bg-primary text-white py-3 rounded-md font-medium hover:bg-primary/90 transition-colors"
+                      >
+                        Book Now On Whatsapp
+                      </button>
+                    </div>
                   </div>
-                </div>
-
-                {/* Book Now Button - Bottom Right */}
-                <div className="absolute bottom-6 right-6">
-                  <button 
-                    onClick={() => handleWhatsAppBooking(pkg)}
-                    className="bg-white text-black px-6 py-2 rounded-lg font-semibold hover:bg-white/90 transition-colors"
-                  >
-                    Book Now
-                  </button>
-                </div>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
         )}
       </div>
   );
