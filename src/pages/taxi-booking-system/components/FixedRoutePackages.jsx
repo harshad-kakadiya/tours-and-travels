@@ -172,11 +172,11 @@ const FixedRoutePackages = ({ onBookingClick }) => {
                       />
                     </div>
 
-                    {/* Features Section - Dynamic from API (using feactures field) */}
+                    {/* Features Section - Show only first 3 features */}
                     <div className="p-4 border-t border-b">
                       <div className="space-y-3">
                         {pkg?.feactures && pkg.feactures.length > 0 ? (
-                            pkg.feactures.map((feature, index) => (
+                            pkg.feactures.slice(0, 3).map((feature, index) => (
                                 <div key={index} className="flex items-center gap-2">
                                   <Icon name="Check" size={16} className="text-green-500" />
                                   <span className="text-gray-700">{feature}</span>
