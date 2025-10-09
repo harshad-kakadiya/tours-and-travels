@@ -1,273 +1,319 @@
-import React, {useState, useEffect} from 'react';
-import {Link, useLocation} from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import Icon from '../AppIcon';
-import Button from './Button';
-import {useAuth} from '../../contexts/AuthContext';
-import logo from '../../../public/assets/images/22d66695-43aa-43a2-9cb6-2d1d7a62872c .png'
+import { useAuth } from '../../contexts/AuthContext';
+import logo from '../../../public/assets/images/22d66695-43aa-43a2-9cb6-2d1d7a62872c .png';
 
 const Header = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+    const [isServicesOpen, setIsServicesOpen] = useState(false);
     const location = useLocation();
-    const {user, isAuthenticated, logout} = useAuth();
+    const [a,setA] = useState(null);
+    const { user, isAuthenticated, logout } = useAuth();
+    const servicesDropdownRef = useRef(null);
+
+    console.log(a , 'sghfffffffffffffffffffffffffffffffffffffffj')
 
     const navigationItems = [
-        {name: 'Home', path: '/homepage-premium-travel-discovery-hub', icon: 'Home'},
-        {name: 'About Us', path: '/about-us', icon: 'Info'},
-        {name: 'Tour Packages', path: '/tour-packages-discovery-center', icon: 'MapPin'},
-        {name: 'Hotels', path: '/hotel-booking-portal', icon: 'Building2'},
-        {name: 'Taxi', path: '/taxi-booking-system', icon: 'Car'},
-        {name: 'Travel Blog', path: '/travel-blog-hub-journey-intelligence', icon: 'BookOpen'},
-        {name: 'Contact', path: '/contact-support-center', icon: 'Phone'}
+        { name: 'Home', path: '/homepage-premium-travel-discovery-hub' },
+        { name: 'About Us', path: '/about-us' },
+        {
+            name: 'Services',
+            path: '#',
+            isDropdown: true,
+            dropdownItems: [
+                { name: 'Tour', path: '/tour-packages-discovery-center' },
+                { name: 'Hotel', path: '/hotel-booking-portal' },
+                { name: 'Taxi', path: '/taxi-booking-system' },
+            ],
+        },
+        { name: 'Blog', path: '/travel-blog-hub-journey-intelligence' },
+        { name: 'Contact Us', path: '/contact-support-center' },
     ];
-
-    const secondaryItems = [
-        // { name: 'Contact', path: '/contact-support-center', icon: 'Phone' },
-    ];
+    console.log(location.pathname,"000000000000000000");
+    useEffect(() => {
+        // const b = location.pathname.split("/")[1] === "product";
+        const c = ['/homepage-premium-travel-discovery-hub', '/contact-support-center' , '/hotel-booking-portal' ,'/travel-blog-hub-journey-intelligence'].includes(location.pathname);
+        setA(c);
+    }, [location]);
 
     useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 10);
         };
-
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const toggleMobileMenu = () => {
-        setIsMobileMenuOpen(!isMobileMenuOpen);
-    };
-
+    const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
     const closeMobileMenu = () => {
         setIsMobileMenuOpen(false);
+        setIsServicesOpen(false);
     };
 
-    const isActivePath = (path) => {
-        return location?.pathname === path;
-    };
+    const isActivePath = (path) => location?.pathname === path;
 
-    const handleWhatsAppClick = () => {
-        const message = encodeURIComponent("Hi! I'm interested in exploring travel packages with WanderWise Tours. Could you help me plan my next adventure?");
-        window.open(`https://wa.me/919725855858?text=${message}`, '_blank');
+    const isActiveService = () => {
+        const servicesPaths = [
+            '/taxi',
+            '/hotel-booking-portal',
+            '/tour-packages-discovery-center',
+        ];
+        return servicesPaths.includes(location?.pathname);
     };
 
     return (
         <header
-            className={`fixed top-0 left-0 right-0 z-header transition-all duration-brand-normal bg-white shadow-brand-soft border-b border-border`}
+            style={{
+                position: 'fixed',
+                zIndex: 100,
+                width: '100%',
+                background: isScrolled ? '#fff' : 'transparent',
+                color: isScrolled ? '#000' : '#000',
+                transition: 'all 0.3s ease',
+                backdropFilter: 'blur(10px)',
+            }}
         >
-            <div className="w-full">
-                <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
-                    {/* Logo */}
-                    <Link
-                        to="/homepage-premium-travel-discovery-hub"
-                        className="flex items-center space-x-3 hover:opacity-80 transition-opacity duration-brand-fast"
-                        onClick={closeMobileMenu}
+            <div
+                style={{
+                    maxWidth: '1200px',
+                    margin: '0 auto',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    height: '100px',
+                    padding: '0 2rem',
+                }}
+            >
+                {/* Logo */}
+                <Link
+                    to="/homepage-premium-travel-discovery-hub"
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        textDecoration: 'none',
+                    }}
+                    onClick={closeMobileMenu}
+                >
+                    <img
+                        src={logo}
+                        alt="Logo"
+                        style={{
+                            height: '85px',
+                            width: '85px',
+                            background: '#fff',
+                            borderRadius: '50%',
+                            objectFit: 'cover',
+                        }}
+                    />
+                    <span
+                        style={{
+                            fontWeight: '700',
+                            fontSize: '20px',
+                            color: '#fff',
+                            letterSpacing: '0.5px',
+                        }}
                     >
-                        <img
-                            src={logo}
-                            alt="Travel Discovery Hub"
-                            className="h-[100px] w-[200px] object-contain"
-                        />
-                    </Link>
 
+          </span>
+                </Link>
 
-                    {/* Desktop Navigation */}
-                    <nav className="hidden xl:flex items-center space-x-1">
-                        {navigationItems?.map((item) => (
-                            <Link
-                                key={item?.path}
-                                to={item?.path}
-                                className={`flex items-center space-x-2 px-4 py-2 rounded-brand-md text-sm font-medium transition-all duration-brand-fast hover:bg-muted/50 ${
-                                    isActivePath(item?.path)
-                                        ? 'text-primary bg-primary/5 border border-primary/20' : 'text-muted-foreground hover:text-foreground'
-                                }`}
+                {/* Desktop Navigation */}
+                <nav
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '2rem',
+                    }}
+                    className="desktop-nav"
+                >
+                    {navigationItems.map((item) =>
+                        item.isDropdown ? (
+                            <div
+                                key={item.name}
+                                style={{ position: 'relative' }}
+                                onMouseEnter={() => setIsServicesOpen(true)}
+                                onMouseLeave={() => setIsServicesOpen(false)}
+                                ref={servicesDropdownRef}
                             >
-                                {/*<Icon name={item?.icon} size={16} />*/}
-                                <span>{item?.name}</span>
-                            </Link>
-                        ))}
-                    </nav>
-
-                    {/* Desktop Actions */}
-                    <div className="hidden xl:flex items-center space-x-3">
-                        {/*<Link*/}
-                        {/*  to="/contact-support-center"*/}
-                        {/*  className={`flex items-center space-x-2 px-3 py-2 rounded-brand-md text-sm font-medium transition-all duration-brand-fast hover:bg-muted/50 ${*/}
-                        {/*    isActivePath('/contact-support-center')*/}
-                        {/*      ? 'text-primary bg-primary/5' :'text-muted-foreground hover:text-foreground'*/}
-                        {/*  }`}*/}
-                        {/*>*/}
-                        {/*  /!*<Icon name="Phone" size={16} />*!/*/}
-                        {/*  <span>Contact</span>*/}
-                        {/*</Link>*/}
-
-                        {isAuthenticated ? (
-                            <div className="flex items-center space-x-3">
-                                <Link
-                                    to="/dashboard"
-                                    className="flex items-center space-x-2 px-3 py-2 rounded-brand-md text-sm font-medium text-foreground hover:bg-muted/50 transition-all duration-brand-fast"
+                                <button
+                                    style={{
+                                        background: 'none',
+                                        border: 'none',
+                                        color: isScrolled ? '#000' : '#fff',
+                                        fontSize: '1rem',
+                                        cursor: 'pointer',
+                                        fontWeight: '500',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '6px',
+                                    }}
                                 >
-                                    {/*<Icon name="User" size={16} />*/}
-                                    <span>Welcome, {user?.name}</span>
-                                </Link>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={logout}
-                                    iconName="LogOut"
-                                    iconPosition="left"
-                                    iconSize={16}
-                                >
-                                    Logout
-                                </Button>
+                                    {item.name}
+                                    <Icon
+                                        name={isServicesOpen ? 'ChevronUp' : 'ChevronDown'}
+                                        size={16}
+                                    />
+                                </button>
+
+                                {isServicesOpen && (
+                                    <div
+                                        style={{
+                                            position: 'absolute',
+                                            top: '120%',
+                                            left: '0',
+                                            minWidth: '160px',
+                                            background: '#fff',
+
+                                            borderRadius: '8px',
+                                            boxShadow:
+                                                '0 8px 20px rgba(0,0,0,0.15)',
+                                            overflow: 'hidden',
+                                            animation: 'fadeIn 0.2s ease-in-out',
+                                        }}
+                                    >
+                                        {item.dropdownItems.map((dropdown) => (
+                                            <Link
+                                                key={dropdown.path}
+                                                to={dropdown.path}
+                                                onClick={() => setIsServicesOpen(false)}
+                                                style={{
+                                                    display: 'block',
+                                                    padding: '10px 16px',
+                                                    color: isActivePath(dropdown.path)
+                                                        ? '#3b82f6'
+                                                        : '#111827',
+                                                    fontSize: '0.95rem',
+                                                    textDecoration: 'none',
+                                                    transition: 'all 0.2s ease',
+                                                }}
+                                                onMouseEnter={(e) =>
+                                                    (e.target.style.backgroundColor = '#f9fafb')
+                                                }
+                                                onMouseLeave={(e) =>
+                                                    (e.target.style.backgroundColor = 'transparent')
+                                                }
+                                            >
+                                                {dropdown.name}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         ) : (
-                            <div className="flex items-center space-x-2">
-                                <Link to="/login">
-                                    <Button
-                                        variant="default"
-                                        size="sm"
-                                        iconName="LogIn"
-                                        iconPosition="left"
-                                        iconSize={16}
-                                    >
-                                        Login
-                                    </Button>
-                                </Link>
-                            </div>
-                        )}
-
-                        <Button
-                            variant="default"
-                            size="sm"
-                            onClick={handleWhatsAppClick}
-                            iconName="MessageCircle"
-                            iconPosition="left"
-                            iconSize={16}
-                            className="bg-[#25D366] hover:bg-[#128C7E] text-white border-0"
-                        >
-                            WhatsApp
-                        </Button>
-                    </div>
-
-                    {/* Mobile Menu Button */}
-                    <button
-                        onClick={toggleMobileMenu}
-                        className="xl:hidden p-2 rounded-brand-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-brand-fast thumb-friendly"
-                        aria-label="Toggle mobile menu"
-                    >
-                        <Icon
-                            name={isMobileMenuOpen ? "X" : "Menu"}
-                            size={24}
-                            strokeWidth={2}
-                        />
-                    </button>
-                </div>
-
-                {/* Mobile Navigation */}
-                <div
-                    className={`xl:hidden transition-all duration-brand-normal overflow-hidden ${
-                        isMobileMenuOpen
-                            ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
-                    }`}
-                >
-                    <div className="px-4 py-4 bg-card/50 backdrop-blur-sm border-t border-border/50">
-                        <nav className="space-y-2">
-                            {navigationItems?.map((item) => (
-                                <Link
-                                    key={item?.path}
-                                    to={item?.path}
-                                    onClick={closeMobileMenu}
-                                    className={`flex items-center space-x-3 px-4 py-3 rounded-brand-md text-sm font-medium transition-all duration-brand-fast thumb-friendly ${
-                                        isActivePath(item?.path)
-                                            ? 'text-primary bg-primary/10 border border-primary/20' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                                    }`}
-                                >
-                                    <Icon name={item?.icon} size={18}/>
-                                    <span>{item?.name}</span>
-                                </Link>
-                            ))}
-
-                            {secondaryItems?.map((item) => (
-                                <Link
-                                    key={item?.path}
-                                    to={item?.path}
-                                    onClick={closeMobileMenu}
-                                    className={`flex items-center space-x-3 px-4 py-3 rounded-brand-md text-sm font-medium transition-all duration-brand-fast thumb-friendly ${
-                                        isActivePath(item?.path)
-                                            ? 'text-primary bg-primary/10 border border-primary/20' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                                    }`}
-                                >
-                                    <Icon name={item?.icon} size={18}/>
-                                    <span>{item?.name}</span>
-                                </Link>
-                            ))}
-                        </nav>
-
-                        <div className="mt-4 pt-4 border-t border-border/50 space-y-3">
-                            {isAuthenticated ? (
-                                <div className="space-y-2">
-                                    <Link
-                                        to="/dashboard"
-                                        onClick={closeMobileMenu}
-                                        className="flex items-center space-x-2 px-4 py-2 rounded-brand-md text-sm font-medium text-foreground bg-muted/20 hover:bg-muted/30 transition-all duration-brand-fast"
-                                    >
-                                        <Icon name="User" size={18}/>
-                                        <span>Welcome, {user?.name}</span>
-                                    </Link>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => {
-                                            logout();
-                                            closeMobileMenu();
-                                        }}
-                                        iconName="LogOut"
-                                        iconPosition="left"
-                                        iconSize={16}
-                                        fullWidth
-                                        className="thumb-friendly"
-                                    >
-                                        Logout
-                                    </Button>
-                                </div>
-                            ) : (
-                                <div className="space-y-2">
-                                    <Link to="/login" onClick={closeMobileMenu}>
-                                        <Button
-                                            variant="default"
-                                            size="sm"
-                                            iconName="LogIn"
-                                            iconPosition="left"
-                                            iconSize={16}
-                                            fullWidth
-                                            className="thumb-friendly"
-                                        >
-                                            Login
-                                        </Button>
-                                    </Link>
-                                </div>
-                            )}
-
-                            <Button
-                                variant="default"
-                                size="sm"
-                                onClick={() => {
-                                    handleWhatsAppClick();
-                                    closeMobileMenu();
+                            <Link
+                                key={item.path}
+                                to={item.path}
+                                style={{
+                                    color: isScrolled ? '#000' : '#fff',
+                                    fontWeight: isActivePath(item.path) ? '600' : '500',
+                                    fontSize: '1rem',
+                                    textDecoration: 'none',
+                                    position: 'relative',
+                                    transition: 'color 0.3s',
                                 }}
-                                iconName="MessageCircle"
-                                iconPosition="left"
-                                iconSize={16}
-                                fullWidth
-                                className="bg-[#25D366] hover:bg-[#128C7E] text-white border-0 thumb-friendly"
+                                onMouseEnter={(e) => (e.target.style.color = '#f3f4f6')}
+                                onMouseLeave={(e) => (e.target.style.color = '#fff')}
                             >
-                                Chat on WhatsApp
-                            </Button>
-                        </div>
-                    </div>
-                </div>
+                                {item.name}
+                            </Link>
+                        )
+                    )}
+                </nav>
+
+                {/* Mobile Menu Button */}
+                <button
+                    onClick={toggleMobileMenu}
+                    style={{
+                        padding: '0.5rem',
+                        color: '#fff',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        display: 'none',
+                    }}
+                    className="mobile-menu-btn"
+                >
+                    <Icon name={isMobileMenuOpen ? 'X' : 'Menu'} size={24} />
+                </button>
             </div>
+
+            {/* Mobile Navigation */}
+            {isMobileMenuOpen && (
+                <div
+                    style={{
+                        background: '#fff',
+                        color: '#111827',
+                        padding: '1rem 2rem',
+                        borderTop: '1px solid #e5e7eb',
+                    }}
+                >
+                    {navigationItems.map((item) =>
+                        item.isDropdown ? (
+                            <div key={item.path}>
+                                <button
+                                    onClick={() => setIsServicesOpen(!isServicesOpen)}
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        width: '100%',
+                                        padding: '1rem 0',
+                                        fontSize: '1rem',
+                                        fontWeight: '500',
+                                        background: 'none',
+                                        border: 'none',
+                                        color: '#111827',
+                                    }}
+                                >
+                                    {item.name}
+                                    <Icon
+                                        name={isServicesOpen ? 'ChevronUp' : 'ChevronDown'}
+                                        size={16}
+                                    />
+                                </button>
+                                {isServicesOpen && (
+                                    <div>
+                                        {item.dropdownItems.map((dropdown) => (
+                                            <Link
+                                                key={dropdown.path}
+                                                to={dropdown.path}
+                                                onClick={closeMobileMenu}
+                                                style={{
+                                                    display: 'block',
+                                                    padding: '0.75rem 1rem',
+                                                    color: '#111827',
+                                                    fontSize: '0.95rem',
+                                                    textDecoration: 'none',
+                                                }}
+                                            >
+                                                {dropdown.name}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <Link
+                                key={item.path}
+                                to={item.path}
+                                onClick={closeMobileMenu}
+                                style={{
+                                    display: 'block',
+                                    padding: '1rem 0',
+                                    color: '#111827',
+                                    fontSize: '1rem',
+                                    textDecoration: 'none',
+                                }}
+                            >
+                                {item.name}
+                            </Link>
+                        )
+                    )}
+                </div>
+            )}
         </header>
     );
 };
