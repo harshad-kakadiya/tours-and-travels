@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../../../components/AppIcon';
-import logo from "../../../../public/assets/images/22d66695-43aa-43a2-9cb6-2d1d7a62872c .jpg";
+import logo from "../../../../public/assets/images/mychoiceholiday_Logo Design Done_001.png";
 
 const Footer = () => {
     const currentYear = new Date()?.getFullYear();
