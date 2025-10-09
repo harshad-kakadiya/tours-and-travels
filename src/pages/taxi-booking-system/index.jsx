@@ -8,6 +8,7 @@ import FixedRoutePackages from './components/FixedRoutePackages';
 import PerKmCalculator from './components/PerKmCalculator';
 import SafetyFeatures from './components/SafetyFeatures';
 import OneWayAndRoundTrip from "./components/oneWayAndRoundTrip";
+import WhatsAppFloatingButton from "../homepage-premium-travel-discovery-hub/components/WhatsAppFloatingButton";
 
 const TaxiBookingSystem = () => {
     const [selectedService, setSelectedService] = useState('fixed-route');
@@ -189,7 +190,7 @@ const TaxiBookingSystem = () => {
                 {/*        </div>*/}
                 {/*    </div>*/}
                 {/*</section>*/}
-
+                <WhatsAppFloatingButton />
             </div>
         </>
     );

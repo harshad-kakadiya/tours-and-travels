@@ -7,6 +7,7 @@ import ContactForm from './components/ContactForm';
 import OfficeLocation from './components/OfficeLocation';
 import FAQSection from './components/FAQSection';
 import SupportTestimonials from './components/SupportTestimonials';
+import WhatsAppFloatingButton from "../homepage-premium-travel-discovery-hub/components/WhatsAppFloatingButton";
 
 const ContactSupportCenter = () => {
   useEffect(() => {
@@ -40,6 +41,7 @@ const ContactSupportCenter = () => {
           <SupportTestimonials />
         </main>
       </div>
+      <WhatsAppFloatingButton />
     </>
   );
 };

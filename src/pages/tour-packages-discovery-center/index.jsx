@@ -9,6 +9,7 @@ import SearchBar from './components/SearchBar';
 import PackageCard from './components/PackageCard';
 import PackageModal from './components/PackageModal';
 import ComparisonPanel from './components/ComparisonPanel';
+import WhatsAppFloatingButton from "../homepage-premium-travel-discovery-hub/components/WhatsAppFloatingButton";
 
 const TourPackagesDiscoveryCenter = () => {
     const [packages, setPackages] = useState([]);
@@ -318,6 +319,7 @@ const TourPackagesDiscoveryCenter = () => {
                     onToggle={() => setIsComparisonPanelOpen(!isComparisonPanelOpen)}
                 />
             </div>
+            <WhatsAppFloatingButton />
         </>
     );
 };
