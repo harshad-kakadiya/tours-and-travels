@@ -7,7 +7,7 @@ const GlobalLayout = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="pt-16">
+      <main>
         <Outlet />
       </main>
       <Footer />

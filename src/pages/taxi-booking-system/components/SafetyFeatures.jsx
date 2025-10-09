@@ -18,7 +18,7 @@ const SafetyFeatures = () => {
     },
     {
       icon: 'Phone',
-      title: '24/7 Support',
+      title: '24*7 Support',
       description: 'Round-the-clock customer support and emergency assistance',
       details: ['Instant help via WhatsApp', 'Emergency hotline', 'Trip monitoring', 'Quick resolution']
     },
@@ -120,7 +120,7 @@ const SafetyFeatures = () => {
                   <Icon name="Phone" size={16} className="text-red-600" />
                   <span className="text-sm text-foreground font-medium">Emergency Hotline</span>
                 </div>
-                <p className="text-xs text-muted-foreground ml-6">24/7 emergency support: +91-9725855858</p>
+                <p className="text-xs text-muted-foreground ml-6">24*7 emergency support: +91-9725855858</p>
               </div>
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">

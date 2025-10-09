@@ -53,7 +53,7 @@ const aboutData = {
             ),
         },
         {
-            title: "24/7 Support",
+            title: "24*7 Support",
             description: "Travel with peace of mind knowing our dedicated support team is available around the clock to assist you with any concerns.",
             icon: (
                 <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 20 20">

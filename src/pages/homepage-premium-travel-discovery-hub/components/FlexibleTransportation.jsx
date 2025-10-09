@@ -15,7 +15,7 @@ const FlexibleTransportation = () => {
       duration: "45 mins",
       price: "₹800",
       vehicleType: "Sedan",
-      features: ["AC", "GPS Tracking", "24/7 Available", "Fixed Price"],
+      features: ["AC", "GPS Tracking", "24*7 Available", "Fixed Price"],
       icon: "Plane"
     },
     {

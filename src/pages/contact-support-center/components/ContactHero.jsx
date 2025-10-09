@@ -30,13 +30,13 @@ const ContactHero = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <div className="flex items-center space-x-2 text-white/90">
               <Icon name="Clock" size={20} />
-              <span className="text-lg">24/7 Emergency Support</span>
+              <span className="text-lg">24*7 Emergency Support</span>
             </div>
-            <div className="hidden sm:block w-px h-6 bg-white/30"></div>
-            <div className="flex items-center space-x-2 text-white/90">
-              <Icon name="MessageCircle" size={20} />
-              <span className="text-lg">Instant WhatsApp Response</span>
-            </div>
+            {/*<div className="hidden sm:block w-px h-6 bg-white/30"></div>*/}
+            {/*<div className="flex items-center space-x-2 text-white/90">*/}
+            {/*  <Icon name="MessageCircle" size={20} />*/}
+            {/*  <span className="text-lg">Instant WhatsApp Response</span>*/}
+            {/*</div>*/}
           </div>
         </div>
       </div>

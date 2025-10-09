@@ -128,7 +128,7 @@ const HotelDetails = () => {
               <ul className="text-sm text-muted-foreground space-y-2">
                 <li className="flex items-center gap-2"><Icon name="Shield" size={16} className="text-primary" /> Verified properties</li>
                 <li className="flex items-center gap-2"><Icon name="IndianRupee" size={16} className="text-primary" /> Best price transparency</li>
-                <li className="flex items-center gap-2"><Icon name="MessageCircle" size={16} className="text-primary" /> 24/7 WhatsApp support</li>
+                <li className="flex items-center gap-2"><Icon name="MessageCircle" size={16} className="text-primary" /> 24*7 WhatsApp support</li>
               </ul>
             </div>
           </div>

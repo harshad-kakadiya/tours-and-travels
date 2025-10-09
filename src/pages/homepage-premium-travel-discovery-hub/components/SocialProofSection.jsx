@@ -54,7 +54,7 @@ const SocialProofSection = () => {
         { name: "Ministry of Tourism", description: "Approved Tour Operator", icon: "Award", color: "text-accent" },
         { name: "IATA Certified", description: "International Air Transport", icon: "Plane", color: "text-primary" },
         { name: "SSL Secured", description: "Safe Payment Gateway", icon: "Shield", color: "text-success" },
-        { name: "24/7 Support", description: "Round the Clock Assistance", icon: "Headphones", color: "text-secondary" }
+        { name: "24*7 Support", description: "Round the Clock Assistance", icon: "Headphones", color: "text-secondary" }
     ];
 
     const bookingNotifications = [

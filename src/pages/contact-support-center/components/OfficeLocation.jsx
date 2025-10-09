@@ -135,7 +135,7 @@ const OfficeLocation = () => {
                     {officeDetails?.hours}
                   </p>
                   <p className="text-sm text-accent mt-1">
-                    • Emergency support available 24/7
+                    • Emergency support available 24*7
                   </p>
                 </div>
               </div>

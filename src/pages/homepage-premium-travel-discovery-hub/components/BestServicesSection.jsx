@@ -14,7 +14,7 @@ const BestServicesSection = () => {
     },
     {
       id: 2,
-      title: "24/7 Customer Support",
+      title: "24*7 Customer Support",
       description: "Round-the-clock assistance for all your travel needs and emergencies",
       icon: "Headphones",
       color: "text-green-600",

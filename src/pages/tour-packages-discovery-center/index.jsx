@@ -92,9 +92,15 @@ const TourPackagesDiscoveryCenter = () => {
     useEffect(() => {
         const params = new URLSearchParams(locationHook.search);
         const state = params.get('state') || '';
+        const search = params.get('search') || '';
+        
         if (state) {
             setFilters((prev) => ({ ...prev, state }));
             setSearchTerm('');
+        }
+        
+        if (search) {
+            setSearchTerm(search);
         }
     }, [locationHook.search]);
 
@@ -188,7 +194,7 @@ const TourPackagesDiscoveryCenter = () => {
                 <meta name="description" content="Discover amazing tour packages across India with WanderWise Tours..." />
             </Helmet>
             <div className="min-h-screen bg-background">
-                <Header />
+                {/*<Header />*/}
 
                 {/* Hero */}
                 <section className="pt-20 pb-8 bg-gradient-to-br from-primary/5 via-background to-secondary/5">

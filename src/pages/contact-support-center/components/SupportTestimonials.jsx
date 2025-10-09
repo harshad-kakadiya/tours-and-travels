@@ -10,7 +10,7 @@ const SupportTestimonials = () => {
       location: "Mumbai, Maharashtra",
       avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
       rating: 5,
-      review: `The WanderWise support team went above and beyond when our flight got cancelled during our Rajasthan trip. They immediately arranged alternative transportation and even upgraded our hotel. Their 24/7 WhatsApp support was a lifesaver!`,
+      review: `The WanderWise support team went above and beyond when our flight got cancelled during our Rajasthan trip. They immediately arranged alternative transportation and even upgraded our hotel. Their 24*7 WhatsApp support was a lifesaver!`,
       supportType: "Emergency Assistance",
       responseTime: "Within 15 minutes"
     },
@@ -87,7 +87,7 @@ const SupportTestimonials = () => {
     },
     {
       icon: "Shield",
-      value: "24/7",
+      value: "24*7",
       label: "Support Available",
       color: "text-primary"
     }

@@ -192,7 +192,7 @@ const AvailableDrivers = ({ selectedService, onDriverSelect }) => {
                   </div>
                   <div className="flex items-center space-x-1">
                     <Icon name="Phone" size={12} />
-                    <span>24/7 Support</span>
+                    <span>24*7 Support</span>
                   </div>
                 </div>
                 
@@ -229,7 +229,7 @@ const AvailableDrivers = ({ selectedService, onDriverSelect }) => {
             <ul className="text-muted-foreground space-y-1">
               <li>• All drivers are background verified</li>
               <li>• Real-time GPS tracking available</li>
-              <li>• 24/7 emergency support hotline</li>
+              <li>• 24*7 emergency support hotline</li>
               <li>• Trip sharing with family/friends</li>
             </ul>
           </div>

@@ -149,7 +149,7 @@ const QuickBookingWidget = ({ onSearch }) => {
           <div className="text-xs text-primary-foreground/80">Cities Covered</div>
         </div>
         <div className="text-center">
-          <div className="text-2xl font-bold text-white">24/7</div>
+          <div className="text-2xl font-bold text-white">24*7</div>
           <div className="text-xs text-primary-foreground/80">Support</div>
         </div>
       </div>
