@@ -7,6 +7,7 @@ import PopularDestinationsSection from './components/PopularDestinationsSection'
 import BestServicesSection from './components/BestServicesSection';
 import Blog from "./components/Blog";
 import WhatsAppFloatingButton from './components/WhatsAppFloatingButton';
+import CallFloatingButton from "./components/CallFloatingButton";
 // import SmartSearchWidget from './components/SmartSearchWidget';
 // import FlexibleTransportation from './components/FlexibleTransportation';
 // import SocialProofSection from './components/SocialProofSection';
@@ -138,6 +139,7 @@ const HomepagePremiumTravelDiscoveryHub = () => {
 
             {/* WhatsApp Floating Button */}
             <WhatsAppFloatingButton />
+            <CallFloatingButton/>
         </div>
     );
 };
