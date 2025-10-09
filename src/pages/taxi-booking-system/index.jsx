@@ -7,6 +7,7 @@ import ServiceTypeSelector from './components/ServiceTypeSelector';
 import FixedRoutePackages from './components/FixedRoutePackages';
 import PerKmCalculator from './components/PerKmCalculator';
 import SafetyFeatures from './components/SafetyFeatures';
+import OneWayAndRoundTrip from "./components/oneWayAndRoundTrip";
 
 const TaxiBookingSystem = () => {
     const [selectedService, setSelectedService] = useState('fixed-route');
@@ -67,7 +68,7 @@ const TaxiBookingSystem = () => {
                                 </div>
                                 <div className="flex items-center space-x-2 bg-card px-4 py-2 rounded-lg border border-border">
                                     <Icon name="Phone" size={16} className="text-accent" />
-                                    <span className="text-sm text-foreground">24/7 Support</span>
+                                    <span className="text-sm text-foreground">24*7 Support</span>
                                 </div>
                                 <div className="flex items-center space-x-2 bg-card px-4 py-2 rounded-lg border border-border">
                                     <Icon name="CreditCard" size={16} className="text-accent" />
@@ -92,57 +93,33 @@ const TaxiBookingSystem = () => {
                 </section>
 
                 {/* Service Selection */}
-                <section className="py-12 bg-card/30">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="text-center mb-8">
-                            <h2 className="text-3xl font-bold text-foreground mb-3">Choose Your Service</h2>
-                            <p className="text-muted-foreground max-w-2xl mx-auto">
-                                Select the service that best fits your travel needs
-                            </p>
-                        </div>
+                {/*<section className="py-12 bg-card/30">*/}
+                {/*    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">*/}
+                {/*        <div className="text-center mb-8">*/}
+                {/*            <h2 className="text-3xl font-bold text-foreground mb-3">Choose Your Service</h2>*/}
+                {/*            <p className="text-muted-foreground max-w-2xl mx-auto">*/}
+                {/*                Select the service that best fits your travel needs*/}
+                {/*            </p>*/}
+                {/*        </div>*/}
 
-                        {/* Show loader while changing service */}
-                        {loading ? (
-                            <div className="text-center py-10 text-xl font-semibold text-primary">
-                                Loading...
-                            </div>
-                        ) : (
-                            <ServiceTypeSelector
-                                selectedService={selectedService}
-                                onServiceChange={handleServiceChange}
-                            />
-                        )}
-                    </div>
-                </section>
+                {/*        /!* Show loader while changing service *!/*/}
+                {/*        {loading ? (*/}
+                {/*            <div className="text-center py-10 text-xl font-semibold text-primary">*/}
+                {/*                Loading...*/}
+                {/*            </div>*/}
+                {/*        ) : (*/}
+                {/*            <ServiceTypeSelector*/}
+                {/*                selectedService={selectedService}*/}
+                {/*                onServiceChange={handleServiceChange}*/}
+                {/*            />*/}
+                {/*        )}*/}
+                {/*    </div>*/}
+                {/*</section>*/}
 
                 {/* Service Content */}
                 <section className="py-12">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        {loading ? (
-                            <div className="text-center py-20 text-2xl font-semibold text-primary">
-                                Loading...
-                            </div>
-                        ) : selectedService === 'fixed-route' ? (
-                            <div>
-                                <div className="text-center mb-8">
-                                    <h2 className="text-3xl font-bold text-foreground mb-3">Fixed Route Packages</h2>
-                                    <p className="text-muted-foreground max-w-2xl mx-auto">
-                                        Pre-planned routes with all-inclusive pricing and curated experiences
-                                    </p>
-                                </div>
-                                <FixedRoutePackages />
-                            </div>
-                        ) : (
-                            <div>
-                                <div className="text-center mb-8">
-                                    <h2 className="text-3xl font-bold text-foreground mb-3">Per-Kilometer Service</h2>
-                                    <p className="text-muted-foreground max-w-2xl mx-auto">
-                                        Flexible booking with transparent per-km rates and custom routes
-                                    </p>
-                                </div>
-                                <PerKmCalculator />
-                            </div>
-                        )}
+                        <OneWayAndRoundTrip/>
                     </div>
                 </section>
 

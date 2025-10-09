@@ -30,7 +30,7 @@ const QuickContactCards = () => {
             color: "bg-[#25D366]",
             hoverColor: "hover:bg-[#128C7E]",
             textColor: "text-white",
-            details: "Available 24/7 • Average response: 2 minutes",
+            details: "Available 24*7 • Average response: 2 minutes",
             onClick: handleWhatsAppClick,
         },
         {

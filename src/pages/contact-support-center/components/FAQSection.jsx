@@ -40,7 +40,7 @@ const FAQSection = () => {
         {
           id: 5,
           question: "Do you provide travel insurance?",
-          answer: `Yes, we offer comprehensive travel insurance options:\n• Medical emergency coverage up to ₹5 lakhs\n• Trip cancellation and interruption coverage\n• Lost baggage and personal effects protection\n• 24/7 emergency assistance\n\nTravel insurance is optional but highly recommended. Our team will help you choose the right coverage based on your travel plans.`
+          answer: `Yes, we offer comprehensive travel insurance options:\n• Medical emergency coverage up to ₹5 lakhs\n• Trip cancellation and interruption coverage\n• Lost baggage and personal effects protection\n• 24*7 emergency assistance\n\nTravel insurance is optional but highly recommended. Our team will help you choose the right coverage based on your travel plans.`
         },
         {
           id: 6,
@@ -55,12 +55,12 @@ const FAQSection = () => {
         {
           id: 7,
           question: "How can I reach customer support during my trip?",
-          answer: `We provide 24/7 support during your trip:\n• Emergency helpline: +91 97258 55858\n• WhatsApp support: +91 97258 55858\n• Email: emergency@wanderwise.com\n• Local coordinator contact details provided\n\nOur support team can assist with any issues, changes, or emergencies during your travel.`
+          answer: `We provide 24*7 support during your trip:\n• Emergency helpline: +91 97258 55858\n• WhatsApp support: +91 97258 55858\n• Email: emergency@wanderwise.com\n• Local coordinator contact details provided\n\nOur support team can assist with any issues, changes, or emergencies during your travel.`
         },
         {
           id: 8,
           question: "What if I face issues with hotels or services?",
-          answer: `If you face any issues during your trip:\n• Contact our 24/7 helpline immediately\n• Document the issue with photos if possible\n• Our local coordinators will resolve issues on-site\n• We guarantee alternative arrangements if needed\n\nYour satisfaction is our priority, and we'll ensure any problems are resolved quickly.`
+          answer: `If you face any issues during your trip:\n• Contact our 24*7 helpline immediately\n• Document the issue with photos if possible\n• Our local coordinators will resolve issues on-site\n• We guarantee alternative arrangements if needed\n\nYour satisfaction is our priority, and we'll ensure any problems are resolved quickly.`
         },
         {
           id: 9,

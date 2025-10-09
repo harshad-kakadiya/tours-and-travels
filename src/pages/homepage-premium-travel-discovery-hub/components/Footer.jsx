@@ -210,7 +210,7 @@ const Footer = () => {
                     <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between space-y-3 sm:space-y-0 text-white text-sm">
                         <div className="flex items-center space-x-2">
                             <Icon name="Phone" size={16} />
-                            <span>24/7 Emergency: +91 97258 55858</span>
+                            <span>24*7 Emergency: +91 97258 55858</span>
                         </div>
                         <div className="hidden sm:block w-px h-4 bg-white/30"></div>
                         <button

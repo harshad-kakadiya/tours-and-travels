@@ -5,205 +5,417 @@ import Button from '../../../components/ui/Button';
 import api from '../../../utils/api';
 
 const FixedRoutePackages = ({ onBookingClick }) => {
-  const [selectedCategory, setSelectedCategory] = useState('city-tours');
-  const [packages, setPackages] = useState([]);
+  const [activeTab, setActiveTab] = useState('oneway');
+  const [oneWayCabs, setOneWayCabs] = useState([]);
+  const [roundTripCabs, setRoundTripCabs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Form state for One Way booking
+  const [selectedCar, setSelectedCar] = useState(null);
+  const [formData, setFormData] = useState({
+    pickup: '',
+    drop: '',
+    date: '',
+    time: ''
+  });
 
   useEffect(() => {
-    fetchPackages();
+    fetchCabs();
   }, []);
 
-  const fetchPackages = async () => {
+  const fetchCabs = async () => {
     try {
       setLoading(true);
       setError(null);
+      
+      // Fetch data from the provided API
       const response = await api.get('https://tour-travels-be-h58q.onrender.com/api/taxi-tour');
-      const data = response.data;
-
-      // Filter packages with serviceType 'fix_route'
-      const fixedRoutePackages = data.filter(pkg => pkg.serviceType === 'fix_route');
-      setPackages(fixedRoutePackages);
+      
+      // Extract data from the response based on the provided payload format
+      let taxiData = [];
+      if (response.data && Array.isArray(response.data)) {
+        taxiData = response.data;
+      } else if (response.data && response.data.data) {
+        // If the API returns data in the format shown in the payload
+        taxiData = Array.isArray(response.data.data) ? response.data.data : [response.data.data];
+      }
+      
+      // Filter data for one way and round trip cabs
+      const oneWayCabs = taxiData.filter(cab => cab.routeType === 'oneway');
+      const roundTripCabs = taxiData.filter(cab => cab.routeType === 'roundtrip');
+      
+      setOneWayCabs(oneWayCabs);
+      setRoundTripCabs(roundTripCabs);
+      
     } catch (err) {
-      console.error('Error fetching packages:', err);
-      setError('Failed to load packages. Please try again.');
+      console.error('Error fetching cabs:', err);
+      
+      // Fallback to sample data if API fails
+      const sampleOneWayCabs = [
+        {
+          _id: '68e73e749685d6df4a8873e2',
+          routeType: 'oneway',
+          seater: 'sedan',
+          carName: 'Sedan',
+          image: 'https://res.cloudinary.com/degalvlji/image/upload/v1759985267/cabs/ug67htisq734ycomgxah.jpg',
+        },
+        {
+          _id: '68e73e749685d6df4a8873e3',
+          routeType: 'oneway',
+          seater: 'suv',
+          carName: 'SUV',
+          image: 'https://res.cloudinary.com/degalvlji/image/upload/v1759985267/cabs/ug67htisq734ycomgxah.jpg',
+        },
+        {
+          _id: '68e73e749685d6df4a8873e4',
+          routeType: 'oneway',
+          seater: 'tempo_traveller',
+          carName: 'Tempo Traveller',
+          image: 'https://res.cloudinary.com/degalvlji/image/upload/v1759985267/cabs/ug67htisq734ycomgxah.jpg',
+        }
+      ];
+      
+      const sampleRoundTripCabs = [
+        {
+          _id: '68e73eae9685d6df4a8873e4',
+          routeType: 'roundtrip',
+          seater: 'sedan',
+          carName: 'Sedan',
+          image: 'https://res.cloudinary.com/degalvlji/image/upload/v1759985325/cabs/anua6mn4p5gdmmkhxrxg.jpg',
+        },
+        {
+          _id: '68e73eae9685d6df4a8873e5',
+          routeType: 'roundtrip',
+          seater: 'suv',
+          carName: 'SUV',
+          image: 'https://res.cloudinary.com/degalvlji/image/upload/v1759985325/cabs/anua6mn4p5gdmmkhxrxg.jpg',
+        },
+        {
+          _id: '68e73eae9685d6df4a8873e6',
+          routeType: 'roundtrip',
+          seater: 'tempo_traveller',
+          carName: 'Tempo Traveller',
+          image: 'https://res.cloudinary.com/degalvlji/image/upload/v1759985325/cabs/anua6mn4p5gdmmkhxrxg.jpg',
+        }
+      ];
+      
+      setOneWayCabs(sampleOneWayCabs);
+      setRoundTripCabs(sampleRoundTripCabs);
+      setError('Unable to fetch data from API. Using sample data instead.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleWhatsAppBooking = (pkg) => {
-    const message = encodeURIComponent(
-        `Hi! I'm interested in booking the ${pkg.name} package. ` +
-        `Route: ${pkg.from} to ${pkg.to}. ` +
-        `Price: ₹${pkg.price} (${pkg.wayType}). ` +
-        `Please provide more details and booking assistance.`
-    );
-    window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
   };
 
-  // Function to render features with appropriate icons
-  const renderFeature = (feature, index) => {
-    // Map common feature keywords to icons
-    const getFeatureIcon = (featureText) => {
-      const lowerFeature = featureText.toLowerCase();
+  const handleCarSelect = (car) => {
+    setSelectedCar(car);
+  };
 
-      if (lowerFeature.includes('ac') || lowerFeature.includes('air conditioning') || lowerFeature.includes('cool')) {
-        return { name: 'Snowflake', color: 'text-green-600', bgColor: 'bg-green-100' };
-      }
-      if (lowerFeature.includes('driver') || lowerFeature.includes('professional') || lowerFeature.includes('chauffeur')) {
-        return { name: 'UserCheck', color: 'text-blue-600', bgColor: 'bg-blue-100' };
-      }
-      if (lowerFeature.includes('24/7') || lowerFeature.includes('24x7') || lowerFeature.includes('available')) {
-        return { name: 'Clock', color: 'text-purple-600', bgColor: 'bg-purple-100' };
-      }
-      if (lowerFeature.includes('wifi') || lowerFeature.includes('wi-fi')) {
-        return { name: 'Wifi', color: 'text-orange-600', bgColor: 'bg-orange-100' };
-      }
-      if (lowerFeature.includes('water') || lowerFeature.includes('bottle')) {
-        return { name: 'Droplets', color: 'text-cyan-600', bgColor: 'bg-cyan-100' };
-      }
-      if (lowerFeature.includes('sightseeing') || lowerFeature.includes('tour')) {
-        return { name: 'Map', color: 'text-red-600', bgColor: 'bg-red-100' };
-      }
-      if (lowerFeature.includes('fuel') || lowerFeature.includes('petrol') || lowerFeature.includes('diesel')) {
-        return { name: 'Fuel', color: 'text-yellow-600', bgColor: 'bg-yellow-100' };
-      }
-      if (lowerFeature.includes('toll') || lowerFeature.includes('tax')) {
-        return { name: 'Receipt', color: 'text-indigo-600', bgColor: 'bg-indigo-100' };
-      }
-      if (lowerFeature.includes('parking') || lowerFeature.includes('park')) {
-        return { name: 'ParkingCircle', color: 'text-pink-600', bgColor: 'bg-pink-100' };
-      }
-      // Default icon for other features
-      return { name: 'Check', color: 'text-gray-600', bgColor: 'bg-gray-100' };
-    };
-
-    const iconConfig = getFeatureIcon(feature);
-
-    return (
-        <div key={index} className="flex items-center space-x-3">
-          <div className={`w-8 h-8 rounded-full ${iconConfig.bgColor} flex items-center justify-center flex-shrink-0`}>
-            <Icon name={iconConfig.name} size={16} className={iconConfig.color} />
-          </div>
-          <div className="text-left">
-            <p className="text-sm font-medium text-gray-800">{feature}</p>
-          </div>
-        </div>
+  // Handle WhatsApp Inquiry
+  const handleWhatsAppInquiry = () => {
+    if (!selectedCar) {
+      alert('Please select a car first');
+      return;
+    }
+    
+    // Validate form fields
+    if (!formData.pickup || !formData.drop || !formData.date || !formData.time) {
+      alert('Please fill in all required fields');
+      return;
+    }
+    
+    // Format date for better readability
+    const formattedDate = new Date(formData.date).toLocaleDateString();
+    
+    const message = encodeURIComponent(
+      `Hi! I'm interested in booking a One Way taxi.\n` +
+      `Car Name: ${selectedCar.carName}\n` +
+      `Seater: ${selectedCar.seater.replace('_', ' ')}\n` +
+      `From: ${formData.pickup}\n` +
+      `To: ${formData.drop}\n` +
+      `Date: ${formattedDate}\n` +
+      `Time: ${formData.time}\n` +
+      `Please provide more details and booking assistance.`
     );
+    
+    window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+    
+    // Pass booking details to parent component if callback exists
+    if (onBookingClick) {
+      onBookingClick({
+        type: 'oneway',
+        car: selectedCar,
+        ...formData
+      });
+    }
   };
 
   if (loading) {
     return (
-        <div className="space-y-6">
-          <div className="flex justify-center items-center py-12">
-            <div className="flex items-center space-x-2">
-              <div className="animate-spin">
-                <Icon name="Loader2" size={24} className="text-primary" />
-              </div>
-              <span className="text-muted-foreground">Loading packages...</span>
+      <div className="space-y-6">
+        <div className="flex justify-center items-center py-12">
+          <div className="flex items-center space-x-2">
+            <div className="animate-spin">
+              <Icon name="Loader2" size={24} className="text-primary" />
             </div>
+            <span className="text-muted-foreground">Loading cabs...</span>
           </div>
         </div>
-    );
-  }
-
-  if (error) {
-    return (
-        <div className="space-y-6">
-          <div className="text-center py-12">
-            <div className="text-red-500 mb-4">
-              <Icon name="AlertCircle" size={48} className="mx-auto" />
-            </div>
-            <h3 className="text-lg font-semibold text-foreground mb-2">Failed to Load Packages</h3>
-            <p className="text-muted-foreground mb-4">{error}</p>
-            <Button
-                variant="outline"
-                onClick={fetchPackages}
-                iconName="RefreshCw"
-                iconPosition="left"
-            >
-              Try Again
-            </Button>
-          </div>
-        </div>
+      </div>
     );
   }
 
   return (
-      <div className="space-y-6">
-        {/* Packages Grid */}
-        {packages.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-muted-foreground mb-4">
-                <Icon name="Package" size={48} className="mx-auto" />
-              </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">No Packages Available</h3>
-              <p className="text-muted-foreground">No fixed route packages are currently available.</p>
-            </div>
-        ) : (
-            <div className="grid md:grid-cols-3 gap-6">
-              {packages?.map((pkg) => (
-                  <div
-                      key={pkg?._id}
-                      className="rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 bg-white mb-8"
-                  >
-                    {/* Header with From & To */}
-                    <div className="bg-primary text-white p-4 text-center">
-                      <h3 className="text-lg font-medium flex items-center justify-center gap-2">
-                        {pkg?.from} <Icon name="ArrowRight" size={16} /> {pkg?.to}
-                      </h3>
-                    </div>
-                    <div className="p-4 text-center border-b">
-                      <p className="text-2xl font-bold text-gray-800">from ₹ {pkg?.price}</p>
-                    </div>
-
-                    {/* Way Type */}
-                    <div className="p-3 text-center ">
-                      <p className="text-gray-700 font-medium">OneWay Trip</p>
-                    </div>
-
-                    {/* Image */}
-                    <div className="h-48 overflow-hidden">
-                      <Image
-                          src={pkg?.image}
-                          alt={pkg?.name}
-                          className="w-full h-full object-cover"
-                      />
-                    </div>
-
-                    {/* Features Section - Show only first 3 features */}
-                    <div className="p-4 border-t border-b">
-                      <div className="space-y-3">
-                        {pkg?.feactures && pkg.feactures.length > 0 ? (
-                            pkg.feactures.slice(0, 3).map((feature, index) => (
-                                <div key={index} className="flex items-center gap-2">
-                                  <Icon name="Check" size={16} className="text-green-500" />
-                                  <span className="text-gray-700">{feature}</span>
-                                </div>
-                            ))
-                        ) : (
-                            <div className="text-center py-2">
-                              <p className="text-sm text-muted-foreground">No features listed</p>
-                            </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Book Now Button */}
-                    <div className="p-4 text-center">
-                      <button
-                          onClick={() => handleWhatsAppBooking(pkg)}
-                          className="w-full bg-primary text-white py-3 rounded-md font-medium hover:bg-primary/90 transition-colors"
-                      >
-                        Book Now On Whatsapp
-                      </button>
-                    </div>
-                  </div>
-              ))}
-            </div>
-        )}
+    <div className="space-y-8">
+      <div className="text-center">
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">Choose Your Service</h2>
+        <p className="text-gray-600 mb-6">Select the type of taxi service you need</p>
       </div>
+      
+      {/* Tab Navigation */}
+      <div className="flex justify-center mb-8">
+        <div className="inline-flex rounded-md shadow-sm" role="group">
+          <button
+            type="button"
+            className={`px-6 py-3 text-sm font-medium border ${
+              activeTab === 'oneway'
+                ? 'bg-primary text-white border-primary'
+                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'
+            } rounded-l-lg focus:z-10 focus:outline-none`}
+            onClick={() => setActiveTab('oneway')}
+          >
+            <div className="flex items-center gap-2">
+              <Icon name="ArrowRight" size={16} />
+              <span>One Way</span>
+            </div>
+          </button>
+          <button
+            type="button"
+            className={`px-6 py-3 text-sm font-medium border ${
+              activeTab === 'roundtrip'
+                ? 'bg-primary text-white border-primary'
+                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'
+            } rounded-r-lg focus:z-10 focus:outline-none`}
+            onClick={() => setActiveTab('roundtrip')}
+          >
+            <div className="flex items-center gap-2">
+              <Icon name="RefreshCw" size={16} />
+              <span>Round Trip</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      {/* One Way Tab Content */}
+      {activeTab === 'oneway' && (
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h3 className="text-xl font-semibold text-gray-800 mb-6">One Way Booking</h3>
+          
+          {/* Car Selection Dropdown */}
+          <div className="mb-6">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Car Name
+            </label>
+            <select
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+              onChange={(e) => {
+                const selectedCarId = e.target.value;
+                const car = oneWayCabs.find(car => car._id === selectedCarId);
+                if (car) handleCarSelect(car);
+              }}
+              value={selectedCar ? selectedCar._id : ''}
+            >
+              <option value="">Select a car</option>
+              {oneWayCabs.map((car) => (
+                <option key={car._id} value={car._id}>
+                  {car.carName}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          {/* Display selected car details */}
+          {selectedCar && (
+            <div className="mb-6 p-4 border border-gray-200 rounded-lg">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                <div className="h-48 overflow-hidden rounded-md">
+                  <Image
+                    src={selectedCar.image}
+                    alt={selectedCar.carName}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div>
+                  <h4 className="font-medium text-gray-800 text-lg mb-2">{selectedCar.carName}</h4>
+                  <p className="text-gray-600 capitalize">
+                    <span className="font-bold">Seater:</span> {selectedCar.seater.replace('_', ' ')}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* Booking Form */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Pickup Location
+              </label>
+              <input
+                type="text"
+                name="pickup"
+                value={formData.pickup}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                placeholder="Enter pickup location"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Drop Location
+              </label>
+              <input
+                type="text"
+                name="drop"
+                value={formData.drop}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                placeholder="Enter drop location"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Date
+              </label>
+              <input
+                type="date"
+                name="date"
+                value={formData.date}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Time
+              </label>
+              <input
+                type="time"
+                name="time"
+                value={formData.time}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+              />
+            </div>
+          </div>
+          
+          {/* Submit Button */}
+          <div className="mt-8 text-center">
+            <button
+              onClick={handleWhatsAppInquiry}
+              className="bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-md inline-flex items-center gap-2 transition-colors"
+              disabled={!selectedCar}
+            >
+              <Icon name="MessageCircle" size={20} />
+              WhatsApp Inquiry
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Round Trip Tab Content */}
+      {activeTab === 'roundtrip' && (
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h3 className="text-xl font-semibold text-gray-800 mb-6">Round Trip Packages</h3>
+          
+          {/* Car Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {roundTripCabs.length > 0 ? (
+              roundTripCabs.map((car) => (
+                <div key={car._id} className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                  {/* Car Name */}
+                  <div className="p-4 bg-gray-50">
+                    <h4 className="font-medium text-gray-800 text-lg">{car.carName}</h4>
+                  </div>
+                  
+                  {/* Car Image */}
+                  <div className="h-48 overflow-hidden">
+                    <Image
+                      src={car.image}
+                      alt={car.carName}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  
+                  {/* Car Details */}
+                  <div className="p-4">
+                    <p className="text-gray-600 capitalize mb-4">
+                      <span className="font-bold">Seater:</span> {car.seater.replace('_', ' ')}
+                    </p>
+                    
+                    {/* WhatsApp Button */}
+                    <button
+                      onClick={() => {
+                        const message = encodeURIComponent(
+                          `Hi! I'm interested in booking a Round Trip taxi.\n` +
+                          `Car Name: ${car.carName}\n` +
+                          `Seater: ${car.seater.replace('_', ' ')}\n` +
+                          `Please provide more details and booking assistance.`
+                        );
+                        window.open(`https://wa.me/919876543210?text=${message}`, '_blank');
+                        
+                        // Pass booking details to parent component if callback exists
+                        if (onBookingClick) {
+                          onBookingClick({
+                            type: 'roundtrip',
+                            car: car
+                          });
+                        }
+                      }}
+                      className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md inline-flex items-center justify-center gap-2 transition-colors"
+                    >
+                      <Icon name="MessageCircle" size={18} />
+                      WhatsApp Inquiry
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="col-span-full text-center py-8">
+                <p className="text-gray-500">No round trip cabs available at the moment.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+      
+      {error && (
+        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <Icon name="AlertTriangle" size={24} className="text-yellow-400" />
+            </div>
+            <div className="ml-3">
+              <p className="text-sm text-yellow-700">
+                {error}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

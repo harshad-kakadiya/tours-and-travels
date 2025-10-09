@@ -345,7 +345,7 @@ const HotelBookingPortal = () => {
                                 },
                                 {
                                     icon: "MessageCircle",
-                                    title: "24/7 WhatsApp Support",
+                                    title: "24*7 WhatsApp Support",
                                     description: "Instant assistance through WhatsApp for bookings, changes, and queries"
                                 },
                                 {

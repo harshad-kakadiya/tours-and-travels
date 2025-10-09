@@ -195,7 +195,6 @@ const HeroCarousel = () => {
                                 }}
                                 whileHover={{
                                     scale: 1.1,
-                                    backgroundColor: '#3b82f6'
                                 }}
                             >
                                 <Icon
