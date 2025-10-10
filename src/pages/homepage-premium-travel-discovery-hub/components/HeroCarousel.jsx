@@ -8,7 +8,6 @@ import img1 from '../../../../public/assets/images/view-breathtaking-beach-natur
 import img2 from '../../../../public/assets/images/tropical-beach-with-thatched-hut-clear-blue-water-palm-trees.jpg';
 import img3 from '../../../../public/assets/images/sun-day-coconut-palm-caribbean.jpg';
 
-
 const HeroCarousel = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -41,7 +40,7 @@ const HeroCarousel = () => {
         {
             id: 'Cabs',
             name: 'Cabs',
-            icon: 'Ship',
+            icon: 'Car',
             path: '/taxi-booking-system'
         },
         {
@@ -87,34 +86,6 @@ const HeroCarousel = () => {
                 ))}
             </AnimatePresence>
 
-            {/* Carousel Navigation Indicators */}
-            <div style={{
-                position: 'absolute',
-                bottom: '20px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                display: 'flex',
-                gap: '10px',
-                zIndex: 10
-            }}>
-                {images.map((_, index) => (
-                    <button
-                        key={index}
-                        onClick={() => setCurrentImageIndex(index)}
-                        style={{
-                            width: '12px',
-                            height: '12px',
-                            borderRadius: '50%',
-                            backgroundColor: currentImageIndex === index ? '#ffffff' : 'rgba(255, 255, 255, 0.5)',
-                            border: 'none',
-                            cursor: 'pointer',
-                            transition: 'background-color 0.3s ease'
-                        }}
-                        aria-label={`Go to slide ${index + 1}`}
-                    />
-                ))}
-            </div>
-
             {/* Overlay for better text readability */}
             <div
                 style={{
@@ -145,7 +116,7 @@ const HeroCarousel = () => {
                         fontSize: 'clamp(2rem, 5vw, 3.5rem)',
                         fontWeight: 'bold',
                         color: 'white',
-                        marginBottom: '2rem',
+                        marginBottom: '1rem',
                         textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
                         padding: '0 1rem'
                     }}
@@ -156,12 +127,29 @@ const HeroCarousel = () => {
                     PLAN YOUR TRAVEL NOW!
                 </motion.h1>
 
-                {/* Search Bar - Same design for all screens, only width changes */}
+                {/* Search Description Text */}
+                <motion.p
+                    style={{
+                        color: 'white',
+                        fontSize: 'clamp(0.9rem, 2vw, 1.1rem)',
+                        marginBottom: '2rem',
+                        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
+                        maxWidth: '600px',
+                        lineHeight: '1.5'
+                    }}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.1 }}
+                >
+                    Search over a million tour and travels, sight seeings, hotels and more
+                </motion.p>
+
+                {/* Search Bar */}
                 <motion.div
                     style={{
                         width: '100%',
                         maxWidth: '48rem',
-                        margin: '0 auto 4rem auto',
+                        margin: '0 auto 3rem auto',
                         padding: '0 1rem'
                     }}
                     initial={{ opacity: 0, y: 20 }}
