@@ -4,11 +4,24 @@ import {motion, AnimatePresence} from 'framer-motion';
 import Icon from '../../../components/AppIcon';
 import Image from '../../../components/AppImage';
 import Button from '../../../components/ui/Button';
-import img from '../../../../public/assets/images/istockphoto-1169602395-612x612.jpg';
+import img1 from '../../../../public/assets/images/view-breathtaking-beach-nature-landscape.jpg';
+import img2 from '../../../../public/assets/images/istockphoto-1169602395-612x612.jpg';
+import img3 from '../../../../public/assets/images/istockphoto-1169602395-612x612.jpg';
 
 const HeroCarousel = () => {
     const [searchQuery, setSearchQuery] = useState('');
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const navigate = useNavigate();
+
+    const images = [img1 , img2,img3];
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, []);
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -43,25 +56,63 @@ const HeroCarousel = () => {
             position: 'relative',
             width: '100%',
             height: '100vh',
-            // minHeight: '600px',
-            // maxHeight: '800px',
+            minHeight: '600px',
             overflow: 'hidden'
         }}>
-            {/* Background Image - Fixed implementation */}
-            <div
-                style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    backgroundImage: `url(${img})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                    zIndex: 1
-                }}
-            />
+            {/* Carousel Images */}
+            <AnimatePresence initial={false}>
+                {images.map((image, index) => (
+                    currentImageIndex === index && (
+                        <motion.div
+                            key={index}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 1 }}
+                            style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                backgroundImage: `url(${image})`,
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                                backgroundRepeat: 'no-repeat',
+                                zIndex: 1
+                            }}
+                        />
+                    )
+                ))}
+            </AnimatePresence>
+
+            {/* Carousel Navigation Indicators */}
+            <div style={{
+                position: 'absolute',
+                bottom: '20px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                display: 'flex',
+                gap: '10px',
+                zIndex: 10
+            }}>
+                {images.map((_, index) => (
+                    <button
+                        key={index}
+                        onClick={() => setCurrentImageIndex(index)}
+                        style={{
+                            width: '12px',
+                            height: '12px',
+                            borderRadius: '50%',
+                            backgroundColor: currentImageIndex === index ? '#ffffff' : 'rgba(255, 255, 255, 0.5)',
+                            border: 'none',
+                            cursor: 'pointer',
+                            transition: 'background-color 0.3s ease'
+                        }}
+                        aria-label={`Go to slide ${index + 1}`}
+                    />
+                ))}
+            </div>
 
             {/* Overlay for better text readability */}
             <div
@@ -84,7 +135,7 @@ const HeroCarousel = () => {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                padding: '0 2rem',
+                padding: '1rem',
                 textAlign: 'center',
                 zIndex: 10
             }}>
@@ -94,7 +145,8 @@ const HeroCarousel = () => {
                         fontWeight: 'bold',
                         color: 'white',
                         marginBottom: '2rem',
-                        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
+                        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+                        padding: '0 1rem'
                     }}
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -103,18 +155,22 @@ const HeroCarousel = () => {
                     PLAN YOUR TRAVEL NOW!
                 </motion.h1>
 
-                {/* Search Bar - Improved styling */}
+                {/* Search Bar - Same design for all screens, only width changes */}
                 <motion.div
                     style={{
                         width: '100%',
                         maxWidth: '48rem',
-                        margin: '0 auto 4rem auto'
+                        margin: '0 auto 4rem auto',
+                        padding: '0 1rem'
                     }}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
                 >
-                    <form onSubmit={handleSearch} style={{ display: 'flex', width: '100%' }}>
+                    <form onSubmit={handleSearch} style={{
+                        display: 'flex',
+                        width: '100%'
+                    }}>
                         <input
                             type="text"
                             placeholder="Search over a million tour and travels, sight seeings, hotels and more"
@@ -127,7 +183,8 @@ const HeroCarousel = () => {
                                 color: '#1f2937',
                                 outline: 'none',
                                 boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                                fontSize: '1rem'
+                                fontSize: 'clamp(0.9rem, 2vw, 1rem)',
+                                width: '100%'
                             }}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -146,7 +203,8 @@ const HeroCarousel = () => {
                                 justifyContent: 'center',
                                 cursor: 'pointer',
                                 transition: 'background-color 0.3s ease',
-                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                                minWidth: '60px'
                             }}
                             onMouseEnter={(e) => e.target.style.backgroundColor = '#2563eb'}
                             onMouseLeave={(e) => e.target.style.backgroundColor = '#3b82f6'}
@@ -156,14 +214,15 @@ const HeroCarousel = () => {
                     </form>
                 </motion.div>
 
-                {/* Service Options - Improved styling and hover effects */}
+                {/* Service Options */}
                 <motion.div
                     style={{
                         display: 'flex',
                         flexWrap: 'wrap',
                         justifyContent: 'center',
                         gap: '2rem',
-                        maxWidth: '600px'
+                        maxWidth: '600px',
+                        padding: '0 1rem'
                     }}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

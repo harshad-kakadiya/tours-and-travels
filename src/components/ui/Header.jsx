@@ -188,6 +188,63 @@ const Header = () => {
                             </Link>
                         )
                     )}
+                    
+                    {/* Login/Logout Button */}
+                    {isAuthenticated ? (
+                        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                            <span style={{ 
+                                color: isScrolled ? "#000" : a ? "#FFF" : "#000",
+                                fontSize: "0.9rem" 
+                            }}>
+                                Hi, {user?.fullName?.split(' ')[0] || 'User'}
+                            </span>
+                            <button
+                                onClick={logout}
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "0.5rem",
+                                    padding: "0.5rem 1rem",
+                                    background: "#e11d48",
+                                    color: "#fff",
+                                    border: "none",
+                                    borderRadius: "0.375rem",
+                                    fontSize: "0.875rem",
+                                    fontWeight: "500",
+                                    cursor: "pointer",
+                                    transition: "all 0.2s ease",
+                                }}
+                                onMouseEnter={(e) => (e.target.style.backgroundColor = "#be123c")}
+                                onMouseLeave={(e) => (e.target.style.backgroundColor = "#e11d48")}
+                            >
+                                <Icon name="LogOut" size={16} />
+                                Logout
+                            </button>
+                        </div>
+                    ) : (
+                        <Link
+                            to="/login"
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "0.5rem",
+                                padding: "0.5rem 1rem",
+                                background: "#3b82f6",
+                                color: "#fff",
+                                border: "none",
+                                borderRadius: "0.375rem",
+                                fontSize: "0.875rem",
+                                fontWeight: "500",
+                                textDecoration: "none",
+                                transition: "all 0.2s ease",
+                            }}
+                            onMouseEnter={(e) => (e.target.style.backgroundColor = "#2563eb")}
+                            onMouseLeave={(e) => (e.target.style.backgroundColor = "#3b82f6")}
+                        >
+                            <Icon name="LogIn" size={16} />
+                            Login
+                        </Link>
+                    )}
                 </nav>
 
                 {/* Mobile Menu Button */}
@@ -282,6 +339,71 @@ const Header = () => {
                             </Link>
                         )
                     )}
+                    
+                    {/* Login/Logout Button for Mobile */}
+                    <div style={{ 
+                        borderTop: "1px solid #e5e7eb", 
+                        marginTop: "1rem", 
+                        paddingTop: "1rem" 
+                    }}>
+                        {isAuthenticated ? (
+                            <div>
+                                <div style={{ 
+                                    marginBottom: "0.75rem",
+                                    fontSize: "0.9rem",
+                                    color: "#4b5563"
+                                }}>
+                                    Hi, {user?.fullName?.split(' ')[0] || 'User'}
+                                </div>
+                                <button
+                                    onClick={() => {
+                                        logout();
+                                        closeMobileMenu();
+                                    }}
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "0.5rem",
+                                        width: "100%",
+                                        padding: "0.75rem 1rem",
+                                        background: "#e11d48",
+                                        color: "#fff",
+                                        border: "none",
+                                        borderRadius: "0.375rem",
+                                        fontSize: "0.875rem",
+                                        fontWeight: "500",
+                                        cursor: "pointer",
+                                    }}
+                                >
+                                    <Icon name="LogOut" size={16} />
+                                    Logout
+                                </button>
+                            </div>
+                        ) : (
+                            <Link
+                                to="/auth/login"
+                                onClick={closeMobileMenu}
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    gap: "0.5rem",
+                                    width: "100%",
+                                    padding: "0.75rem 1rem",
+                                    background: "#3b82f6",
+                                    color: "#fff",
+                                    border: "none",
+                                    borderRadius: "0.375rem",
+                                    fontSize: "0.875rem",
+                                    fontWeight: "500",
+                                    textDecoration: "none",
+                                }}
+                            >
+                                <Icon name="LogIn" size={16} />
+                                Login
+                            </Link>
+                        )}
+                    </div>
                 </div>
             )}
 

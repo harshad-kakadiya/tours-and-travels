@@ -62,7 +62,7 @@ const Footer = () => {
                             <img
                                 src={logo}
                                 alt="Travel Discovery Hub"
-                                className="h-[140px] w-[100px] object-contain"
+                                className="h-[200px] w-[160px] object-contain"
                             />
                         </Link>
 
@@ -197,7 +197,7 @@ const Footer = () => {
                         </div>
 
                         <div className="text-center md:text-right">
-                            <p className="text-gray-300 text-sm">© {currentYear} WanderWise Tours. All rights reserved.</p>
+                            <p className="text-gray-300 text-sm">© {currentYear} My Choice Holiday. All rights reserved.</p>
                             <p className="text-gray-400 text-xs mt-1">Crafted with ❤️ for wanderers and dreamers</p>
                         </div>
                     </div>
