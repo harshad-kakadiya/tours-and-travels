@@ -8,6 +8,8 @@ import TravelTools from './components/TravelTools';
 import PopularDestinations from './components/PopularDestinations';
 import TravelTipsSection from './components/TravelTipsSection';
 import NewsletterSubscription from './components/NewsletterSubscription';
+import CallFloatingButton from "../homepage-premium-travel-discovery-hub/components/CallFloatingButton";
+import WhatsAppFloatingButton from "../homepage-premium-travel-discovery-hub/components/WhatsAppFloatingButton";
 
 const TravelBlogHub = () => {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -51,6 +53,8 @@ const TravelBlogHub = () => {
       {/*<PopularDestinations />*/}
       {/*<TravelTools />*/}
       <TravelTipsSection />
+        <CallFloatingButton/>
+        <WhatsAppFloatingButton/>
       {/*<NewsletterSubscription />*/}
     </div>
   );

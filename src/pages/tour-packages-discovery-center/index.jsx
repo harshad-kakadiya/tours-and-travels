@@ -10,6 +10,7 @@ import PackageCard from './components/PackageCard';
 import PackageModal from './components/PackageModal';
 import ComparisonPanel from './components/ComparisonPanel';
 import WhatsAppFloatingButton from "../homepage-premium-travel-discovery-hub/components/WhatsAppFloatingButton";
+import CallFloatingButton from "../homepage-premium-travel-discovery-hub/components/CallFloatingButton";
 
 const TourPackagesDiscoveryCenter = () => {
     const [packages, setPackages] = useState([]);
@@ -320,6 +321,7 @@ const TourPackagesDiscoveryCenter = () => {
                 />
             </div>
             <WhatsAppFloatingButton />
+            <CallFloatingButton/>
         </>
     );
 };

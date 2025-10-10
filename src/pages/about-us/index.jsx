@@ -1,5 +1,6 @@
 import React from 'react';
 import WhatsAppFloatingButton from "../homepage-premium-travel-discovery-hub/components/WhatsAppFloatingButton";
+import CallFloatingButton from "../homepage-premium-travel-discovery-hub/components/CallFloatingButton";
 
 const aboutData = {
     header: {
@@ -129,6 +130,7 @@ const AboutUs = () => {
                 </div>
             </div>
             <WhatsAppFloatingButton />
+            <CallFloatingButton/>
         </div>
     );
 };

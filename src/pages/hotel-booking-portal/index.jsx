@@ -6,6 +6,7 @@ import Button from '../../components/ui/Button';
 import HotelCard from './components/HotelCard';
 import SearchFilters from './components/SearchFilters';
 import { hotelAPI } from '../../utils/api';
+import CallFloatingButton from "../homepage-premium-travel-discovery-hub/components/CallFloatingButton";
 
 const HotelBookingPortal = () => {
     const [selectedHotel, setSelectedHotel] = useState(null);
@@ -374,7 +375,7 @@ const HotelBookingPortal = () => {
                 >
                     <Icon name="MessageCircle" size={24} />
                 </button>
-
+                <CallFloatingButton/>
             </div>
         </>
     );
