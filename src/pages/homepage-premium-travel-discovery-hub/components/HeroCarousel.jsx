@@ -8,6 +8,7 @@ import img1 from '../../../../public/assets/images/view-breathtaking-beach-natur
 import img2 from '../../../../public/assets/images/tropical-beach-with-thatched-hut-clear-blue-water-palm-trees.jpg';
 import img3 from '../../../../public/assets/images/sun-day-coconut-palm-caribbean.jpg';
 
+
 const HeroCarousel = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
