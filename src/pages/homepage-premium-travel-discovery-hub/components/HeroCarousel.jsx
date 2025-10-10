@@ -5,8 +5,8 @@ import Icon from '../../../components/AppIcon';
 import Image from '../../../components/AppImage';
 import Button from '../../../components/ui/Button';
 import img1 from '../../../../public/assets/images/view-breathtaking-beach-nature-landscape.jpg';
-import img2 from '../../../../public/assets/images/istockphoto-1169602395-612x612.jpg';
-import img3 from '../../../../public/assets/images/istockphoto-1169602395-612x612.jpg';
+import img2 from '../../../../public/assets/images/tropical-beach-with-thatched-hut-clear-blue-water-palm-trees.jpg';
+import img3 from '../../../../public/assets/images/sun-day-coconut-palm-caribbean.jpg';
 
 const HeroCarousel = () => {
     const [searchQuery, setSearchQuery] = useState('');
