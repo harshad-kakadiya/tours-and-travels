@@ -17,7 +17,8 @@ const OneWayAndRoundTrip = ({ onBookingClick }) => {
         pickup: '',
         drop: '',
         date: '',
-        time: ''
+        time: '',
+        features: []
     });
 
     useEffect(() => {
@@ -59,6 +60,7 @@ const OneWayAndRoundTrip = ({ onBookingClick }) => {
                     seater: 'sedan',
                     carName: 'Sedan',
                     image: 'https://res.cloudinary.com/degalvlji/image/upload/v1759985267/cabs/ug67htisq734ycomgxah.jpg',
+                    features: ['AC', 'Music System', 'Comfortable Seating']
                 },
                 {
                     _id: '68e73e749685d6df4a8873e3',
@@ -66,6 +68,7 @@ const OneWayAndRoundTrip = ({ onBookingClick }) => {
                     seater: 'suv',
                     carName: 'SUV',
                     image: 'https://res.cloudinary.com/degalvlji/image/upload/v1759985267/cabs/ug67htisq734ycomgxah.jpg',
+                    features: ['AC', 'Music System', 'Spacious Luggage', '4x4 Drive']
                 },
                 {
                     _id: '68e73e749685d6df4a8873e4',
@@ -73,6 +76,7 @@ const OneWayAndRoundTrip = ({ onBookingClick }) => {
                     seater: 'tempo_traveller',
                     carName: 'Tempo Traveller',
                     image: 'https://res.cloudinary.com/degalvlji/image/upload/v1759985267/cabs/ug67htisq734ycomgxah.jpg',
+                    features: ['AC', 'Music System', 'Large Group Seating', 'Ample Luggage Space']
                 }
             ];
 
@@ -83,6 +87,7 @@ const OneWayAndRoundTrip = ({ onBookingClick }) => {
                     seater: 'sedan',
                     carName: 'Sedan',
                     image: 'https://res.cloudinary.com/degalvlji/image/upload/v1759985325/cabs/anua6mn4p5gdmmkhxrxg.jpg',
+                    pricePerKm: 12
                 },
                 {
                     _id: '68e73eae9685d6df4a8873e5',
@@ -90,6 +95,7 @@ const OneWayAndRoundTrip = ({ onBookingClick }) => {
                     seater: 'suv',
                     carName: 'SUV',
                     image: 'https://res.cloudinary.com/degalvlji/image/upload/v1759985325/cabs/anua6mn4p5gdmmkhxrxg.jpg',
+                    pricePerKm: 15
                 },
                 {
                     _id: '68e73eae9685d6df4a8873e6',
@@ -97,6 +103,7 @@ const OneWayAndRoundTrip = ({ onBookingClick }) => {
                     seater: 'tempo_traveller',
                     carName: 'Tempo Traveller',
                     image: 'https://res.cloudinary.com/degalvlji/image/upload/v1759985325/cabs/anua6mn4p5gdmmkhxrxg.jpg',
+                    pricePerKm: 20
                 }
             ];
 
@@ -230,7 +237,10 @@ const OneWayAndRoundTrip = ({ onBookingClick }) => {
                             onChange={(e) => {
                                 const selectedCarId = e.target.value;
                                 const car = oneWayCabs.find(car => car._id === selectedCarId);
-                                if (car) handleCarSelect(car);
+                                if (car) {
+                                    // Force a new object to trigger re-render
+                                    handleCarSelect({...car});
+                                }
                             }}
                             value={selectedCar ? selectedCar._id : ''}
                         >
@@ -252,6 +262,7 @@ const OneWayAndRoundTrip = ({ onBookingClick }) => {
                                         src={selectedCar.image}
                                         alt={selectedCar.carName}
                                         className="w-full h-full object-cover"
+                                        key={selectedCar._id} // Add key to force re-render when car changes
                                     />
                                 </div>
                                 <div>
@@ -319,6 +330,22 @@ const OneWayAndRoundTrip = ({ onBookingClick }) => {
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
                             />
                         </div>
+                        
+                        {/* Features Field */}
+                        {selectedCar && selectedCar.features && (
+                            <div className="col-span-1 md:col-span-2">
+                                <label className="block text-gray-700 text-sm font-bold mb-2">
+                                    Features
+                                </label>
+                                <div className="flex flex-wrap gap-2">
+                                    {selectedCar.features.map((feature, index) => (
+                                        <span key={index} className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                            {feature}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Submit Button */}
@@ -361,8 +388,11 @@ const OneWayAndRoundTrip = ({ onBookingClick }) => {
 
                                     {/* Car Details */}
                                     <div className="p-4">
-                                        <p className="text-gray-600 capitalize mb-4">
+                                        <p className="text-gray-600 capitalize mb-2">
                                             <span className="font-bold">Seater:</span> {car.seater.replace('_', ' ')}
+                                        </p>
+                                        <p className="text-gray-600 mb-4">
+                                            <span className="font-bold">Price Per Km:</span> ₹{car.pricePerKm}
                                         </p>
 
                                         {/* WhatsApp Button */}
