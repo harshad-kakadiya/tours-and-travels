@@ -255,23 +255,55 @@ const OneWayAndRoundTrip = ({ onBookingClick }) => {
 
                     {/* Display selected car details */}
                     {selectedCar && (
-                        <div className="mb-6 p-4 border border-gray-200 rounded-lg">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-                                <div className="h-48 overflow-hidden rounded-md">
-                                    <Image
-                                        src={selectedCar.image}
-                                        alt={selectedCar.carName}
-                                        className="w-full h-full object-cover"
-                                        key={selectedCar._id} // Add key to force re-render when car changes
-                                    />
-                                </div>
-                                <div>
-                                    <h4 className="font-medium text-gray-800 text-lg mb-2">{selectedCar.carName}</h4>
-                                    <p className="text-gray-600 capitalize">
-                                        <span className="font-bold">Seater:</span> {selectedCar.seater.replace('_', ' ')}
-                                    </p>
-                                </div>
+                        <div className="mx-auto max-w-md mb-6 bg-white rounded-lg overflow-hidden shadow">
+                            {/* Green header with route */}
+                            {/*<div className="bg-emerald-500 text-white p-3 text-center">*/}
+                            {/*    <p className="flex items-center justify-center gap-2 font-medium">*/}
+                            {/*        Ahmedabad <Icon name="ArrowRight" size={16} /> Vadodara*/}
+                            {/*    </p>*/}
+                            {/*</div>*/}
+                            
+                            {/*/!* Trip type *!/*/}
+                            {/*<div className="text-center py-3 text-gray-600">*/}
+                            {/*    <p>Oneway Trip</p>*/}
+                            {/*</div>*/}
+                            
+                            {/*/!* Price *!/*/}
+                            {/*<div className="text-center pb-3">*/}
+                            {/*    <p className="text-3xl font-bold text-gray-800">from ₹ 1899</p>*/}
+                            {/*</div>*/}
+                            
+                            {/* Car image */}
+                            <div className="px-4 pb-3 h-[300px]">
+                                <Image
+                                    src={selectedCar.image}
+                                    alt={selectedCar.carName}
+                                    className="w-full h-full object-cover"
+                                    key={selectedCar._id} // Add key to force re-render when car changes
+                                />
                             </div>
+                            
+                            {/* Car name */}
+                            <div className="text-center pb-2">
+                                <h4 className="font-medium text-gray-800 text-lg">{selectedCar.carName}</h4>
+                            </div>
+                            
+                            {/* Seater type */}
+                            <div className="text-center pb-3">
+                                <p className="text-gray-600 capitalize">
+                                    {selectedCar.seater.replace('_', ' ')} Seater
+                                </p>
+                            </div>
+                            
+                            {/* Book now button */}
+                            {/*<div className="px-4 pb-4">*/}
+                            {/*    <Button */}
+                            {/*        className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3"*/}
+                            {/*        onClick={() => handleWhatsAppInquiry()}*/}
+                            {/*    >*/}
+                            {/*        Book Now*/}
+                            {/*    </Button>*/}
+                            {/*</div>*/}
                         </div>
                     )}
 
