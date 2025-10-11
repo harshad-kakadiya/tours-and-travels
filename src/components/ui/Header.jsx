@@ -23,7 +23,7 @@ const Header = () => {
             dropdownItems: [
                 { name: "Tour", path: "/tour-packages-discovery-center" },
                 { name: "Hotel", path: "/hotel-booking-portal" },
-                { name: "Taxi", path: "/taxi-booking-system" },
+                { name: "Cab", path: "/taxi-booking-system" },
             ],
         },
         { name: "Blog", path: "/travel-blog-hub-journey-intelligence" },
@@ -32,6 +32,7 @@ const Header = () => {
 
     useEffect(() => {
         const c = [
+            "/",
             "/homepage-premium-travel-discovery-hub",
             "/contact-support-center",
             "/hotel-booking-portal",
@@ -39,6 +40,8 @@ const Header = () => {
         ].includes(location.pathname);
         setA(c);
     }, [location]);
+
+    console.log(a,"0000000000000000")
 
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 10);
