@@ -58,8 +58,8 @@ const Routes = () => {
               <Route path="/travel-blog-hub-journey-intelligence" element={<TravelBlogHub />} />
               <Route path="/blog/:id" element={<SingleBlog />} />
 
-              {/* Auth Routes - Redirect if already authenticated */}
-              <Route path="/login" element={
+              {/* Auth Routes - Commented out as requested */}
+              {/* <Route path="/login" element={
                 <AuthRedirect>
                   <LoginPage />
                 </AuthRedirect>
@@ -68,7 +68,7 @@ const Routes = () => {
                 <AuthRedirect>
                   <RegisterPage />
                 </AuthRedirect>
-              } />
+              } /> */}
 
               {/* Protected Routes - Require Authentication */}
               <Route path="/tour/:id" element={
@@ -97,9 +97,9 @@ const Routes = () => {
                 // </ProtectedRoute>
               } />
               <Route path="/dashboard" element={
-                // <ProtectedRoute>
+                <ProtectedRoute>
                   <UserDashboard />
-                // </ProtectedRoute>
+                </ProtectedRoute>
               } />
 
               {/* 404 Route */}

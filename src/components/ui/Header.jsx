@@ -192,8 +192,8 @@ const Header = () => {
                         )
                     )}
                     
-                    {/* Login/Logout Button */}
-                    {isAuthenticated ? (
+                    {/* Login/Logout Button - Commented out as requested */}
+                    {/* {isAuthenticated ? (
                         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
                             <span style={{ 
                                 color: isScrolled ? "#000" : a ? "#FFF" : "#000",
@@ -247,7 +247,7 @@ const Header = () => {
                             <Icon name="LogIn" size={16} />
                             Login
                         </Link>
-                    )}
+                    )} */}
                 </nav>
 
                 {/* Mobile Menu Button */}
@@ -343,8 +343,8 @@ const Header = () => {
                         )
                     )}
                     
-                    {/* Login/Logout Button for Mobile */}
-                    <div style={{ 
+                    {/* Login/Logout Button for Mobile - Commented out as requested */}
+                    {/* <div style={{ 
                         borderTop: "1px solid #e5e7eb", 
                         marginTop: "1rem", 
                         paddingTop: "1rem" 
@@ -406,7 +406,7 @@ const Header = () => {
                                 Login
                             </Link>
                         )}
-                    </div>
+                    </div> */}
                 </div>
             )}
 
