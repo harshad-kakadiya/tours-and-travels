@@ -1,10 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
+import Select from '../../../components/ui/Select';
 
-const SearchBar = ({ onSearch, onSortChange, sortBy, totalResults }) => {
+const SearchBar = ({ onSearch, onSortChange, sortBy, totalResults, filters, onFiltersChange }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
+    const [stateOptions, setStateOptions] = useState([
+        { value: '', label: 'All States' }
+    ]);
+
+    useEffect(() => {
+        const fetchStates = async () => {
+            try {
+                const response = await fetch('https://tour-travels-be.onrender.com/api/state');
+                const data = await response.json();
+                
+                if (Array.isArray(data) && data.length > 0) {
+                    const states = data.map(state => ({
+                        value: state.name.toLowerCase(),
+                        label: state.name.charAt(0).toUpperCase() + state.name.slice(1)
+                    }));
+                    
+                    setStateOptions([
+                        { value: '', label: 'All States' },
+                        ...states
+                    ]);
+                }
+            } catch (error) {
+                console.error('Error fetching states:', error);
+            }
+        };
+
+        fetchStates();
+    }, []);
+
+    const handleFilterChange = (key, value) => {
+        onFiltersChange({
+            ...filters,
+            [key]: value
+        });
+    };
 
     const sortOptions = [
         { value: 'relevance', label: 'Most Relevant' },
@@ -71,6 +107,9 @@ const SearchBar = ({ onSearch, onSortChange, sortBy, totalResults }) => {
                 </Button>
             </form>
 
+            {/* Destination State Filter */}
+
+
             {/* Results + Sort Controls */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 w-full">
                 {/* Results Count */}
@@ -92,33 +131,20 @@ const SearchBar = ({ onSearch, onSortChange, sortBy, totalResults }) => {
                 {/* Sort + Advanced Search */}
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
                     {/* Sort Dropdown */}
-                    <div className="flex items-center gap-2 w-full sm:w-auto">
-                        <Icon
-                            name="ArrowUpDown"
-                            size={16}
-                            className="text-muted-foreground"
-                        />
-                        <div className="relative w-full sm:w-auto">
-                            <select
-                                value={sortBy}
-                                onChange={(e) => onSortChange(e?.target?.value)}
-                                className="appearance-none text-sm border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background flex-1 sm:flex-none pr-8" // added pr-8
-                            >
-                                {sortOptions?.map((option) => (
-                                    <option key={option?.value} value={option?.value}>
-                                        {option?.label}
-                                    </option>
-                                ))}
-                            </select>
+                    <div className="flex items-center gap-1 w-full sm:w-auto mb-4">
+                        {/* Label */}
+                        <label className="whitespace-nowrap font-medium text-gray-700">Destination State :</label>
 
-                            {/* Down Icon on Right */}
-                            <Icon
-                                name="ChevronDown"
-                                size={14}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
-                            />
-                        </div>
+                        {/* Dropdown */}
+                        <Select
+                            className="w-64" // Increase width as needed
+                            options={stateOptions}
+                            value={filters?.state || ''}
+                            onChange={(value) => handleFilterChange('state', value)}
+                            placeholder="Select state"
+                        />
                     </div>
+
 
                     {/* Advanced Search Toggle */}
                     <Button
