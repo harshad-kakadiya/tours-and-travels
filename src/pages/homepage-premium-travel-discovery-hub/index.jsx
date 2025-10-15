@@ -101,7 +101,7 @@ const HomepagePremiumTravelDiscoveryHub = () => {
 
                     {/* Upcoming Tours Slider */}
                     <section id="upcoming-tours" className="relative">
-                        <UpcomingToursSlider />
+                        {/*<UpcomingToursSlider />*/}
                     </section>
 
                     {/* Popular Tours */}

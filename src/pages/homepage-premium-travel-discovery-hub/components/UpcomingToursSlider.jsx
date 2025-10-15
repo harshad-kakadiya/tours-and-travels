@@ -32,7 +32,7 @@ const UpcomingToursSlider = () => {
 
         const fetchTours = async () => {
             try {
-                const res = await fetch('https://tour-travels-be.onrender.com/api/tour/highlights');
+                const res = await fetch('https://tour-travels-be.onrender.com/api/tour');
                 const data = await res.json();
 
                 console.log('API Response:', data); // Debug log

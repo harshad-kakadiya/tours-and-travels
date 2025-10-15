@@ -14,7 +14,7 @@ const PopularToursSection = () => {
         const fetchTours = async () => {
             try {
                 // Fetch popular tours from the API
-                const res = await fetch('https://tour-travels-be.onrender.com/api/tour/highlights');
+                const res = await fetch('https://tour-travels-be.onrender.com/api/tour');
                 const data = await res.json();
 
                 console.log('API Response:', data); // Debug log
@@ -155,7 +155,7 @@ const PopularToursSection = () => {
                                     viewport={{ once: true }}
                                     className="relative rounded-2xl overflow-hidden group cursor-pointer shadow-md"
                                 >
-                                    <div className="relative h-60 xs:h-64 sm:h-72 md:h-80 lg:h-[22rem] xl:h-[24rem] 2xl:h-[26rem]">
+                                    <div className="relative h-60 xs:h-64 sm:h-72 md:h-75 lg:h-[17rem] xl:h-[17rem] 2xl:h-[18rem]">
                                         <Image
                                             src={tour.image}
                                             alt={tour.title}
