@@ -113,12 +113,12 @@ const TourDetails = () => {
         setIsSubmitting(true);
         try {
             const authToken = localStorage.getItem('authToken');
-            if (!authToken) {
-                console.error('No auth token found');
-                alert('Please login to download schedule');
-                setIsSubmitting(false);
-                return;
-            }
+            // if (!authToken) {
+            //     console.error('No auth token found');
+            //     alert('Please login to download schedule');
+            //     setIsSubmitting(false);
+            //     return;
+            // }
 
             // Prepare the schedule data with tour information
             const scheduleData = {

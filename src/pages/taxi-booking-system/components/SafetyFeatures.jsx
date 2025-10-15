@@ -114,7 +114,7 @@ const SafetyFeatures = () => {
             <p className="text-muted-foreground text-sm mb-4">
               In case of any emergency during your trip, these features ensure your safety
             </p>
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">
                   <Icon name="Phone" size={16} className="text-red-600" />
@@ -136,13 +136,13 @@ const SafetyFeatures = () => {
                 </div>
                 <p className="text-xs text-muted-foreground ml-6">One-tap emergency alert to authorities</p>
               </div>
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Icon name="Camera" size={16} className="text-red-600" />
-                  <span className="text-sm text-foreground font-medium">Driver Photo</span>
-                </div>
-                <p className="text-xs text-muted-foreground ml-6">Driver and vehicle photos before trip</p>
-              </div>
+              {/*<div className="space-y-2">*/}
+              {/*  <div className="flex items-center space-x-2">*/}
+              {/*    <Icon name="Camera" size={16} className="text-red-600" />*/}
+              {/*    <span className="text-sm text-foreground font-medium">Driver Photo</span>*/}
+              {/*  </div>*/}
+              {/*  <p className="text-xs text-muted-foreground ml-6">Driver and vehicle photos before trip</p>*/}
+              {/*</div>*/}
             </div>
           </div>
         </div>
