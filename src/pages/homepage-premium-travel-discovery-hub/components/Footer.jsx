@@ -198,7 +198,7 @@ const Footer = () => {
 
                         <div className="text-center md:text-right">
                             <p className="text-gray-300 text-sm">© {currentYear} My Choice Holiday. All rights reserved.</p>
-                            <p className="text-gray-400 text-xs mt-1">Crafted with ❤️ for My Choice Holiday</p>
+                            {/*<p className="text-gray-400 text-xs mt-1">Crafted with ❤️ for My Choice Holiday</p>*/}
                         </div>
                     </div>
                 </div>

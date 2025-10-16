@@ -40,14 +40,14 @@ const ServiceTypeSelector = ({ selectedService, onServiceChange }) => {
               </span>
             </div>
           )}
-          
+
           <div className="flex items-start space-x-4">
             <div className={`p-3 rounded-lg ${
               selectedService === service?.id ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'
             }`}>
               <Icon name={service?.icon} size={24} />
             </div>
-            
+
             <div className="flex-1">
               <h3 className="text-lg font-semibold text-foreground mb-2">
                 {service?.title}
@@ -55,7 +55,7 @@ const ServiceTypeSelector = ({ selectedService, onServiceChange }) => {
               <p className="text-muted-foreground text-sm mb-4">
                 {service?.description}
               </p>
-              
+
               <div className="space-y-2">
                 {service?.features?.map((feature, index) => (
                   <div key={index} className="flex items-center space-x-2">
@@ -65,7 +65,7 @@ const ServiceTypeSelector = ({ selectedService, onServiceChange }) => {
                 ))}
               </div>
             </div>
-            
+
             <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
               selectedService === service?.id
                 ? 'border-primary bg-primary' :'border-muted-foreground'

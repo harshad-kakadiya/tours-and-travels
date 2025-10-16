@@ -19,47 +19,51 @@ import RegisterPage from './pages/auth/RegisterPage';
 import UserDashboard from './pages/UserDashboard';
 import TourDetails from './pages/tour-packages-discovery-center/TourDetails.jsx';
 import AboutUs from './pages/about-us';
+import FlightBooking from './pages/flight-booking-system/components/FlightBooking';
 // Component to redirect authenticated users away from auth pages
 const AuthRedirect = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+    const { isAuthenticated, loading } = useAuth();
 
-  
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="flex items-center space-x-2">
-          <div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
-          <span className="text-muted-foreground">Loading...</span>
-        </div>
-      </div>
-    );
-  }
-  
-  if (isAuthenticated) {
-    return <Navigate to="/homepage-premium-travel-discovery-hub" replace />;
-  }
-  
-  return children;
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="flex items-center space-x-2">
+                    <div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+                    <span className="text-muted-foreground">Loading...</span>
+                </div>
+            </div>
+        );
+    }
+
+    if (isAuthenticated) {
+        return <Navigate to="/homepage-premium-travel-discovery-hub" replace />;
+    }
+
+    return children;
 };
 
 const Routes = () => {
-  return (
-    <BrowserRouter>
-      <ErrorBoundary>
-        <AuthProvider>
-          <ScrollToTop />
-          <RouterRoutes>
-            <Route element={<GlobalLayout />}>
-              {/* Public Routes */}
-              <Route path="/" element={<HomepagePremiumTravelDiscoveryHub />} />
-              <Route path="/homepage-premium-travel-discovery-hub" element={<HomepagePremiumTravelDiscoveryHub />} />
-              <Route path="/contact-support-center" element={<ContactSupportCenter />} />
-              <Route path="/about-us" element={<AboutUs />} />
-              <Route path="/travel-blog-hub-journey-intelligence" element={<TravelBlogHub />} />
-              <Route path="/blog/:id" element={<SingleBlog />} />
+    return (
+        <BrowserRouter>
+            <ErrorBoundary>
+                <AuthProvider>
+                    <ScrollToTop />
+                    <RouterRoutes>
+                        <Route element={<GlobalLayout />}>
+                            {/* Public Routes */}
+                            <Route path="/" element={<HomepagePremiumTravelDiscoveryHub />} />
+                            <Route path="/homepage-premium-travel-discovery-hub" element={<HomepagePremiumTravelDiscoveryHub />} />
+                            <Route path="/contact-support-center" element={<ContactSupportCenter />} />
+                            <Route path="/about-us" element={<AboutUs />} />
+                            <Route path="/travel-blog-hub-journey-intelligence" element={<TravelBlogHub />} />
+                            <Route path="/blog/:id" element={<SingleBlog />} />
 
-              {/* Auth Routes - Commented out as requested */}
-              {/* <Route path="/login" element={
+                            {/* Flight Booking Route - Added this line */}
+                            <Route path="/flight-booking-system" element={<FlightBooking />} />
+
+                            {/* Auth Routes - Commented out as requested */}
+                            {/* <Route path="/login" element={
                 <AuthRedirect>
                   <LoginPage />
                 </AuthRedirect>
@@ -70,46 +74,46 @@ const Routes = () => {
                 </AuthRedirect>
               } /> */}
 
-              {/* Protected Routes - Require Authentication */}
-              <Route path="/tour/:id" element={
-                // <ProtectedRoute>
-                  <TourDetails />
-                // </ProtectedRoute>
-              } />
-              <Route path="/tour-packages-discovery-center" element={
-                // <ProtectedRoute>
-                  <TourPackagesDiscoveryCenter />
-                // </ProtectedRoute>
-              } />
-              <Route path="/hotel-booking-portal" element={
-                // <ProtectedRoute>
-                  <HotelBookingPortal />
-                // </ProtectedRoute>
-              } />
-              <Route path="/hotel/:id" element={
-                // <ProtectedRoute>
-                  <HotelDetails />
-                // </ProtectedRoute>
-              } />
-              <Route path="/taxi-booking-system" element={
-                // <ProtectedRoute>
-                  <TaxiBookingSystem />
-                // </ProtectedRoute>
-              } />
-              <Route path="/dashboard" element={
-                <ProtectedRoute>
-                  <UserDashboard />
-                </ProtectedRoute>
-              } />
+                            {/* Protected Routes - Require Authentication */}
+                            <Route path="/tour/:id" element={
+                                // <ProtectedRoute>
+                                <TourDetails />
+                                // </ProtectedRoute>
+                            } />
+                            <Route path="/tour-packages-discovery-center" element={
+                                // <ProtectedRoute>
+                                <TourPackagesDiscoveryCenter />
+                                // </ProtectedRoute>
+                            } />
+                            <Route path="/hotel-booking-portal" element={
+                                // <ProtectedRoute>
+                                <HotelBookingPortal />
+                                // </ProtectedRoute>
+                            } />
+                            <Route path="/hotel/:id" element={
+                                // <ProtectedRoute>
+                                <HotelDetails />
+                                // </ProtectedRoute>
+                            } />
+                            <Route path="/taxi-booking-system" element={
+                                // <ProtectedRoute>
+                                <TaxiBookingSystem />
+                                // </ProtectedRoute>
+                            } />
+                            <Route path="/dashboard" element={
+                                <ProtectedRoute>
+                                    <UserDashboard />
+                                </ProtectedRoute>
+                            } />
 
-              {/* 404 Route */}
-              <Route path="*" element={<NotFound />} />
-            </Route>
-          </RouterRoutes>
-        </AuthProvider>
-      </ErrorBoundary>
-    </BrowserRouter>
-  );
+                            {/* 404 Route */}
+                            <Route path="*" element={<NotFound />} />
+                        </Route>
+                    </RouterRoutes>
+                </AuthProvider>
+            </ErrorBoundary>
+        </BrowserRouter>
+    );
 };
 
 export default Routes;

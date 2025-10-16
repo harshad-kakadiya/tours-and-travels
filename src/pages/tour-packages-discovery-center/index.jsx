@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet';
 import Header from '../../components/ui/Header';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
+import PackageFilters from './components/PackageFilters';
 import SearchBar from './components/SearchBar';
 import PackageCard from './components/PackageCard';
 import PackageModal from './components/PackageModal';
@@ -15,7 +16,11 @@ const TourPackagesDiscoveryCenter = () => {
     const [packages, setPackages] = useState([]);
     const [filteredPackages, setFilteredPackages] = useState([]);
     const [filters, setFilters] = useState({
-        state: ''
+        state: '',
+        duration: '',
+        budget: '',
+        theme: '',
+        difficulty: ''
     });
     const [searchTerm, setSearchTerm] = useState('');
     const [sortBy, setSortBy] = useState('relevance');
@@ -118,6 +123,27 @@ const TourPackagesDiscoveryCenter = () => {
             filtered = filtered.filter(pkg => pkg.stateName === q || pkg.stateName?.includes(q) || pkg.location?.toLowerCase()?.includes(q));
         }
 
+        if (filters?.duration) {
+            const [min, max] = filters.duration.split('-').map(Number);
+            filtered = filtered.filter(pkg => max ? pkg.duration >= min && pkg.duration <= max : pkg.duration >= min);
+        }
+
+        if (filters?.budget) {
+            if (filters.budget === '75000+') {
+                filtered = filtered.filter(pkg => pkg.price >= 75000);
+            } else {
+                const [min, max] = filters.budget.split('-').map(Number);
+                filtered = filtered.filter(pkg => pkg.price >= min && pkg.price <= max);
+            }
+        }
+
+        if (filters.theme) {
+            filtered = filtered.filter(pkg => pkg.theme === filters.theme);
+        }
+
+        if (filters.difficulty) {
+            filtered = filtered.filter(pkg => pkg.difficulty === filters.difficulty);
+        }
 
         filtered.sort((a, b) => {
             switch (sortBy) {
@@ -137,7 +163,7 @@ const TourPackagesDiscoveryCenter = () => {
 
     const handleFiltersChange = (newFilters) => setFilters(newFilters);
     const handleClearFilters = () => {
-        setFilters({ state: '' });
+        setFilters({ state: '', duration: '', budget: '', theme: '', difficulty: '' });
         setSearchTerm('');
     };
     const handleSearch = (term) => setSearchTerm(term);
@@ -187,19 +213,25 @@ const TourPackagesDiscoveryCenter = () => {
                 {/* Main */}
                 <section className="py-8">
                     <div className="px-6 lg:px-12">
-                        <div className="flex flex-col gap-8">
-                            {/* Search/Sort with integrated Destination State filter */}
-                            <SearchBar
-                                onSearch={handleSearch}
-                                onSortChange={handleSortChange}
-                                sortBy={sortBy}
-                                totalResults={filteredPackages.length}
-                                filters={filters}
-                                onFiltersChange={handleFiltersChange}
-                            />
+                        <div className="flex flex-col lg:flex-row gap-12">
+                            {/* Sidebar */}
+                            <div className="lg:w-80">
+                                <PackageFilters
+                                    filters={filters}
+                                    onFiltersChange={handleFiltersChange}
+                                    onClearFilters={handleClearFilters}
+                                />
+                            </div>
 
                             {/* Content */}
                             <div className="flex-1">
+                                {/* Search/Sort */}
+                                <SearchBar
+                                    onSearch={handleSearch}
+                                    onSortChange={handleSortChange}
+                                    sortBy={sortBy}
+                                    totalResults={filteredPackages.length}
+                                />
 
                                 {/* View/Compare Toggle */}
                                 <div className="flex items-center justify-between mb-6 mt-4">
