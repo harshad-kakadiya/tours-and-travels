@@ -12,6 +12,7 @@ const Header = () => {
     const [a, setA] = useState(null);
     const { user, isAuthenticated, logout } = useAuth();
     const servicesDropdownRef = useRef(null);
+    const slug = location.pathname.split("/")[1];
 
     const navigationItems = [
         { name: "Home", path: "/homepage-premium-travel-discovery-hub" },
@@ -30,16 +31,17 @@ const Header = () => {
         { name: "Blog", path: "/travel-blog-hub-journey-intelligence" },
         { name: "Contact Us", path: "/contact-support-center" },
     ];
+
     useEffect(() => {
         const c = [
             "/",
             "/homepage-premium-travel-discovery-hub",
             "/contact-support-center",
-            "/hotel-booking-portal",
+            // "/hotel-booking-portal",
             "/travel-blog-hub-journey-intelligence",
-            "/flight-booking-system",
-            "/tour-packages-discovery-center",
-            "/taxi-booking-system"
+            // "/flight-booking-system",
+            // "/tour-packages-discovery-center",
+            // "/taxi-booking-system"
         ].includes(location.pathname);
         setA(c);
     }, [location]);
@@ -58,6 +60,15 @@ const Header = () => {
 
     const isActivePath = (path) => location?.pathname === path;
 
+    // Function to determine text color based on slug and scroll state
+    const getTextColor = () => {
+        if (isScrolled) return "#000";
+        if (slug && slug !== "" && slug !== "homepage-premium-travel-discovery-hub") return "#000";
+        return "#fff";
+    };
+
+    const textColor = getTextColor();
+
     return (
         <header
             style={{
@@ -66,9 +77,8 @@ const Header = () => {
                 zIndex: 100,
                 width: "100%",
                 background: isScrolled ? "#fff" : a ? "transparent" : "#FFF",
-                color: isScrolled ? "#000" : "#fff",
+                color: textColor,
                 transition: "all 0.3s ease",
-                backdropFilter: "blur(10px)",
                 boxShadow: isScrolled ? "0 2px 8px rgba(0,0,0,0.1)" : "none",
             }}
         >
@@ -123,7 +133,7 @@ const Header = () => {
                                     style={{
                                         background: "none",
                                         border: "none",
-                                        color: isScrolled ? "#000" : "#fff",
+                                        color: textColor,
                                         fontSize: "1rem",
                                         cursor: "pointer",
                                         fontWeight: "500",
@@ -180,7 +190,7 @@ const Header = () => {
                                 key={item.path}
                                 to={item.path}
                                 style={{
-                                    color: isScrolled ? "#000" : "#fff",
+                                    color: textColor,
                                     fontWeight: isActivePath(item.path) ? "600" : "500",
                                     fontSize: "1rem",
                                     textDecoration: "none",
@@ -199,7 +209,7 @@ const Header = () => {
                     onClick={toggleMobileMenu}
                     style={{
                         padding: "0.5rem",
-                        color: isScrolled ? "#000" : "#fff",
+                        color: textColor,
                         background: "none",
                         border: "none",
                         cursor: "pointer",

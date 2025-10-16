@@ -20,10 +20,10 @@ import UserDashboard from './pages/UserDashboard';
 import TourDetails from './pages/tour-packages-discovery-center/TourDetails.jsx';
 import AboutUs from './pages/about-us';
 import FlightBooking from './pages/flight-booking-system/components/FlightBooking';
+
 // Component to redirect authenticated users away from auth pages
 const AuthRedirect = ({ children }) => {
     const { isAuthenticated, loading } = useAuth();
-
 
     if (loading) {
         return (
@@ -59,47 +59,15 @@ const Routes = () => {
                             <Route path="/travel-blog-hub-journey-intelligence" element={<TravelBlogHub />} />
                             <Route path="/blog/:id" element={<SingleBlog />} />
 
-                            {/* Flight Booking Route - Added this line */}
+                            {/* Flight Booking Route */}
                             <Route path="/flight-booking-system" element={<FlightBooking />} />
 
-                            {/* Auth Routes - Commented out as requested */}
-                            {/* <Route path="/login" element={
-                <AuthRedirect>
-                  <LoginPage />
-                </AuthRedirect>
-              } />
-              <Route path="/register" element={
-                <AuthRedirect>
-                  <RegisterPage />
-                </AuthRedirect>
-              } /> */}
-
                             {/* Protected Routes - Require Authentication */}
-                            <Route path="/tour/:id" element={
-                                // <ProtectedRoute>
-                                <TourDetails />
-                                // </ProtectedRoute>
-                            } />
-                            <Route path="/tour-packages-discovery-center" element={
-                                // <ProtectedRoute>
-                                <TourPackagesDiscoveryCenter />
-                                // </ProtectedRoute>
-                            } />
-                            <Route path="/hotel-booking-portal" element={
-                                // <ProtectedRoute>
-                                <HotelBookingPortal />
-                                // </ProtectedRoute>
-                            } />
-                            <Route path="/hotel/:id" element={
-                                // <ProtectedRoute>
-                                <HotelDetails />
-                                // </ProtectedRoute>
-                            } />
-                            <Route path="/taxi-booking-system" element={
-                                // <ProtectedRoute>
-                                <TaxiBookingSystem />
-                                // </ProtectedRoute>
-                            } />
+                            <Route path="/tour/:id" element={<TourDetails />} />
+                            <Route path="/tour-packages-discovery-center" element={<TourPackagesDiscoveryCenter />} />
+                            <Route path="/hotel-booking-portal" element={<HotelBookingPortal />} />
+                            <Route path="/hotel/:id" element={<HotelDetails />} />
+                            <Route path="/taxi-booking-system" element={<TaxiBookingSystem />} />
                             <Route path="/dashboard" element={
                                 <ProtectedRoute>
                                     <UserDashboard />
