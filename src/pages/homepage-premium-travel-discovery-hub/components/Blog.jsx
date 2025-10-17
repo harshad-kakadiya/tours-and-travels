@@ -59,7 +59,7 @@ const Blog = () => {
     };
 
     return (
-        <section className="py-8 sm:py-12 md:py-16 lg:py-20 bg-background relative z-0">
+        <section className="py-10 lg:py-16 bg-background relative z-0">
             {/* Background Overlay */}
             <div
                 className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none"
@@ -68,40 +68,40 @@ const Blog = () => {
                 }}
             />
 
-            <div className="container xl:px-0 mx-auto px-4 relative z-10">
-                {/* Header */}
-                <div className="text-center mb-8 sm:mb-10 md:mb-12">
-                    <div className="inline-flex items-center space-x-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-3">
-                        <Icon name="Award" size={16} />
+            <div className="container mx-auto px-6 lg:px-8 relative z-10">
+                {/* Header - Optimized for laptop */}
+                <div className="text-center mb-12 lg:mb-16">
+                    <div className="inline-flex items-center space-x-2 bg-primary/10 text-primary px-3 py-1.5 rounded-full mb-4">
+                        <Icon name="Award" size={14} />
                         <span className="text-sm font-medium">Top Blog Picks</span>
                     </div>
-                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-3">
+                    <h2 className="text-3xl lg:text-4xl xl:text-5xl font-heading font-bold text-foreground mb-4">
                         Latest Blog
                     </h2>
-                    <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto">
+                    <p className="text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto">
                         Stay informed with our newest articles, insights, and updates from the world of travel and adventure.
                     </p>
                 </div>
 
                 {/* Loader */}
                 {loading && (
-                    <div className="flex justify-center items-center py-20">
-                        <Icon name="Loader2" size={28} className="animate-spin text-primary mr-3" />
-                        <span className="text-muted-foreground text-sm">Loading blog posts...</span>
+                    <div className="flex justify-center items-center py-16">
+                        <Icon name="Loader2" size={24} className="animate-spin text-primary mr-3" />
+                        <span className="text-muted-foreground text-base">Loading blog posts...</span>
                     </div>
                 )}
 
                 {/* Error */}
                 {!loading && error && (
                     <div className="text-center py-12">
-                        <Icon name="AlertCircle" size={40} className="text-destructive mx-auto mb-4" />
+                        <Icon name="AlertCircle" size={32} className="text-destructive mx-auto mb-4" />
                         <p className="text-muted-foreground text-base">{error}</p>
                     </div>
                 )}
 
-                {/* Blog Cards */}
+                {/* Blog Cards - Perfect for laptop screens */}
                 {!loading && !error && blogPosts.length > 0 && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
                         {blogPosts.map((post, idx) => {
                             const date = formatDate(post.createdAt);
                             const imgUrl = getImageUrl(post.blogImage);
@@ -111,10 +111,10 @@ const Blog = () => {
                             return (
                                 <div
                                     key={post._id || idx}
-                                    className="flex flex-col bg-white rounded-xl shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-xl border border-gray-200"
+                                    className="flex flex-col bg-white rounded-xl shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-xl border border-gray-200 h-full"
                                 >
-                                    {/* Image Container */}
-                                    <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 w-full overflow-hidden">
+                                    {/* Image Container - Perfect laptop size */}
+                                    <div className="relative h-52 lg:h-56 xl:h-60 w-full overflow-hidden">
                                         <img
                                             src={imgUrl}
                                             alt={postTitle}
@@ -124,16 +124,16 @@ const Blog = () => {
                                                 e.target.src = 'https://www.holidify.com/images/bgImages/HIMACHAL-PRADESH.jpg';
                                             }}
                                         />
-                                        {/* Date Badge - Similar to reference image */}
+                                        {/* Date Badge */}
                                         <div className="absolute top-4 left-4 bg-white text-gray-800 font-bold px-3 py-2 rounded-lg text-center shadow-md">
                                             <div className="text-lg leading-none font-semibold">{date.day}</div>
                                             <div className="text-xs leading-tight mt-1 font-medium">{date.month}</div>
                                         </div>
                                     </div>
 
-                                    {/* Content */}
-                                    <div className="flex flex-col flex-grow p-5 sm:p-6">
-                                        <h3 className="font-bold text-gray-900 text-lg mb-3 line-clamp-2 leading-tight">
+                                    {/* Content - Well balanced for laptop */}
+                                    <div className="flex flex-col flex-grow p-5 lg:p-6 w-full">
+                                        <h3 className="font-bold text-gray-900 text-lg lg:text-xl mb-3 line-clamp-2 leading-tight">
                                             {postTitle}
                                         </h3>
 
@@ -148,7 +148,7 @@ const Blog = () => {
                                             </ReactMarkdown>
                                         </div>
 
-                                        {/* Read More Link - Styled like reference */}
+                                        {/* Read More Link */}
                                         <div className="mt-auto pt-3 border-t border-gray-100">
                                             <Link
                                                 to={`/blog/${post._id}`}
@@ -168,21 +168,21 @@ const Blog = () => {
                 {/* No Posts */}
                 {!loading && !error && blogPosts.length === 0 && (
                     <div className="text-center py-12">
-                        <Icon name="Info" size={32} className="text-muted-foreground mb-4" />
-                        <p className="text-muted-foreground text-sm">No blog posts found at the moment.</p>
+                        <Icon name="Info" size={28} className="text-muted-foreground mb-3" />
+                        <p className="text-muted-foreground text-base">No blog posts found at the moment.</p>
                     </div>
                 )}
 
                 {/* View All Button */}
                 {!loading && !error && blogPosts.length > 0 && (
-                    <div className="flex justify-center mt-12">
+                    <div className="flex justify-center mt-12 lg:mt-16">
                         <Link to="/travel-blog-hub-journey-intelligence">
                             <Button
                                 variant="outline"
                                 size="lg"
                                 iconName="ArrowRight"
                                 iconPosition="right"
-                                className="px-8 py-3 text-base font-semibold border-2 bg-[#4891C9] text-white border-[#4891C9] hover:bg-[#3a7ab0] hover:border-[#3a7ab0] transition-colors duration-200"
+                                className="px-8 py-3 lg:px-10 lg:py-4 text-base lg:text-lg font-semibold border-2 bg-[#4891C9] text-white border-[#4891C9] hover:bg-[#3a7ab0] hover:border-[#3a7ab0] transition-colors duration-200 shadow-md hover:shadow-lg"
                             >
                                 View All Blogs
                             </Button>
