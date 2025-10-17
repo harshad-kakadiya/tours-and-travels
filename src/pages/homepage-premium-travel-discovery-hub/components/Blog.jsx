@@ -111,32 +111,33 @@ const Blog = () => {
                             return (
                                 <div
                                     key={post._id || idx}
-                                    className="flex flex-col bg-white rounded-lg shadow-md overflow-hidden group transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
+                                    className="flex flex-col bg-white rounded-xl shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-xl border border-gray-200"
                                 >
-                                    {/* Image */}
+                                    {/* Image Container */}
                                     <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 w-full overflow-hidden">
                                         <img
                                             src={imgUrl}
                                             alt={postTitle}
-                                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                             loading="lazy"
                                             onError={(e) => {
                                                 e.target.src = 'https://www.holidify.com/images/bgImages/HIMACHAL-PRADESH.jpg';
                                             }}
                                         />
-                                        <div className="absolute top-2 left-2 bg-black bg-opacity-60 text-white font-bold px-3 py-2 rounded text-center text-xs">
-                                            <div className="text-lg">{date.day}</div>
-                                            <div className="text-sm">{date.month}</div>
+                                        {/* Date Badge - Similar to reference image */}
+                                        <div className="absolute top-4 left-4 bg-white text-gray-800 font-bold px-3 py-2 rounded-lg text-center shadow-md">
+                                            <div className="text-lg leading-none font-semibold">{date.day}</div>
+                                            <div className="text-xs leading-tight mt-1 font-medium">{date.month}</div>
                                         </div>
                                     </div>
 
                                     {/* Content */}
-                                    <div className="flex flex-col flex-grow p-4 sm:p-5">
-                                        <h3 className="font-bold text-blue-900 text-base uppercase mb-2 line-clamp-2">
+                                    <div className="flex flex-col flex-grow p-5 sm:p-6">
+                                        <h3 className="font-bold text-gray-900 text-lg mb-3 line-clamp-2 leading-tight">
                                             {postTitle}
                                         </h3>
 
-                                        <div className="text-sm text-gray-600 flex-grow line-clamp-3">
+                                        <div className="text-sm text-gray-600 flex-grow line-clamp-3 mb-4 leading-relaxed">
                                             <ReactMarkdown
                                                 rehypePlugins={[rehypeRaw]}
                                                 components={{
@@ -147,12 +148,16 @@ const Blog = () => {
                                             </ReactMarkdown>
                                         </div>
 
-                                        <Link
-                                            to={`/blog/${post._id}`}
-                                            className="text-blue-700 mt-4 inline-block hover:underline text-sm"
-                                        >
-                                            Read more »
-                                        </Link>
+                                        {/* Read More Link - Styled like reference */}
+                                        <div className="mt-auto pt-3 border-t border-gray-100">
+                                            <Link
+                                                to={`/blog/${post._id}`}
+                                                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors duration-200"
+                                            >
+                                                Read more
+                                                <Icon name="ArrowRight" size={14} className="ml-1 mt-0.5" />
+                                            </Link>
+                                        </div>
                                     </div>
                                 </div>
                             );
@@ -170,14 +175,14 @@ const Blog = () => {
 
                 {/* View All Button */}
                 {!loading && !error && blogPosts.length > 0 && (
-                    <div className="flex justify-center mt-10">
+                    <div className="flex justify-center mt-12">
                         <Link to="/travel-blog-hub-journey-intelligence">
                             <Button
                                 variant="outline"
                                 size="lg"
                                 iconName="ArrowRight"
                                 iconPosition="right"
-                                className="px-6 py-3 text-base font-semibold border-2 bg-[#4891C9] text-white border-[#4891C9] "
+                                className="px-8 py-3 text-base font-semibold border-2 bg-[#4891C9] text-white border-[#4891C9] hover:bg-[#3a7ab0] hover:border-[#3a7ab0] transition-colors duration-200"
                             >
                                 View All Blogs
                             </Button>
